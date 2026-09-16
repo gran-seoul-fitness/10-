@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10월 이달의 퀴즈 (데모)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EDE6D6;
+    --paper2:#E3DBC8;
+    --ink:#4B463C;
+    --ink-soft:#7A7466;
+    --mtn1:#C7BFA9;
+    --mtn2:#A79E88;
+    --mtn3:#726A59;
+    --hanok-red:#8B3A2E;
+    --hanok-green:#33443A;
+    --gold:#AD8A45;
+    --card:rgba(250,247,238,0.92);
+    --line:rgba(75,70,60,0.14);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    font-family:'Gowun Batang', serif;
+    font-weight:400;
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;align-items:center;justify-content:center;
+    padding:24px;
+    position:relative;
+    overflow-x:hidden;
+    background:var(--paper);
+  }
+
+  /* ===== 배경: 산수화 느낌의 겹겹 산 실루엣 ===== */
+  .ink-mountains{
+    position:fixed;inset:0;z-index:0;
+    background-image:url('https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/quiz/mountains-bg.jpg');
+    background-size:cover;background-position:center bottom;
+  }
+  .paper-noise{
+    position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.5;
+    background-image:
+      repeating-radial-gradient(circle at 20% 30%, rgba(90,80,60,0.035) 0, transparent 1.6px),
+      repeating-radial-gradient(circle at 70% 60%, rgba(90,80,60,0.03) 0, transparent 1.4px);
+    background-size:5px 5px, 4px 4px;
+  }
+
+  /* ===== 대문(한옥 문) 오프닝 모션 ===== */
+  .gate-intro{
+    position:fixed;inset:0;z-index:50;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:var(--paper);
+    animation:gateFadeOut 1.9s ease forwards;
+  }
+  .gate-intro img{width:210px;border-radius:14px;box-shadow:0 20px 50px rgba(60,45,25,0.25);animation:gateRise 1.3s cubic-bezier(.2,.8,.2,1) both;margin-bottom:22px;}
+  .gate-intro-caption{
+    position:absolute;bottom:14%;left:0;right:0;text-align:center;
+    font-size:12px;letter-spacing:0.3em;color:var(--ink-soft);
+    animation:capFade 1.3s ease both;
+  }
+  @keyframes gateRise{ from{ transform:translateY(26px) scale(0.9); opacity:0; } to{ transform:translateY(0) scale(1); opacity:1; } }
+  @keyframes capFade{ 0%{opacity:0;} 40%{opacity:1;} 100%{opacity:1;} }
+  @keyframes gateFadeOut{ 0%{opacity:1;visibility:visible;} 78%{opacity:1;} 100%{opacity:0;visibility:hidden;} }
+
+  .card{
+    position:relative;z-index:1;
+    max-width:420px;width:100%;
+    border-radius:22px;overflow:hidden;
+    background:var(--card);
+    border:1px solid var(--line);
+    box-shadow:0 24px 60px rgba(60,50,30,0.18);
+  }
+  .card-header{padding:30px 30px 20px;text-align:center;border-bottom:1px solid var(--line);}
+  .brand-sub{font-size:11px;letter-spacing:0.15em;color:var(--gold);margin-bottom:8px;font-weight:700;}
+  .brand-title{font-size:22px;font-weight:700;color:var(--ink);letter-spacing:0.02em;}
+  .vol-tag{
+    display:inline-block;margin-top:12px;font-size:10.5px;font-weight:700;color:var(--hanok-red);
+    padding:5px 12px;border-radius:100px;background:var(--paper2);border:1px solid var(--line);
+    letter-spacing:0.03em;
+  }
+
+  .card-body{padding:28px 30px;}
+  .quiz-label{font-size:12px;font-weight:700;letter-spacing:0.1em;color:var(--hanok-green);margin-bottom:14px;}
+  .quiz-question{
+    font-size:15.5px;font-weight:400;color:var(--ink);line-height:1.9;margin-bottom:22px;
+    background:var(--paper2);padding:20px 18px;border-radius:14px;border:1px solid var(--line);
+  }
+  .quiz-question .blank{display:inline-block;min-width:60px;text-align:center;border-bottom:2px solid var(--hanok-red);font-weight:700;color:var(--hanok-red);}
+
+  label{display:block;font-size:10.5px;font-weight:700;letter-spacing:0.08em;color:var(--hanok-green);text-transform:uppercase;margin-bottom:8px;}
+  .field{margin-bottom:16px;}
+  input[type="text"]{
+    width:100%;background:#FBF8F0;border:1px solid var(--line);border-radius:12px;
+    padding:13px 16px;font-family:'Gowun Batang', serif;font-weight:700;font-size:15px;color:var(--ink);
+    text-align:center;transition:border-color .15s ease;
+  }
+  input[type="text"]::placeholder{color:var(--ink-soft);font-weight:400;}
+  input[type="text"]:focus{outline:none;border-color:var(--hanok-red);}
+
+  .submit-btn{
+    width:100%;background:linear-gradient(135deg, var(--hanok-red), #6C2A22);
+    color:#F6EEDF;border:none;border-radius:12px;padding:15px;
+    font-family:'Gowun Batang', serif;font-size:14.5px;font-weight:700;letter-spacing:0.04em;
+    cursor:pointer;margin-top:4px;box-shadow:0 8px 20px rgba(139,58,46,0.28);
+    transition:transform .12s ease;
+  }
+  .submit-btn:active{transform:scale(0.98);}
+  .hint-msg{font-size:12px;color:var(--hanok-red);margin-top:12px;text-align:center;display:none;line-height:1.7;}
+  .members-note{font-size:11px;color:var(--ink-soft);text-align:center;margin-top:14px;line-height:1.6;}
+
+  .success-screen{display:none;padding:0;}
+  .success-banner{padding:38px 30px;text-align:center;border-bottom:1px solid var(--line);}
+  .success-title{font-size:19px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+  .success-sub{font-size:12px;font-weight:700;color:var(--hanok-red);letter-spacing:0.08em;}
+  .success-body{padding:24px 30px;text-align:center;}
+  .reward-box{background:var(--paper2);padding:18px;margin-bottom:12px;border-radius:14px;border:1px solid var(--line);}
+  .reward-text{font-size:14px;font-weight:700;color:var(--ink);line-height:1.8;}
+  .reward-location{font-size:12px;font-weight:400;color:var(--ink-soft);margin-top:6px;}
+  .success-note{font-size:10.5px;color:var(--ink-soft);}
+
+  .footer-note{padding:16px 30px 22px;text-align:center;font-size:10.5px;color:var(--ink-soft);border-top:1px solid var(--line);}
+
+  /* ===== 사신 캐릭터 ===== */
+  .char-stamp{width:96px;height:104px;margin:0 auto 14px;}
+  .char-stamp svg, .char-stamp img{width:100%;height:100%;display:block;object-fit:contain;}
+  .char-stamp.idle svg{animation:charIdle 2.6s ease-in-out infinite;}
+  .char-stamp.celebrate svg{animation:charCelebrate 1.1s ease-in-out infinite;transform-origin:50% 90%;}
+  @keyframes charIdle{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+  @keyframes charCelebrate{
+    0%,100%{transform:translateY(0) rotate(0deg);}
+    20%{transform:translateY(-12px) rotate(-6deg);}
+    45%{transform:translateY(1px) rotate(5deg);}
+    65%{transform:translateY(-6px) rotate(-3deg);}
+    85%{transform:translateY(0) rotate(2deg);}
+  }
+  .sparkle{position:absolute;font-size:15px;opacity:0;animation:sparklePop 1.6s ease-in-out infinite;}
+  .sparkle.s1{top:-2px;left:-6px;animation-delay:.1s;}
+  .sparkle.s2{top:6px;right:-10px;animation-delay:.55s;}
+  .sparkle.s3{bottom:10px;left:-12px;animation-delay:1s;}
+  @keyframes sparklePop{0%{transform:scale(0) rotate(0deg);opacity:0;}35%{transform:scale(1) rotate(160deg);opacity:1;}100%{transform:scale(0) rotate(320deg);opacity:0;}}
+</style>
+</head>
+<body>
+
+<div class="ink-mountains"></div>
+<div class="paper-noise"></div>
+
+<div class="gate-intro" id="gateIntro">
+  <img src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/quiz/gate.jpg" alt="한옥 문">
+  <div class="gate-intro-caption">문이 열리고 있습니다</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="brand-sub">그랑서울 피트니스</div>
+    <div class="brand-title">웰니스 레터</div>
+    <div class="vol-tag">04호 이달의 퀴즈</div>
+  </div>
+
+  <div id="quizScreen" class="card-body">
+    <div class="quiz-label">퀴즈</div>
+    <div class="quiz-question">
+      10월의 건강한 4주를 시작하며,<br>
+      오늘의 컨디션을 채워줄 한 글자는<br>
+      <span class="blank">&nbsp;</span> 입니다.
+    </div>
+
+    <div class="field">
+      <label>정답을 입력해주세요</label>
+      <input type="text" id="answerInput" placeholder="여기에 입력" autocomplete="off">
+    </div>
+    <div class="field">
+      <label>성함 <span style="text-transform:none;letter-spacing:0;color:var(--hanok-red);">(필수)</span></label>
+      <input type="text" id="nameInput" placeholder="성함을 입력해주세요" autocomplete="off">
+    </div>
+    <button type="button" class="submit-btn" id="submitBtn">정답 확인</button>
+    <div class="hint-msg" id="hintMsg">다시 한 번 생각해보세요!</div>
+    <div class="members-note">* 그랑서울 피트니스 멤버십 회원만 참여 가능합니다.</div>
+  </div>
+
+  <div id="successScreen" class="success-screen">
+    <div class="success-banner">
+      <div class="char-stamp celebrate" style="position:relative;">
+        <span class="sparkle s1">✨</span><span class="sparkle s2">✨</span><span class="sparkle s3">✨</span>
+        <!-- 주작(朱雀) - 남쪽을 지키는 붉은 새 -->
+        <img src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/quiz/jujak-stamp.png" alt="주작">
+      </div>
+      <div class="success-title">정답입니다!</div>
+      <div class="success-sub">정답 확인</div>
+    </div>
+    <div class="success-body">
+      <div class="reward-box">
+        <div class="reward-text">리워드는 퀴즈 기간 종료 후<br>지급 예정입니다.</div>
+        <div class="reward-location">참여해주셔서 감사합니다!</div>
+      </div>
+      <div class="success-note">04호 · 2026.10 이달의 퀴즈</div>
+    </div>
+  </div>
+
+  <div id="closedScreen" class="success-screen">
+    <div class="success-banner">
+      <div class="char-stamp idle">
+        <!-- 현무(玄武) - 북쪽을 지키는 검은 거북 -->
+        <img src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/quiz/hyeonmu-stamp.png" alt="현무">
+      </div>
+      <div class="success-title">퀴즈 참여기간이 종료되었습니다</div>
+      <div class="success-sub">참여 종료</div>
+    </div>
+    <div class="success-body">
+      <div class="reward-box">
+        <div class="reward-text">다음 달 퀴즈에 참여해주세요!</div>
+      </div>
+      <div class="success-note">04호 · 2026.10 이달의 퀴즈</div>
+    </div>
+  </div>
+
+  <div id="alreadyScreen" class="success-screen">
+    <div class="success-banner">
+      <div class="char-stamp idle">
+        <!-- 백호(白虎) - 서쪽을 지키는 흰 호랑이 -->
+        <img src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/quiz/baekho-stamp.png" alt="백호">
+      </div>
+      <div class="success-title">이미 참여하셨습니다</div>
+      <div class="success-sub">참여 완료</div>
+    </div>
+    <div class="success-body">
+      <div class="reward-box">
+        <div class="reward-text">이달의 퀴즈는 1인 1회만<br>참여하실 수 있습니다</div>
+      </div>
+      <div class="success-note">04호 · 2026.10 이달의 퀴즈</div>
+    </div>
+  </div>
+
+  <div class="footer-note">그랑서울 피트니스 × 웰니스 레터</div>
+</div>
+
+<script>
+  document.getElementById('gateIntro').addEventListener('animationend', function(e){
+    if (e.animationName === 'gateFadeOut') this.style.display = 'none';
+  });
+
+  document.getElementById('submitBtn').addEventListener('click', function() {
+    const name = document.getElementById('nameInput').value.trim();
+    const hint = document.getElementById('hintMsg');
+    if (!name) { alert('성함을 입력해주세요.'); return; }
+    document.getElementById('quizScreen').style.display = 'none';
+    document.getElementById('successScreen').style.display = 'block';
+  });
+
+  // 데모 확인용: 화면 우측 상단을 눌러 다른 상태들도 돌려볼 수 있어요
+  let demoIdx = 0;
+  const demoScreens = ['quizScreen','successScreen','closedScreen','alreadyScreen'];
+  document.body.addEventListener('dblclick', function(){
+    demoScreens.forEach(id => document.getElementById(id).style.display = 'none');
+    demoIdx = (demoIdx + 1) % demoScreens.length;
+    document.getElementById(demoScreens[demoIdx]).style.display = demoIdx === 0 ? 'block' : 'block';
+  });
+</script>
+
+</body>
+</html>

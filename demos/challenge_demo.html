@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10월 건강 챌린지</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap">
+<style>
+:root{
+  --ink:#1C1C1A;
+  --ink-soft:#5F5E5A;
+  --ivory:#EDE6D6;
+  --ivory-light:#F7F5F0;
+  --teal:#0F6E56;
+  --orange:#D85A30;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:'Gowun Batang',serif;
+  background:var(--ivory-light);
+  color:var(--ink);
+  display:flex;
+  justify-content:center;
+}
+.app{
+  width:100%;
+  max-width:420px;
+  min-height:100vh;
+  background:var(--ivory-light);
+  position:relative;
+  overflow:hidden;
+}
+.screen{
+  display:none;
+  min-height:100vh;
+  flex-direction:column;
+}
+.screen.active{display:flex;}
+
+/* ---------- Landing ---------- */
+#landing{
+  background:linear-gradient(180deg,#F4F3F1 0%,#FBFAF8 100%);
+}
+#landing img.hero{
+  width:100%;
+  display:block;
+}
+.landing-body{
+  padding:30px 26px 40px;
+  text-align:center;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+.landing-title{
+  font-weight:700;
+  font-size:24px;
+  line-height:1.5;
+  margin-bottom:16px;
+}
+.landing-desc{
+  font-weight:400;
+  font-size:14px;
+  color:#3d3c38;
+  line-height:1.8;
+  margin-bottom:32px;
+}
+.btn-primary{
+  font-family:'Gowun Batang',serif;
+  font-weight:700;
+  font-size:15px;
+  color:var(--ivory);
+  background:var(--ink);
+  border:none;
+  padding:14px 40px;
+  cursor:pointer;
+  letter-spacing:1px;
+}
+.btn-primary:active{opacity:0.85;}
+
+/* ---------- Faction select ---------- */
+#select{
+  padding:36px 20px 40px;
+}
+.select-head{
+  text-align:center;
+  margin-bottom:28px;
+}
+.select-head .eyebrow{
+  font-size:12px;
+  letter-spacing:3px;
+  color:var(--ink-soft);
+  margin-bottom:10px;
+}
+.select-head h1{
+  font-weight:700;
+  font-size:21px;
+  margin:0;
+  line-height:1.5;
+}
+.faction-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.faction-card{
+  background:var(--ivory-light);
+  border:1px solid var(--ink);
+  padding:18px 10px 16px;
+  text-align:center;
+  cursor:pointer;
+  transition:transform .15s ease;
+}
+.faction-card:active{transform:scale(0.97);}
+.faction-card img{
+  width:78px;
+  height:auto;
+  margin-bottom:8px;
+}
+.faction-card .fname{
+  font-weight:700;
+  font-size:18px;
+  margin-bottom:4px;
+}
+.faction-card .flabel{
+  font-size:11px;
+  color:var(--ink-soft);
+  letter-spacing:1px;
+  margin-bottom:10px;
+}
+.faction-card .fbadge{
+  display:inline-block;
+  font-size:10px;
+  font-weight:700;
+  padding:3px 10px;
+}
+.badge-teal{background:var(--teal);color:var(--ivory);}
+.badge-orange{background:var(--orange);color:var(--ivory);}
+.badge-outline{background:none;border:1px solid var(--ink);color:var(--ink);}
+.badge-dashed{background:none;border:1px dashed var(--ink);color:var(--ink);}
+
+/* ---------- Gate transition ---------- */
+#gateOverlay{
+  position:fixed;
+  inset:0;
+  max-width:420px;
+  margin:0 auto;
+  background:var(--ivory);
+  z-index:50;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  perspective:900px;
+  overflow:hidden;
+}
+#gateOverlay.active{display:flex;}
+.gate-text{
+  position:absolute;
+  text-align:center;
+  font-weight:700;
+  font-size:20px;
+  line-height:1.7;
+  padding:0 40px;
+  opacity:0;
+  transition:opacity .6s ease .9s;
+}
+.gate-text.show{opacity:1;}
+.gate-roof{
+  position:absolute;
+  top:26%;
+  z-index:5;
+}
+.door{
+  position:absolute;
+  top:38%;
+  width:88px;
+  height:190px;
+  background:#7C2E22;
+  border:3px solid #4a1a12;
+  box-sizing:border-box;
+  transition:transform 1.1s ease-in-out;
+}
+.door::after{
+  content:'';
+  position:absolute;
+  inset:8px;
+  border:2px solid #4a1a12;
+}
+.doorL{left:50%;margin-left:-88px;transform-origin:left center;}
+.doorR{left:50%;transform-origin:right center;}
+.gateOverlay.opening .doorL{transform:rotateY(-115deg);}
+.gateOverlay.opening .doorR{transform:rotateY(115deg);}
+
+/* ---------- Result ---------- */
+#result{
+  padding:40px 26px;
+  text-align:center;
+  align-items:center;
+  justify-content:center;
+}
+#result img{
+  width:130px;
+  margin-bottom:20px;
+}
+#result .rname{
+  font-weight:700;
+  font-size:26px;
+  margin-bottom:10px;
+}
+#result .rdesc{
+  font-size:14px;
+  color:#3d3c38;
+  line-height:1.8;
+  margin-bottom:28px;
+}
+.btn-secondary{
+  font-family:'Gowun Batang',serif;
+  font-size:13px;
+  color:var(--ink-soft);
+  background:none;
+  border:none;
+  text-decoration:underline;
+  cursor:pointer;
+}
+
+/* ---------- Missions ---------- */
+#missions{padding:32px 20px 50px;}
+.mission-head{text-align:center;margin-bottom:22px;}
+.mission-head .eyebrow{font-size:12px;letter-spacing:3px;color:var(--ink-soft);margin-bottom:8px;}
+.mission-head h1{font-weight:700;font-size:20px;margin:0;}
+.mission-list{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;}
+.mission-item{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  border:1px solid #ddd8cc;
+  padding:12px 14px;
+  background:var(--ivory-light);
+}
+.mission-num{
+  width:24px;height:24px;
+  border:1px solid var(--ink);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;flex-shrink:0;
+}
+.mission-info{flex:1;}
+.mission-tag{font-size:10px;color:var(--ink-soft);letter-spacing:1px;margin-bottom:2px;}
+.mission-name{font-size:14px;font-weight:700;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Screen 1: Landing -->
+  <section id="landing" class="screen active">
+    <img class="hero" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/hero.jpg">
+    <div class="landing-body">
+      <div class="landing-title">10월의 건강한 4주를<br>만들어보세요!</div>
+      <div class="landing-desc">챌린지 미션을 완료하고<br>건강과 함께<br>리워드도 받아가세요!</div>
+      <button class="btn-primary" onclick="goTo('select')">시작하기</button>
+    </div>
+  </section>
+
+  <!-- Screen 2: Faction select -->
+  <section id="select" class="screen">
+    <div class="select-head">
+      <div class="eyebrow">사신 파벌 선택</div>
+      <h1>나의 파벌을<br>골라주세요</h1>
+    </div>
+    <div class="faction-grid">
+      <div class="faction-card" onclick="selectFaction('cheongryong')">
+        <img src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/cheongryong.png">
+        <div class="fname">청룡</div>
+        <div class="flabel">유산소파</div>
+        <div class="fbadge badge-teal">유산소 60%</div>
+      </div>
+      <div class="faction-card" onclick="selectFaction('baekho')">
+        <img src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/baekho.png">
+        <div class="fname">백호</div>
+        <div class="flabel">근력파</div>
+        <div class="fbadge badge-outline">근력 60%</div>
+      </div>
+      <div class="faction-card" onclick="selectFaction('jujak')">
+        <img src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/jujak.png">
+        <div class="fname">주작</div>
+        <div class="flabel">GX파</div>
+        <div class="fbadge badge-orange">GX 60%</div>
+      </div>
+      <div class="faction-card" onclick="selectFaction('hyeonmu')">
+        <img src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/hyeonmu.png">
+        <div class="fname">현무</div>
+        <div class="flabel">골고루파</div>
+        <div class="fbadge badge-dashed">4파 균형</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Screen 3: Result -->
+  <section id="result" class="screen">
+    <img id="resultImg" src="">
+    <div class="rname" id="resultName"></div>
+    <div class="rdesc" id="resultDesc"></div>
+    <button class="btn-primary" onclick="showMissions()" style="margin-bottom:14px;">미션 확인하기</button>
+    <button class="btn-secondary" onclick="goTo('select')">다시 선택하기</button>
+  </section>
+
+  <!-- Screen 4: Missions -->
+  <section id="missions" class="screen">
+    <div class="mission-head">
+      <div class="eyebrow" id="missionFactionLabel"></div>
+      <h1>10월의 미션 10가지</h1>
+    </div>
+    <div class="mission-list" id="missionList"></div>
+    <button class="btn-secondary" onclick="goTo('result')" style="display:block;margin:0 auto;">파벌 결과로 돌아가기</button>
+  </section>
+
+  <!-- Gate transition overlay -->
+  <div id="gateOverlay">
+    <svg class="gate-roof" width="220" viewBox="0 0 300 70">
+      <path d="M10,66 Q10,20 60,14 L240,14 Q290,20 290,66 Z" fill="#2C2C2A"/>
+    </svg>
+    <div class="door doorL"></div>
+    <div class="door doorR"></div>
+    <div class="gate-text" id="gateText"></div>
+  </div>
+
+</div>
+
+<script>
+const factions = {
+  cheongryong: {name:'청룡', desc:'가볍고 빠르게, 순환이 도는<br>유산소 중심 훈련', img:'https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/cheongryong.png'},
+  baekho: {name:'백호', desc:'묵직하고 곧게, 힘이 도는<br>근력 중심 훈련', img:'https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/baekho.png'},
+  jujak: {name:'주작', desc:'리듬을 타고 활기차게<br>움직이는 GX 중심 훈련', img:'https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/jujak.png'},
+  hyeonmu: {name:'현무', desc:'네 파벌을 골고루,<br>균형 잡힌 훈련', img:'https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/hyeonmu.png'}
+};
+
+const missionSets = {
+  cheongryong: [["유산소","사이클 타기"],["유산소","스텝밀(계단오르기)"],["유산소","줄넘기"],["유산소","트레드밀 걷기"],["근력","시티드로우"],["스트레칭","고관절 모빌리티"],["근력","런지"],["유산소","버피 인터벌"],["근력","체스트프레스"],["유산소","로잉머신"]],
+  baekho: [["근력","덤벨컬"],["근력","숄더프레스"],["근력","랫풀다운"],["GX","줌바"],["근력","레그컬"],["GX","에어로빅"],["근력","덤벨숄더프레스"],["근력","시티드로우"],["스트레칭","폼롤러 등 스트레칭"],["유산소","트레드밀 걷기"]],
+  jujak: [["유산소","사이클 타기"],["GX","요가"],["근력","레그프레스"],["근력","랫풀다운"],["GX","줌바"],["스트레칭","폼롤러 등 스트레칭"],["유산소","버피 인터벌"],["GX","에어로빅"],["GX","스피닝"],["GX","필라테스"]],
+  hyeonmu: [["근력","스쿼트"],["유산소","스텝밀(계단오르기)"],["GX","스피닝"],["유산소","줄넘기"],["유산소","로잉머신"],["근력","레그컬"],["스트레칭","매트 전신 스트레칭"],["근력","레그프레스"],["GX","필라테스"],["스트레칭","고관절 모빌리티"]]
+};
+let currentFaction = 'cheongryong';
+
+function showMissions(){
+  const f = factions[currentFaction];
+  document.getElementById('missionFactionLabel').textContent = f.name + ' · 10월 미션';
+  const list = document.getElementById('missionList');
+  list.innerHTML = '';
+  missionSets[currentFaction].forEach((m, i)=>{
+    const item = document.createElement('div');
+    item.className = 'mission-item';
+    item.innerHTML = `<div class="mission-num">${i+1}</div><div class="mission-info"><div class="mission-tag">${m[0]}</div><div class="mission-name">${m[1]}</div></div>`;
+    list.appendChild(item);
+  });
+  goTo('missions');
+}
+
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function selectFaction(key){
+  currentFaction = key;
+  const f = factions[key];
+  const overlay = document.getElementById('gateOverlay');
+  const gateText = document.getElementById('gateText');
+  gateText.innerHTML = f.name + '의 여정이<br>시작됩니다';
+  gateText.classList.remove('show');
+  overlay.classList.remove('opening');
+  overlay.classList.add('active');
+
+  requestAnimationFrame(()=>{
+    setTimeout(()=>{
+      overlay.classList.add('opening');
+      gateText.classList.add('show');
+    }, 250);
+  });
+
+  setTimeout(()=>{
+    document.getElementById('resultImg').src = f.img;
+    document.getElementById('resultName').textContent = f.name;
+    document.getElementById('resultDesc').innerHTML = f.desc;
+    goTo('result');
+    overlay.classList.remove('active');
+    overlay.classList.remove('opening');
+  }, 2200);
+}
+</script>
+</body>
+</html>
