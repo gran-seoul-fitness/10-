@@ -37,9 +37,9 @@ body{
 .screen{display:none;min-height:100vh;flex-direction:column;position:relative;}
 .screen.active{display:flex;}
 
-.pine{position:absolute;width:130px;height:auto;pointer-events:none;z-index:2;}
-.pine-tr{top:0;right:0;}
-.pine-bl{bottom:0;left:0;transform:scaleX(-1) scaleY(-1);}
+.pine{position:absolute;width:145px;height:auto;pointer-events:none;z-index:2;opacity:0.92;}
+.pine-tr{top:-6px;right:-10px;}
+.pine-bl{bottom:-6px;left:-10px;transform:scaleX(-1) scaleY(-1);}
 
 /* ---------- Landing ---------- */
 #landing{padding:0;}
@@ -111,14 +111,12 @@ body{
 }
 
 .card-frame{
-  border:1.5px solid var(--ink);
-  padding:6px;
   margin-top:20px;
 }
 .card-frame-inner{
-  border:1px solid var(--gold);
-  padding:20px 16px 22px;
-  background:rgba(250,247,238,0.9);
+  padding:30px 24px 26px;
+  background-image:url('https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/paper-frame.png');
+  background-size:100% 100%;
 }
 
 .stage{
@@ -191,22 +189,8 @@ body{
   <section id="landing" class="screen active">
     <div class="hero-wrap">
       <img class="hero" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/quiz/gate.jpg">
-      <svg class="pine pine-tr" viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">
-        <g stroke="#6b6b63" stroke-width="2" fill="none" opacity="0.4" stroke-linecap="round">
-          <path d="M10,95 Q45,60 100,15"/>
-          <path d="M28,74 L12,60 M28,74 L18,80 M28,74 L38,64"/>
-          <path d="M55,48 L40,32 M55,48 L44,54 M55,48 L66,38"/>
-          <path d="M82,26 L67,10 M82,26 L72,32 M82,26 L94,17"/>
-        </g>
-      </svg>
-      <svg class="pine pine-bl" viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">
-        <g stroke="#6b6b63" stroke-width="2" fill="none" opacity="0.4" stroke-linecap="round">
-          <path d="M10,95 Q45,60 100,15"/>
-          <path d="M28,74 L12,60 M28,74 L18,80 M28,74 L38,64"/>
-          <path d="M55,48 L40,32 M55,48 L44,54 M55,48 L66,38"/>
-          <path d="M82,26 L67,10 M82,26 L72,32 M82,26 L94,17"/>
-        </g>
-      </svg>
+      <img class="pine pine-tr" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/pine.png">
+      <img class="pine pine-bl" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/pine.png">
       <div class="brand-header">
         <div class="brand-name">그랑서울 피트니스</div>
         <div class="brand-rule"></div>
@@ -221,20 +205,8 @@ body{
 
   <!-- Screen 2: Character select -->
   <section id="select" class="screen">
-    <svg class="pine pine-tr" viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">
-      <g stroke="#6b6b63" stroke-width="2" fill="none" opacity="0.35" stroke-linecap="round">
-        <path d="M10,95 Q45,60 100,15"/>
-        <path d="M28,74 L12,60 M28,74 L18,80 M28,74 L38,64"/>
-        <path d="M55,48 L40,32 M55,48 L44,54 M55,48 L66,38"/>
-      </g>
-    </svg>
-    <svg class="pine pine-bl" viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">
-      <g stroke="#6b6b63" stroke-width="2" fill="none" opacity="0.35" stroke-linecap="round">
-        <path d="M10,95 Q45,60 100,15"/>
-        <path d="M28,74 L12,60 M28,74 L18,80 M28,74 L38,64"/>
-        <path d="M55,48 L40,32 M55,48 L44,54 M55,48 L66,38"/>
-      </g>
-    </svg>
+    <img class="pine pine-tr" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/pine.png">
+    <img class="pine pine-bl" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/pine.png">
 
     <div class="select-header">
       <div class="brand-name">그랑서울 피트니스</div>
