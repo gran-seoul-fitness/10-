@@ -37,30 +37,18 @@ body{
 .screen{display:none;min-height:100vh;flex-direction:column;position:relative;}
 .screen.active{display:flex;}
 
-.pine{position:absolute;width:145px;height:auto;pointer-events:none;z-index:2;opacity:0.92;}
-.pine-tr{top:-6px;right:-10px;}
-.pine-bl{bottom:-6px;left:-10px;transform:scaleX(-1) scaleY(-1);}
-
 /* ---------- Landing ---------- */
 #landing{padding:0;}
 .hero-wrap{position:relative;width:100%;}
 .hero-wrap img.hero{width:100%;display:block;}
-.brand-header{
-  position:absolute;
-  top:4%;left:7%;right:7%;
-  z-index:3;
-}
-.brand-name{font-weight:700;font-size:19px;letter-spacing:0.5px;}
-.brand-rule{height:1px;background:var(--ink);opacity:0.55;margin-top:7px;}
-.brand-sub{text-align:center;font-size:11.5px;letter-spacing:3px;color:var(--ink-soft);margin-top:9px;}
 
 .gate-title{
   position:absolute;
-  top:49%;left:32%;width:42%;height:24%;
-  z-index:3;
+  top:49.2%;left:31.1%;width:39.4%;height:17.6%;
+  z-index:2;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:8px;
-  padding:2%;
+  gap:10px;
+  padding:4%;
 }
 .gate-title-text{
   font-weight:700;
@@ -76,7 +64,7 @@ body{
   color:var(--ivory-light);
   background:var(--ink);
   border:none;
-  padding:7px 16px;
+  padding:8px 22px;
   cursor:pointer;
   letter-spacing:0.5px;
   animation:ctaPulse 2.6s ease-in-out infinite;
@@ -88,49 +76,26 @@ body{
 }
 
 /* ---------- Character select ---------- */
-#select{
-  position:relative;
-  padding:28px 20px 40px;
-  background-image:url('https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/quiz/mountains-bg.jpg');
-  background-size:cover;
-  background-position:center;
-}
-#select::before{
-  content:'';
-  position:absolute;inset:0;
-  background:linear-gradient(180deg, rgba(247,245,240,0.55) 0%, rgba(247,245,240,0.8) 40%, rgba(247,245,240,0.92) 100%);
-  z-index:0;
-}
-#select > *:not(.pine){position:relative;z-index:1;}
+#select{padding:0;}
 
-.select-header{text-align:center;margin-bottom:14px;}
-.select-header .brand-name{font-size:14px;letter-spacing:1px;}
-.select-header .brand-rule{max-width:120px;margin:7px auto 0;}
-.select-header h1{
-  font-weight:700;font-size:20px;line-height:1.5;margin:16px 0 0;
-}
-
-.card-frame{
-  margin-top:20px;
-}
-.card-frame-inner{
-  padding:30px 24px 26px;
-  background-image:url('https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/paper-frame.png');
-  background-size:100% 100%;
+.char-box{
+  position:absolute;
+  top:27.9%;left:15.4%;width:69%;height:53.3%;
+  z-index:2;
+  display:flex;flex-direction:column;
+  padding:4% 5%;
 }
 
 .stage{
   position:relative;
   width:100%;
-  aspect-ratio:1/1;
-  background:radial-gradient(ellipse at center 60%, #FBF8F0 0%, var(--paper2) 100%);
-  border:1px solid var(--ink);
-  margin-bottom:18px;
-  overflow:hidden;
+  flex:0 0 auto;
+  aspect-ratio:1/0.92;
+  margin-bottom:6%;
 }
 .stage::before{
-  content:'';position:absolute;left:50%;bottom:8%;width:56%;height:14px;
-  background:rgba(28,28,26,0.12);border-radius:50%;transform:translateX(-50%);filter:blur(2px);
+  content:'';position:absolute;left:50%;bottom:4%;width:56%;height:12px;
+  background:rgba(28,28,26,0.14);border-radius:50%;transform:translateX(-50%);filter:blur(2px);
 }
 .char-wrap{
   position:relative;width:100%;height:100%;
@@ -138,48 +103,48 @@ body{
   animation:charBob 3s ease-in-out infinite;
 }
 @keyframes charBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
-#charSvg{width:58%;height:auto;overflow:visible;}
+#charSvg{width:74%;height:auto;overflow:visible;}
 .outfit-group{display:none;}
 .outfit-group.show{display:block;}
 .hat-group{opacity:0;transition:opacity .25s ease;}
 .hat-group.show{opacity:1;}
 
 .toast{
-  position:absolute;left:50%;bottom:10%;transform:translate(-50%,6px);
-  background:var(--ink);color:var(--ivory-light);font-size:12px;font-weight:700;
-  padding:8px 15px;border-radius:20px;white-space:nowrap;opacity:0;pointer-events:none;
+  position:absolute;left:50%;bottom:2%;transform:translate(-50%,6px);
+  background:var(--ink);color:var(--ivory-light);font-size:10.5px;font-weight:700;
+  padding:6px 12px;border-radius:20px;white-space:nowrap;opacity:0;pointer-events:none;
   transition:opacity .25s ease, transform .25s ease;
 }
 .toast.show{opacity:1;transform:translate(-50%,0);}
 
 .btn-quickstart{
   display:block;width:100%;
-  font-family:'Gowun Batang',serif;font-weight:700;font-size:14px;
-  color:var(--ivory-light);background:var(--ink);border:none;padding:13px;
-  cursor:pointer;letter-spacing:0.5px;margin-bottom:16px;
+  font-family:'Gowun Batang',serif;font-weight:700;font-size:12px;
+  color:var(--ivory-light);background:var(--ink);border:none;padding:9px;
+  cursor:pointer;letter-spacing:0.3px;margin-bottom:8px;
   animation:ctaPulse 2.6s ease-in-out infinite;
 }
-.btn-quickstart span{font-size:11px;font-weight:400;opacity:0.75;}
+.btn-quickstart span{font-size:9.5px;font-weight:400;opacity:0.75;}
 .btn-quickstart:active{animation-play-state:paused;transform:scale(0.97);}
 
 .divider{
   display:flex;align-items:center;text-align:center;color:var(--ink-soft);
-  font-size:10.5px;letter-spacing:1px;margin-bottom:18px;
+  font-size:9px;letter-spacing:0.5px;margin-bottom:9px;
 }
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:#ddd5c2;}
-.divider span{padding:0 10px;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:#c9c2ae;}
+.divider span{padding:0 7px;}
 
-.picker-label{font-size:10.5px;letter-spacing:2px;color:var(--ink-soft);margin:0 2px 8px;}
-.chip-row{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
+.picker-label{font-size:9px;letter-spacing:1.5px;color:var(--ink-soft);margin:0 1px 5px;}
+.chip-row{display:flex;gap:5px;margin-bottom:9px;flex-wrap:wrap;}
 .chip{
-  flex:1;min-width:0;background:rgba(250,247,238,0.9);border:1px solid var(--ink);
-  padding:9px 6px;text-align:center;font-size:12px;font-weight:700;cursor:pointer;
+  flex:1;min-width:0;background:rgba(255,255,255,0.55);border:1px solid var(--ink);
+  padding:6px 3px;text-align:center;font-size:10px;font-weight:700;cursor:pointer;
   transition:transform .15s ease, background .15s ease;
 }
 .chip.active{background:var(--ink);color:var(--ivory-light);}
 .chip:active{transform:scale(0.96);}
 
-.footer-note{text-align:center;font-size:10.5px;color:var(--ink-soft);line-height:1.7;margin-top:4px;}
+.footer-note{text-align:center;font-size:8.5px;color:var(--ink-soft);line-height:1.5;margin-top:1px;}
 </style>
 </head>
 <body>
@@ -188,14 +153,7 @@ body{
   <!-- Screen 1: Landing -->
   <section id="landing" class="screen active">
     <div class="hero-wrap">
-      <img class="hero" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/quiz/gate.jpg">
-      <img class="pine pine-tr" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/pine.png">
-      <img class="pine pine-bl" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/pine.png">
-      <div class="brand-header">
-        <div class="brand-name">그랑서울 피트니스</div>
-        <div class="brand-rule"></div>
-        <div class="brand-sub">4주 건강 챌린지</div>
-      </div>
+      <img class="hero" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/1.png">
       <div class="gate-title">
         <div class="gate-title-text">10월의<br>건강한 4주를<br>만들어보세요.</div>
         <button class="btn-mini" onclick="goTo('select')">시작하기</button>
@@ -205,17 +163,9 @@ body{
 
   <!-- Screen 2: Character select -->
   <section id="select" class="screen">
-    <img class="pine pine-tr" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/pine.png">
-    <img class="pine pine-bl" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/pine.png">
-
-    <div class="select-header">
-      <div class="brand-name">그랑서울 피트니스</div>
-      <div class="brand-rule"></div>
-      <h1>함께 운동할<br>캐릭터를 만들어 보세요.</h1>
-    </div>
-
-    <div class="card-frame">
-      <div class="card-frame-inner">
+    <div class="hero-wrap">
+      <img class="hero" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/2.png">
+      <div class="char-box">
         <div class="stage">
           <div class="char-wrap">
             <svg id="charSvg" viewBox="0 0 240 300" xmlns="http://www.w3.org/2000/svg">
