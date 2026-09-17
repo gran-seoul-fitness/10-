@@ -244,6 +244,9 @@ body{
           <path d="M 108 153 L 120 172 L 132 153" fill="none" stroke="#3D3A32" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
           <rect x="110" y="177" width="10" height="9" rx="2" fill="#D85A30"/>
           <path d="M 113 184 Q 104 202 114 222 Q 119 232 111 244" fill="none" stroke="#D85A30" stroke-width="5" stroke-linecap="round"/>
+          <path d="M 111 244 L 111 250" fill="none" stroke="#7C2E22" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="111" cy="254" r="6" fill="#0F6E56"/>
+          <path d="M 106 259 L 111 274 L 116 259 Z" fill="#7C2E22"/>
           <circle cx="76" cy="172" r="16" fill="#F5EFDD"/>
           <circle cx="164" cy="172" r="16" fill="#F5EFDD"/>
         </g>
@@ -252,31 +255,16 @@ body{
         <g id="outfitBaji" class="outfit-group">
           <path d="M 78 184 Q 96 174 113 185 L 105 238 Q 91 250 76 238 Z" fill="#1C1C1A"/>
           <path d="M 162 184 Q 144 174 127 185 L 135 238 Q 149 250 164 238 Z" fill="#1C1C1A"/>
-          <rect x="80" y="232" width="26" height="9" rx="4.5" fill="#0F6E56"/>
-          <rect x="134" y="232" width="26" height="9" rx="4.5" fill="#0F6E56"/>
+          <rect x="80" y="232" width="26" height="9" rx="4.5" fill="#1E2233"/>
+          <rect x="134" y="232" width="26" height="9" rx="4.5" fill="#1E2233"/>
           <path d="M 82 150 Q 120 140 158 150 L 161 184 Q 120 194 79 184 Z" fill="#F5EFDD"/>
           <path d="M 82 150 Q 120 140 158 150" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.85"/>
           <path d="M 108 153 L 120 172 L 132 153" fill="none" stroke="#3D3A32" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
           <rect x="110" y="177" width="10" height="9" rx="2" fill="#0F6E56"/>
-          <path d="M 113 184 Q 104 202 114 222 Q 119 232 111 244" fill="none" stroke="#0F6E56" stroke-width="5" stroke-linecap="round"/>
-          <circle cx="76" cy="172" r="16" fill="#F5EFDD"/>
-          <circle cx="164" cy="172" r="16" fill="#F5EFDD"/>
-        </g>
-
-        <!-- ============ OUTFIT: 도포 (long navy robe + sash) ============ -->
-        <g id="outfitDopo" class="outfit-group">
-          <path d="M 80 150 Q 120 138 160 150 L 178 272 Q 120 290 62 272 Z" fill="#1E2233"/>
-          <path d="M 100 162 L 94 264" fill="none" stroke="#3A4058" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
-          <path d="M 140 162 L 146 264" fill="none" stroke="#3A4058" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
-          <path d="M 82 150 Q 120 140 158 150 L 161 181 Q 120 191 79 181 Z" fill="#F5EFDD"/>
-          <path d="M 82 150 Q 120 140 158 150" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.85"/>
-          <path d="M 108 153 L 120 172 L 132 153" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-          <rect x="66" y="200" width="108" height="10" rx="5" fill="#7C2E22"/>
-          <rect x="110" y="177" width="10" height="9" rx="2" fill="#7C2E22"/>
-          <path d="M 113 184 Q 106 194 112 202" fill="none" stroke="#7C2E22" stroke-width="4" stroke-linecap="round"/>
-          <path d="M 120 210 L 120 227" fill="none" stroke="#7C2E22" stroke-width="3" stroke-linecap="round"/>
-          <circle cx="120" cy="231" r="6.5" fill="#0F6E56"/>
-          <path d="M 114 237 L 120 254 L 126 237 Z" fill="#7C2E22"/>
+          <path d="M 113 184 Q 106 196 113 208" fill="none" stroke="#0F6E56" stroke-width="5" stroke-linecap="round"/>
+          <path d="M 113 208 L 113 213" fill="none" stroke="#7C2E22" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="113" cy="217" r="5.5" fill="#D85A30"/>
+          <path d="M 109 221 L 113 233 L 117 221 Z" fill="#7C2E22"/>
           <circle cx="76" cy="172" r="16" fill="#F5EFDD"/>
           <circle cx="164" cy="172" r="16" fill="#F5EFDD"/>
         </g>
@@ -356,7 +344,6 @@ body{
     <div class="chip active" data-outfit="gym">운동복</div>
     <div class="chip" data-outfit="chima">치마</div>
     <div class="chip" data-outfit="baji">바지</div>
-    <div class="chip" data-outfit="dopo">도포</div>
   </div>
 
   <div class="footer-note">소품을 선택하면 캐릭터에 바로 입혀져요<br>(프로토타입 · 실제 일러스트로 교체 예정)</div>
@@ -364,7 +351,7 @@ body{
 
 <script>
 const hatEls = { gat: document.getElementById('hatGat'), binyeo: document.getElementById('hatBinyeo') };
-const outfitEls = { gym: document.getElementById('outfitGym'), chima: document.getElementById('outfitChima'), baji: document.getElementById('outfitBaji'), dopo: document.getElementById('outfitDopo') };
+const outfitEls = { gym: document.getElementById('outfitGym'), chima: document.getElementById('outfitChima'), baji: document.getElementById('outfitBaji') };
 
 document.getElementById('hatRow').addEventListener('click', (e)=>{
   const chip = e.target.closest('.chip');
