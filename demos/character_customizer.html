@@ -96,6 +96,70 @@ body{
 }
 .hat-group.show{opacity:1;}
 
+.toast{
+  position:absolute;
+  left:50%;
+  bottom:10%;
+  transform:translate(-50%,6px);
+  background:var(--ink);
+  color:var(--ivory-light);
+  font-size:12.5px;
+  font-weight:700;
+  padding:9px 16px;
+  border-radius:20px;
+  white-space:nowrap;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .25s ease, transform .25s ease;
+}
+.toast.show{opacity:1;transform:translate(-50%,0);}
+
+.btn-quickstart{
+  display:block;
+  width:100%;
+  font-family:'Gowun Batang',serif;
+  font-weight:700;
+  font-size:15px;
+  color:var(--ivory-light);
+  background:var(--ink);
+  border:none;
+  padding:15px;
+  cursor:pointer;
+  letter-spacing:0.5px;
+  margin-bottom:16px;
+  animation:ctaPulse 2.6s ease-in-out infinite;
+}
+.btn-quickstart span{
+  font-size:12px;
+  font-weight:400;
+  opacity:0.75;
+}
+.btn-quickstart:active{
+  animation-play-state:paused;
+  transform:scale(0.97);
+}
+@keyframes ctaPulse{
+  0%,100%{ box-shadow:0 0 0 0 rgba(28,28,26,0.28); }
+  50%{ box-shadow:0 0 0 8px rgba(28,28,26,0); }
+}
+
+.divider{
+  display:flex;
+  align-items:center;
+  text-align:center;
+  color:var(--ink-soft);
+  font-size:11px;
+  letter-spacing:1px;
+  margin-bottom:20px;
+}
+.divider::before, .divider::after{
+  content:'';
+  flex:1;
+  height:1px;
+  background:#ddd5c2;
+}
+.divider span{padding:0 10px;}
+
 .picker-label{
   font-size:11px;
   letter-spacing:2px;
@@ -230,14 +294,29 @@ body{
           <circle cx="84" cy="124" r="3.5" fill="#3A3A38"/>
           <circle cx="156" cy="124" r="3.5" fill="#3A3A38"/>
         </g>
+
+        <!-- jeonmo (hat) overlay -->
+        <g id="hatJeonmo" class="hat-group">
+          <path d="M 26 46 Q 18 -18 120 -22 Q 222 -18 214 46 Q 214 8 120 4 Q 26 8 26 46 Z" fill="#EFE6D2" stroke="#D8CBA8" stroke-width="1.5"/>
+          <path d="M 26 46 Q 120 62 214 46 L 214 40 Q 120 56 26 40 Z" fill="#7C2E22"/>
+          <path d="M 96 50 Q 96 88 88 120" fill="none" stroke="#7C2E22" stroke-width="3" stroke-linecap="round"/>
+          <path d="M 144 50 Q 144 88 152 120" fill="none" stroke="#7C2E22" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="88" cy="122" r="3.5" fill="#7C2E22"/>
+          <circle cx="152" cy="122" r="3.5" fill="#7C2E22"/>
+        </g>
       </svg>
     </div>
+    <div class="toast" id="toast">운동복 차림으로 시작할게요!</div>
   </div>
+
+  <button class="btn-quickstart" id="quickstartBtn">바로 시작하기 <span>(기본 운동복)</span></button>
+  <div class="divider"><span>또는 직접 꾸며보기</span></div>
 
   <div class="picker-label">모자</div>
   <div class="chip-row" id="hatRow">
     <div class="chip active" data-hat="none">맨머리</div>
     <div class="chip" data-hat="gat">삿갓</div>
+    <div class="chip" data-hat="jeonmo">전모</div>
   </div>
 
   <div class="picker-label">옷</div>
@@ -251,7 +330,7 @@ body{
 </div>
 
 <script>
-const hatEls = { gat: document.getElementById('hatGat') };
+const hatEls = { gat: document.getElementById('hatGat'), jeonmo: document.getElementById('hatJeonmo') };
 const outfitEls = { gym: document.getElementById('outfitGym'), chima: document.getElementById('outfitChima'), baji: document.getElementById('outfitBaji') };
 
 document.getElementById('hatRow').addEventListener('click', (e)=>{
@@ -272,6 +351,21 @@ document.getElementById('outfitRow').addEventListener('click', (e)=>{
   Object.values(outfitEls).forEach(el=>el.classList.remove('show'));
   const key = chip.dataset.outfit;
   if(outfitEls[key]) outfitEls[key].classList.add('show');
+});
+
+document.getElementById('quickstartBtn').addEventListener('click', ()=>{
+  document.querySelectorAll('#hatRow .chip').forEach(c=>c.classList.remove('active'));
+  document.querySelector('#hatRow .chip[data-hat="none"]').classList.add('active');
+  Object.values(hatEls).forEach(el=>el.classList.remove('show'));
+
+  document.querySelectorAll('#outfitRow .chip').forEach(c=>c.classList.remove('active'));
+  document.querySelector('#outfitRow .chip[data-outfit="gym"]').classList.add('active');
+  Object.values(outfitEls).forEach(el=>el.classList.remove('show'));
+  outfitEls.gym.classList.add('show');
+
+  const toast = document.getElementById('toast');
+  toast.classList.add('show');
+  setTimeout(()=> toast.classList.remove('show'), 1600);
 });
 </script>
 </body>
