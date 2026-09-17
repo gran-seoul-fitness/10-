@@ -11,8 +11,10 @@
   --ink-soft:#5F5E5A;
   --ivory:#EDE6D6;
   --ivory-light:#F7F5F0;
+  --paper2:#E3DBC8;
   --teal:#0F6E56;
   --orange:#D85A30;
+  --gold:#AD8A45;
 }
 *{box-sizing:border-box;}
 body{
@@ -42,12 +44,36 @@ body{
 #landing{
   background:linear-gradient(180deg,#F4F3F1 0%,#FBFAF8 100%);
 }
-#landing img.hero{
+.hero-wrap{
+  position:relative;
+  width:100%;
+  overflow:hidden;
+}
+.hero-wrap img.hero{
   width:100%;
   display:block;
 }
+.gate-title{
+  position:absolute;
+  top:57%;
+  left:30.6%;
+  width:43.4%;
+  height:27.5%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:2%;
+}
+.gate-title-text{
+  font-weight:700;
+  font-size:clamp(12px, 3.5vw, 15px);
+  line-height:1.45;
+  color:var(--ink);
+  text-shadow:0 1px 8px rgba(255,255,255,0.75), 0 0 2px rgba(255,255,255,0.6);
+}
 .landing-body{
-  padding:30px 26px 40px;
+  padding:22px 26px 40px;
   text-align:center;
   flex:1;
   display:flex;
@@ -55,18 +81,12 @@ body{
   align-items:center;
   justify-content:center;
 }
-.landing-title{
-  font-weight:700;
-  font-size:24px;
-  line-height:1.5;
-  margin-bottom:16px;
-}
 .landing-desc{
   font-weight:400;
   font-size:14px;
   color:#3d3c38;
   line-height:1.8;
-  margin-bottom:32px;
+  margin-bottom:30px;
 }
 .btn-primary{
   font-family:'Gowun Batang',serif;
@@ -78,12 +98,37 @@ body{
   padding:14px 40px;
   cursor:pointer;
   letter-spacing:1px;
+  border-radius:2px;
+  animation:ctaPulse 2.6s ease-in-out infinite;
 }
-.btn-primary:active{opacity:0.85;}
+@keyframes ctaPulse{
+  0%,100%{ transform:scale(1); box-shadow:0 0 0 0 rgba(28,28,26,0.28); }
+  50%{ transform:scale(1.045); box-shadow:0 0 0 9px rgba(28,28,26,0); }
+}
+.btn-primary:active{
+  animation-play-state:paused;
+  transform:scale(0.94);
+  opacity:0.85;
+}
 
 /* ---------- Faction select ---------- */
 #select{
+  position:relative;
   padding:36px 20px 40px;
+  background-image:url('https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/quiz/mountains-bg.jpg');
+  background-size:cover;
+  background-position:center;
+}
+#select::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg, rgba(247,245,240,0.75) 0%, rgba(247,245,240,0.9) 45%, rgba(247,245,240,0.96) 100%);
+  z-index:0;
+}
+#select > *{
+  position:relative;
+  z-index:1;
 }
 .select-head{
   text-align:center;
@@ -107,19 +152,67 @@ body{
   gap:14px;
 }
 .faction-card{
-  background:var(--ivory-light);
+  position:relative;
+  background:rgba(250,247,238,0.92);
   border:1px solid var(--ink);
-  padding:18px 10px 16px;
+  padding:20px 10px 16px;
   text-align:center;
   cursor:pointer;
-  transition:transform .15s ease;
+  transition:transform .2s ease, box-shadow .2s ease;
+  box-shadow:0 2px 0 rgba(28,28,26,0.08);
 }
-.faction-card:active{transform:scale(0.97);}
-.faction-card img{
-  width:78px;
-  height:auto;
-  margin-bottom:8px;
+.faction-card::before,
+.faction-card::after{
+  content:'';
+  position:absolute;
+  width:13px;
+  height:13px;
+  border:1.5px solid var(--gold);
+  pointer-events:none;
 }
+.faction-card::before{top:6px;left:6px;border-right:none;border-bottom:none;}
+.faction-card::after{bottom:6px;right:6px;border-left:none;border-top:none;}
+.faction-card:hover{
+  transform:translateY(-4px) scale(1.02);
+  box-shadow:0 10px 20px rgba(28,28,26,0.16);
+}
+.faction-card:active{
+  transform:scale(0.97) translateY(0);
+  box-shadow:0 2px 0 rgba(28,28,26,0.08);
+}
+.faction-card .fig{
+  position:relative;
+  width:84px;
+  height:104px;
+  margin:0 auto 8px;
+}
+.faction-card .fig img.mascot{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  animation:mascotBob 2.6s ease-in-out infinite;
+}
+.faction-card:nth-child(2) .fig img.mascot{animation-delay:.2s;}
+.faction-card:nth-child(3) .fig img.mascot{animation-delay:.4s;}
+.faction-card:nth-child(4) .fig img.mascot{animation-delay:.6s;}
+@keyframes mascotBob{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-5px);}
+}
+.prop-badge{
+  position:absolute;
+  right:-4px;
+  bottom:10px;
+  width:26px;
+  height:26px;
+  background:var(--ivory-light);
+  border:1px solid var(--ink);
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.prop-badge svg{width:14px;height:14px;}
 .faction-card .fname{
   font-weight:700;
   font-size:18px;
@@ -135,64 +228,53 @@ body{
   display:inline-block;
   font-size:10px;
   font-weight:700;
-  padding:3px 10px;
+  padding:3px 12px;
+  border-radius:2px;
+  transform:rotate(-3deg);
 }
 .badge-teal{background:var(--teal);color:var(--ivory);}
 .badge-orange{background:var(--orange);color:var(--ivory);}
 .badge-outline{background:none;border:1px solid var(--ink);color:var(--ink);}
 .badge-dashed{background:none;border:1px dashed var(--ink);color:var(--ink);}
 
-/* ---------- Gate transition ---------- */
-#gateOverlay{
+/* ---------- Journey transition ---------- */
+#journeyOverlay{
   position:fixed;
   inset:0;
   max-width:420px;
   margin:0 auto;
-  background:var(--ivory);
+  background-image:url('https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/quiz/mountains-bg.jpg');
+  background-size:cover;
+  background-position:center;
   z-index:50;
   display:none;
   align-items:center;
   justify-content:center;
-  perspective:900px;
-  overflow:hidden;
+  opacity:0;
+  transition:opacity .5s ease;
 }
-#gateOverlay.active{display:flex;}
-.gate-text{
+#journeyOverlay.active{display:flex;}
+#journeyOverlay.show{opacity:1;}
+#journeyOverlay::before{
+  content:'';
   position:absolute;
+  inset:0;
+  background:rgba(247,245,240,0.55);
+}
+.journey-text{
+  position:relative;
+  z-index:1;
   text-align:center;
   font-weight:700;
   font-size:20px;
   line-height:1.7;
+  color:var(--ink);
   padding:0 40px;
   opacity:0;
-  transition:opacity .6s ease .9s;
+  transform:translateY(8px);
+  transition:opacity .6s ease, transform .6s ease;
 }
-.gate-text.show{opacity:1;}
-.gate-roof{
-  position:absolute;
-  top:26%;
-  z-index:5;
-}
-.door{
-  position:absolute;
-  top:38%;
-  width:88px;
-  height:190px;
-  background:#7C2E22;
-  border:3px solid #4a1a12;
-  box-sizing:border-box;
-  transition:transform 1.1s ease-in-out;
-}
-.door::after{
-  content:'';
-  position:absolute;
-  inset:8px;
-  border:2px solid #4a1a12;
-}
-.doorL{left:50%;margin-left:-88px;transform-origin:left center;}
-.doorR{left:50%;transform-origin:right center;}
-.gateOverlay.opening .doorL{transform:rotateY(-115deg);}
-.gateOverlay.opening .doorR{transform:rotateY(115deg);}
+.journey-text.show{opacity:1;transform:translateY(0);}
 
 /* ---------- Result ---------- */
 #result{
@@ -257,9 +339,13 @@ body{
 
   <!-- Screen 1: Landing -->
   <section id="landing" class="screen active">
-    <img class="hero" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/hero.jpg">
+    <div class="hero-wrap">
+      <img class="hero" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/gate-landing.jpg">
+      <div class="gate-title">
+        <div class="gate-title-text">10월의 건강한<br>4주를 만들어보세요!</div>
+      </div>
+    </div>
     <div class="landing-body">
-      <div class="landing-title">10월의 건강한 4주를<br>만들어보세요!</div>
       <div class="landing-desc">챌린지 미션을 완료하고<br>건강과 함께<br>리워드도 받아가세요!</div>
       <button class="btn-primary" onclick="goTo('select')">시작하기</button>
     </div>
@@ -273,25 +359,45 @@ body{
     </div>
     <div class="faction-grid">
       <div class="faction-card" onclick="selectFaction('cheongryong')">
-        <img src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/cheongryong.png">
+        <div class="fig">
+          <img class="mascot" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/mascot-cheongryong.png">
+          <div class="prop-badge" style="color:var(--teal);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 13V9"/><path d="M9 3h6"/></svg>
+          </div>
+        </div>
         <div class="fname">청룡</div>
         <div class="flabel">유산소파</div>
         <div class="fbadge badge-teal">유산소 60%</div>
       </div>
       <div class="faction-card" onclick="selectFaction('baekho')">
-        <img src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/baekho.png">
+        <div class="fig">
+          <img class="mascot" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/mascot-baekho.png">
+          <div class="prop-badge" style="color:var(--ink);">
+            <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="9" width="3" height="6" rx="1"/><rect x="19" y="9" width="3" height="6" rx="1"/><rect x="5" y="11" width="14" height="2"/></svg>
+          </div>
+        </div>
         <div class="fname">백호</div>
         <div class="flabel">근력파</div>
         <div class="fbadge badge-outline">근력 60%</div>
       </div>
       <div class="faction-card" onclick="selectFaction('jujak')">
-        <img src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/jujak.png">
+        <div class="fig">
+          <img class="mascot" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/mascot-jujak.png">
+          <div class="prop-badge" style="color:var(--orange);">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L19 20 L12 16.5 L5 20 Z"/></svg>
+          </div>
+        </div>
         <div class="fname">주작</div>
         <div class="flabel">GX파</div>
         <div class="fbadge badge-orange">GX 60%</div>
       </div>
       <div class="faction-card" onclick="selectFaction('hyeonmu')">
-        <img src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/hyeonmu.png">
+        <div class="fig">
+          <img class="mascot" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/mascot-hyeonmu.png">
+          <div class="prop-badge" style="color:var(--ink);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a4.5 4.5 0 010 9 4.5 4.5 0 000 9"/></svg>
+          </div>
+        </div>
         <div class="fname">현무</div>
         <div class="flabel">골고루파</div>
         <div class="fbadge badge-dashed">4파 균형</div>
@@ -318,24 +424,19 @@ body{
     <button class="btn-secondary" onclick="goTo('result')" style="display:block;margin:0 auto;">파벌 결과로 돌아가기</button>
   </section>
 
-  <!-- Gate transition overlay -->
-  <div id="gateOverlay">
-    <svg class="gate-roof" width="220" viewBox="0 0 300 70">
-      <path d="M10,66 Q10,20 60,14 L240,14 Q290,20 290,66 Z" fill="#2C2C2A"/>
-    </svg>
-    <div class="door doorL"></div>
-    <div class="door doorR"></div>
-    <div class="gate-text" id="gateText"></div>
+  <!-- Journey transition overlay -->
+  <div id="journeyOverlay">
+    <div class="journey-text" id="journeyText"></div>
   </div>
 
 </div>
 
 <script>
 const factions = {
-  cheongryong: {name:'청룡', desc:'가볍고 빠르게, 순환이 도는<br>유산소 중심 훈련', img:'https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/cheongryong.png'},
-  baekho: {name:'백호', desc:'묵직하고 곧게, 힘이 도는<br>근력 중심 훈련', img:'https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/baekho.png'},
-  jujak: {name:'주작', desc:'리듬을 타고 활기차게<br>움직이는 GX 중심 훈련', img:'https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/jujak.png'},
-  hyeonmu: {name:'현무', desc:'네 파벌을 골고루,<br>균형 잡힌 훈련', img:'https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/hyeonmu.png'}
+  cheongryong: {name:'청룡', desc:'가볍고 빠르게, 순환이 도는<br>유산소 중심 훈련', img:'https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/mascot-cheongryong.png'},
+  baekho: {name:'백호', desc:'묵직하고 곧게, 힘이 도는<br>근력 중심 훈련', img:'https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/mascot-baekho.png'},
+  jujak: {name:'주작', desc:'리듬을 타고 활기차게<br>움직이는 GX 중심 훈련', img:'https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/mascot-jujak.png'},
+  hyeonmu: {name:'현무', desc:'네 파벌을 골고루,<br>균형 잡힌 훈련', img:'https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/challenge/mascot-hyeonmu.png'}
 };
 
 const missionSets = {
@@ -369,18 +470,15 @@ function goTo(id){
 function selectFaction(key){
   currentFaction = key;
   const f = factions[key];
-  const overlay = document.getElementById('gateOverlay');
-  const gateText = document.getElementById('gateText');
-  gateText.innerHTML = f.name + '의 여정이<br>시작됩니다';
-  gateText.classList.remove('show');
-  overlay.classList.remove('opening');
+  const overlay = document.getElementById('journeyOverlay');
+  const text = document.getElementById('journeyText');
+  text.innerHTML = f.name + '의 여정이<br>시작됩니다';
+  text.classList.remove('show');
   overlay.classList.add('active');
 
   requestAnimationFrame(()=>{
-    setTimeout(()=>{
-      overlay.classList.add('opening');
-      gateText.classList.add('show');
-    }, 250);
+    overlay.classList.add('show');
+    setTimeout(()=> text.classList.add('show'), 150);
   });
 
   setTimeout(()=>{
@@ -388,9 +486,10 @@ function selectFaction(key){
     document.getElementById('resultName').textContent = f.name;
     document.getElementById('resultDesc').innerHTML = f.desc;
     goTo('result');
-    overlay.classList.remove('active');
-    overlay.classList.remove('opening');
-  }, 2200);
+    overlay.classList.remove('show');
+    text.classList.remove('show');
+    setTimeout(()=> overlay.classList.remove('active'), 500);
+  }, 1800);
 }
 </script>
 </body>
