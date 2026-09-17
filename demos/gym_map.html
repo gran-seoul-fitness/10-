@@ -49,8 +49,13 @@ body{
 .map-stage{position:relative;width:100%;aspect-ratio:400/620;}
 #mapSvg{width:100%;height:100%;display:block;}
 .zone-hit{cursor:pointer;}
-.sejong-hit{cursor:pointer;}
+.sejong-hit{
+  position:absolute;
+  left:39.5%;top:34.2%;width:21%;height:14.6%;
+  display:block;
+}
 .sejong-hit:active{opacity:0.75;}
+.sejong-img{width:100%;height:100%;object-fit:contain;object-position:bottom;display:block;}
 .zone-hit:active .zone-plate{opacity:0.75;}
 .zone-pulse{animation:zonePulse 2.2s ease-in-out infinite;}
 @keyframes zonePulse{
@@ -147,15 +152,11 @@ body{
           <ellipse cx="48" cy="472" rx="8" ry="7"/>
         </g>
 
-        <!-- central plaza: King Sejong statue (click -> character wardrobe) -->
-        <a href="health_challenge.html#select" class="sejong-hit">
-          <ellipse cx="200" cy="310" rx="48" ry="9" fill="#00000018"/>
-          <image href="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/sejong.png"
-                 x="158" y="212" width="84" height="90.6" preserveAspectRatio="xMidYMax meet"/>
-          <circle class="zone-pulse" cx="200" cy="204" r="5" fill="var(--hanok-red)"/>
-          <rect x="160" y="309" width="80" height="20" rx="3" fill="#2C2A26"/>
-          <text x="200" y="323" text-anchor="middle" font-size="12" font-weight="700" fill="#F7F5F0" font-family="'Gowun Batang',serif">세종대왕 어전</text>
-        </a>
+        <!-- central plaza: shadow, pulse marker and label plate (statue image is an HTML overlay, see below) -->
+        <ellipse cx="200" cy="310" rx="48" ry="9" fill="#00000018"/>
+        <circle class="zone-pulse" cx="200" cy="204" r="5" fill="var(--hanok-red)"/>
+        <rect x="160" y="309" width="80" height="20" rx="3" fill="#2C2A26"/>
+        <text x="200" y="323" text-anchor="middle" font-size="12" font-weight="700" fill="#F7F5F0" font-family="'Gowun Batang',serif">세종대왕 어전</text>
 
         <!-- ===================== ZONE 1: 스트레칭 (pavilion, top-left) ===================== -->
         <g class="zone-hit" data-zone="stretch" transform="translate(108,150)">
@@ -279,6 +280,9 @@ body{
           <text class="zone-plate" x="0" y="64" text-anchor="middle" font-size="12" font-weight="700" fill="#F7F5F0" font-family="'Gowun Batang',serif">유산소</text>
         </g>
       </svg>
+      <a href="health_challenge.html#select" class="sejong-hit">
+        <img class="sejong-img" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/sejong.png">
+      </a>
     </div>
 
     <div class="legend">
