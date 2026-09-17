@@ -236,9 +236,9 @@ body{
 
         <!-- ============ OUTFIT: 치마 세트 (jeogori + chima) ============ -->
         <g id="outfitChima" class="outfit-group">
-          <path d="M 78 180 Q 120 168 162 180 L 182 264 Q 120 284 58 264 Z" fill="#0F6E56"/>
-          <path d="M 96 196 L 92 258" fill="none" stroke="#3D8F76" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
-          <path d="M 144 196 L 148 258" fill="none" stroke="#3D8F76" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+          <path d="M 78 180 Q 120 168 162 180 L 182 264 Q 120 284 58 264 Z" fill="#1E2233"/>
+          <path d="M 96 196 L 92 258" fill="none" stroke="#3A4058" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+          <path d="M 144 196 L 148 258" fill="none" stroke="#3A4058" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
           <path d="M 82 150 Q 120 140 158 150 L 161 181 Q 120 191 79 181 Z" fill="#F5EFDD"/>
           <path d="M 82 150 Q 120 140 158 150" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.85"/>
           <path d="M 108 153 L 120 172 L 132 153" fill="none" stroke="#3D3A32" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -267,13 +267,20 @@ body{
         <circle cx="60" cy="192" r="19" fill="url(#skinGrad)"/>
         <circle cx="180" cy="192" r="19" fill="url(#skinGrad)"/>
 
-        <!-- binyeo (hairpin) overlay: sits behind the head, only the ends peek out (through a low bun at the nape) -->
+        <!-- binyeo (hairpin) overlay: worn on one side only, rest hidden behind the head -->
         <g id="hatBinyeo" class="hat-group">
-          <rect x="18" y="132" width="204" height="7" rx="3.5" fill="#8B6F3D"/>
-          <circle cx="18" cy="135.5" r="8.5" fill="#7C2E22"/>
+          <rect x="70" y="132" width="152" height="7" rx="3.5" fill="#8B6F3D"/>
           <circle cx="222" cy="135.5" r="8.5" fill="#7C2E22"/>
           <path d="M 222 135 Q 229 150 222 166" fill="none" stroke="#7C2E22" stroke-width="2.5" stroke-linecap="round"/>
           <circle cx="221" cy="168" r="3.5" fill="#D85A30"/>
+          <g transform="translate(230,120)">
+            <ellipse cx="0" cy="-7" rx="4" ry="7" fill="#D85A30" transform="rotate(0)"/>
+            <ellipse cx="0" cy="-7" rx="4" ry="7" fill="#D85A30" transform="rotate(72)"/>
+            <ellipse cx="0" cy="-7" rx="4" ry="7" fill="#D85A30" transform="rotate(144)"/>
+            <ellipse cx="0" cy="-7" rx="4" ry="7" fill="#D85A30" transform="rotate(216)"/>
+            <ellipse cx="0" cy="-7" rx="4" ry="7" fill="#D85A30" transform="rotate(288)"/>
+            <circle cx="0" cy="0" r="4" fill="#E8B84B"/>
+          </g>
         </g>
 
         <!-- head -->
@@ -297,7 +304,7 @@ body{
 
         <!-- hair: 5:5 가르마 (center part) -->
         <path d="M 50 88 Q 44 18 120 15 Q 196 18 190 88 Q 190 58 120 58 Q 50 58 50 88 Z" fill="#2B2620"/>
-        <path d="M 120 17 L 120 57" fill="none" stroke="#3A342C" stroke-width="2.5" stroke-linecap="round" opacity="0.9"/>
+        <path d="M 108 16 L 132 56" fill="none" stroke="#3A342C" stroke-width="2.5" stroke-linecap="round" opacity="0.9"/>
 
         <!-- gat (hat) overlay: flat wide brim + straight-sided tall crown, straps stay clear of the face -->
         <g id="hatGat" class="hat-group">
