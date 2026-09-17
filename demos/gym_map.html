@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>그랑서울 피트니스 · 고을 지도</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap">
+<style>
+:root{
+  --ink:#1C1C1A;
+  --ink-soft:#5F5E5A;
+  --ivory:#EDE6D6;
+  --ivory-light:#F7F5F0;
+  --paper2:#E3DBC8;
+  --teal:#0F6E56;
+  --orange:#D85A30;
+  --gold:#AD8A45;
+  --hanok-red:#7C2E22;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:'Gowun Batang',serif;
+  background:var(--ivory-light);
+  color:var(--ink);
+  display:flex;
+  justify-content:center;
+}
+.app{
+  width:100%;
+  max-width:420px;
+  min-height:100vh;
+  background:var(--ivory-light);
+  position:relative;
+  overflow:hidden;
+}
+.screen{display:none;min-height:100vh;flex-direction:column;position:relative;}
+.screen.active{display:flex;}
+
+/* ---------- Map screen ---------- */
+#map{padding:0;}
+.map-head{
+  padding:20px 20px 12px;
+  text-align:center;
+}
+.map-head .eyebrow{font-size:11px;letter-spacing:3px;color:var(--ink-soft);margin-bottom:6px;}
+.map-head h1{font-weight:700;font-size:19px;margin:0;line-height:1.5;}
+
+.map-stage{position:relative;width:100%;aspect-ratio:400/620;}
+#mapSvg{width:100%;height:100%;display:block;}
+.zone-hit{cursor:pointer;}
+.zone-hit:active .zone-plate{opacity:0.75;}
+.zone-pulse{animation:zonePulse 2.2s ease-in-out infinite;}
+@keyframes zonePulse{
+  0%,100%{opacity:1;}
+  50%{opacity:0.45;}
+}
+
+.legend{
+  display:flex;
+  justify-content:center;
+  gap:14px;
+  padding:10px 20px 26px;
+  flex-wrap:wrap;
+}
+.legend-item{
+  display:flex;align-items:center;gap:5px;
+  font-size:10.5px;color:var(--ink-soft);
+}
+.legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+
+/* ---------- Mission list screen ---------- */
+#missions{padding:26px 22px 40px;}
+.mission-back{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:12px;color:var(--ink-soft);
+  background:none;border:none;cursor:pointer;
+  margin-bottom:18px;padding:0;
+  font-family:'Gowun Batang',serif;
+}
+.mission-head{text-align:center;margin-bottom:22px;}
+.mission-head .eyebrow{font-size:12px;letter-spacing:3px;margin-bottom:8px;font-weight:700;}
+.mission-head h1{font-weight:700;font-size:20px;margin:0;}
+.mission-list{display:flex;flex-direction:column;gap:10px;}
+.mission-item{
+  display:flex;align-items:center;gap:12px;
+  border:1px solid #ddd8cc;padding:13px 14px;
+  background:#FBF9F4;
+}
+.mission-num{
+  width:26px;height:26px;border:1px solid var(--ink);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;flex-shrink:0;
+}
+.mission-name{font-size:14.5px;font-weight:700;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Screen 1: Village map -->
+  <section id="map" class="screen active">
+    <div class="map-head">
+      <div class="eyebrow">그랑서울 피트니스 고을</div>
+      <h1>존을 골라<br>이달의 미션을 확인하세요</h1>
+    </div>
+
+    <div class="map-stage">
+      <svg id="mapSvg" viewBox="0 0 400 620" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#F1EAD9"/>
+            <stop offset="100%" stop-color="#E3DBC8"/>
+          </linearGradient>
+          <linearGradient id="roofGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#5B5B57"/>
+            <stop offset="100%" stop-color="#3A3A38"/>
+          </linearGradient>
+        </defs>
+
+        <rect width="400" height="620" fill="url(#skyGrad)"/>
+
+        <!-- distant hills -->
+        <path d="M0,150 Q60,110 130,135 Q190,155 260,120 Q330,90 400,130 L400,0 L0,0 Z" fill="#C9BFA6" opacity="0.55"/>
+        <path d="M0,190 Q80,160 160,180 Q230,198 300,165 Q350,145 400,170 L400,0 L0,0 Z" fill="#D8CFB6" opacity="0.5"/>
+
+        <!-- winding path connecting the 4 zones -->
+        <path d="M110,175 Q170,230 200,300 Q230,370 130,420 M200,300 Q250,340 285,300 Q310,270 285,235"
+              fill="none" stroke="#D9C9A3" stroke-width="26" stroke-linecap="round" opacity="0.7"/>
+        <path d="M110,175 Q170,230 200,300 Q230,370 130,420 M200,300 Q250,340 285,300 Q310,270 285,235"
+              fill="none" stroke="#BFA97A" stroke-width="2" stroke-dasharray="1 10" stroke-linecap="round" opacity="0.8"/>
+
+        <!-- small trees scattered -->
+        <g fill="#8A9A6B" opacity="0.8">
+          <ellipse cx="45" cy="230" rx="16" ry="13"/>
+          <ellipse cx="60" cy="245" rx="12" ry="10"/>
+          <ellipse cx="355" cy="180" rx="15" ry="12"/>
+          <ellipse cx="370" cy="360" rx="14" ry="11"/>
+          <ellipse cx="40" cy="480" rx="15" ry="12"/>
+          <ellipse cx="365" cy="500" rx="13" ry="11"/>
+        </g>
+        <g fill="#6E7F53" opacity="0.7">
+          <ellipse cx="52" cy="222" rx="9" ry="8"/>
+          <ellipse cx="362" cy="172" rx="8" ry="7"/>
+          <ellipse cx="48" cy="472" rx="8" ry="7"/>
+        </g>
+
+        <!-- central plaza tree -->
+        <g transform="translate(200,300)">
+          <ellipse cx="0" cy="8" rx="46" ry="8" fill="#00000014"/>
+          <rect x="-4" y="-18" width="8" height="26" fill="#6B4A32"/>
+          <ellipse cx="0" cy="-28" rx="34" ry="24" fill="#C97B3E"/>
+          <ellipse cx="-16" cy="-34" rx="20" ry="15" fill="#D8924F"/>
+          <ellipse cx="18" cy="-32" rx="20" ry="15" fill="#B96A34"/>
+        </g>
+        <rect x="170" y="309" width="60" height="9" rx="4.5" fill="#2C2A26"/>
+        <text x="200" y="316" text-anchor="middle" font-size="10" font-weight="700" fill="#F7F5F0" font-family="'Gowun Batang',serif">대추나무 광장</text>
+
+        <!-- ===================== ZONE 1: 스트레칭 (pavilion, top-left) ===================== -->
+        <g class="zone-hit" data-zone="stretch" transform="translate(108,150)">
+          <ellipse cx="0" cy="46" rx="46" ry="8" fill="#00000014"/>
+          <rect x="-30" y="-4" width="8" height="44" fill="#8B5A3C"/>
+          <rect x="22" y="-4" width="8" height="44" fill="#8B5A3C"/>
+          <path d="M -44 0 Q -44 -26 0 -30 Q 44 -26 44 0 Q 44 -10 0 -12 Q -44 -10 -44 0 Z" fill="url(#roofGrad)"/>
+          <path d="M -44 0 Q 0 -6 44 0 L 44 4 Q 0 -2 -44 4 Z" fill="var(--gold)"/>
+          <circle class="zone-pulse" cx="0" cy="-40" r="5" fill="var(--gold)"/>
+          <rect x="-42" y="54" width="84" height="20" rx="3" fill="#2C2A26"/>
+          <text class="zone-plate" x="0" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#F7F5F0" font-family="'Gowun Batang',serif">스트레칭</text>
+        </g>
+
+        <!-- ===================== ZONE 2: GX (hall, top-right) ===================== -->
+        <g class="zone-hit" data-zone="gx" transform="translate(292,210)">
+          <ellipse cx="0" cy="52" rx="56" ry="9" fill="#00000014"/>
+          <rect x="-46" y="0" width="92" height="46" fill="#E4D9BE"/>
+          <rect x="-38" y="16" width="18" height="30" fill="#4A3626"/>
+          <rect x="20" y="16" width="18" height="30" fill="#4A3626"/>
+          <path d="M -56 4 Q -56 -22 0 -28 Q 56 -22 56 4 Q 56 -8 0 -12 Q -56 -8 -56 4 Z" fill="url(#roofGrad)"/>
+          <path d="M -56 4 Q 0 -2 56 4 L 56 9 Q 0 3 -56 9 Z" fill="var(--orange)"/>
+          <circle class="zone-pulse" cx="0" cy="-40" r="5" fill="var(--orange)"/>
+          <rect x="-38" y="58" width="76" height="20" rx="3" fill="#2C2A26"/>
+          <text class="zone-plate" x="0" y="72" text-anchor="middle" font-size="12" font-weight="700" fill="#F7F5F0" font-family="'Gowun Batang',serif">GX</text>
+        </g>
+
+        <!-- ===================== ZONE 3: 근력 (storehouse, bottom-left) ===================== -->
+        <g class="zone-hit" data-zone="strength" transform="translate(110,415)">
+          <ellipse cx="0" cy="54" rx="58" ry="9" fill="#00000014"/>
+          <rect x="-48" y="-2" width="96" height="48" fill="#5B4A38"/>
+          <rect x="-48" y="-2" width="96" height="8" fill="#4A3B2C"/>
+          <rect x="-30" y="14" width="14" height="14" fill="#2C2420"/>
+          <rect x="-6" y="14" width="14" height="14" fill="#2C2420"/>
+          <rect x="18" y="14" width="14" height="14" fill="#2C2420"/>
+          <path d="M -58 2 Q -58 -22 0 -28 Q 58 -22 58 2 Q 58 -10 0 -14 Q -58 -10 -58 2 Z" fill="url(#roofGrad)"/>
+          <path d="M -58 2 Q 0 -4 58 2 L 58 7 Q 0 1 -58 7 Z" fill="var(--ink)"/>
+          <circle class="zone-pulse" cx="0" cy="-38" r="5" fill="var(--ink)"/>
+          <rect x="-40" y="58" width="80" height="20" rx="3" fill="#2C2A26"/>
+          <text class="zone-plate" x="0" y="72" text-anchor="middle" font-size="12" font-weight="700" fill="#F7F5F0" font-family="'Gowun Batang',serif">근력</text>
+        </g>
+
+        <!-- ===================== ZONE 4: 유산소 (bridge over stream, bottom-right) ===================== -->
+        <g class="zone-hit" data-zone="cardio" transform="translate(292,470)">
+          <path d="M -90 60 Q -20 40 40 60 Q 90 76 130 55 L 130 100 L -90 100 Z" fill="#8FB4C7" opacity="0.55"/>
+          <path d="M -30 60 Q 0 44 30 60" fill="none" stroke="#7C6448" stroke-width="7" stroke-linecap="round"/>
+          <rect x="-46" y="2" width="92" height="42" fill="#E4D9BE"/>
+          <rect x="-30" y="16" width="16" height="28" fill="#245A47"/>
+          <rect x="14" y="16" width="16" height="28" fill="#245A47"/>
+          <path d="M -56 6 Q -56 -18 0 -24 Q 56 -18 56 6 Q 56 -6 0 -10 Q -56 -6 -56 6 Z" fill="url(#roofGrad)"/>
+          <path d="M -56 6 Q 0 0 56 6 L 56 11 Q 0 5 -56 11 Z" fill="var(--teal)"/>
+          <circle class="zone-pulse" cx="0" cy="-34" r="5" fill="var(--teal)"/>
+          <rect x="-42" y="50" width="84" height="20" rx="3" fill="#2C2A26"/>
+          <text class="zone-plate" x="0" y="64" text-anchor="middle" font-size="12" font-weight="700" fill="#F7F5F0" font-family="'Gowun Batang',serif">유산소</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><span class="legend-dot" style="background:var(--gold);"></span>스트레칭</div>
+      <div class="legend-item"><span class="legend-dot" style="background:var(--orange);"></span>GX</div>
+      <div class="legend-item"><span class="legend-dot" style="background:var(--ink);"></span>근력</div>
+      <div class="legend-item"><span class="legend-dot" style="background:var(--teal);"></span>유산소</div>
+    </div>
+  </section>
+
+  <!-- Screen 2: Mission list -->
+  <section id="missions" class="screen">
+    <button class="mission-back" onclick="goTo('map')">&larr; 고을 지도로 돌아가기</button>
+    <div class="mission-head">
+      <div class="eyebrow" id="zoneEyebrow"></div>
+      <h1 id="zoneTitle"></h1>
+    </div>
+    <div class="mission-list" id="missionList"></div>
+  </section>
+
+</div>
+
+<script>
+const zones = {
+  stretch: { name:'스트레칭', color:'#AD8A45', missions:['매트 전신 스트레칭','고관절 모빌리티','폼롤러 스트레칭'] },
+  gx: { name:'GX', color:'#D85A30', missions:['요가','줌바','필라테스'] },
+  strength: { name:'근력', color:'#1C1C1A', missions:['스쿼트','데드리프트','벤치프레스'] },
+  cardio: { name:'유산소', color:'#0F6E56', missions:['트레드밀 걷기','사이클 타기','줄넘기'] }
+};
+
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+document.querySelectorAll('.zone-hit').forEach(zoneEl=>{
+  zoneEl.addEventListener('click', ()=>{
+    const key = zoneEl.dataset.zone;
+    const z = zones[key];
+    document.getElementById('zoneEyebrow').textContent = z.name + ' 존';
+    document.getElementById('zoneEyebrow').style.color = z.color;
+    document.getElementById('zoneTitle').textContent = z.name + ' 미션';
+    const list = document.getElementById('missionList');
+    list.innerHTML = '';
+    z.missions.forEach((m,i)=>{
+      const item = document.createElement('div');
+      item.className = 'mission-item';
+      item.innerHTML = `<div class="mission-num">${i+1}</div><div class="mission-name">${m}</div>`;
+      list.appendChild(item);
+    });
+    goTo('missions');
+  });
+});
+</script>
+</body>
+</html>
