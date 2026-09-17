@@ -382,6 +382,10 @@ document.getElementById('quickstartBtn').addEventListener('click', ()=>{
   toast.classList.add('show');
   setTimeout(()=> toast.classList.remove('show'), 1600);
 });
+
+if (location.hash === '#select') {
+  goTo('select');
+}
 </script>
 </body>
 </html>
