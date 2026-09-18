@@ -231,7 +231,7 @@ body{
 }
 .popup-header{
   position:absolute;
-  left:6%;top:2.8%;width:85%;
+  left:6%;top:6%;width:85%;
   color:#8A8680;font-size:10.5px;font-weight:700;
   letter-spacing:0.2px;
 }
@@ -271,7 +271,6 @@ body{
   display:flex;align-items:center;
   color:#3A3835;font-size:15px;font-weight:700;
 }
-.popup-sets span{display:inline-block;min-width:56px;}
 .popup-verify-btn{
   position:absolute;
   left:9.9%;top:80.9%;width:80.1%;height:11.3%;
@@ -314,9 +313,16 @@ body{
   position:absolute;
   left:6.9%;top:47.4%;width:60%;height:2.6%;
   display:flex;align-items:center;
-  color:#3A3835;font-size:13px;font-weight:700;
+  color:#3A3835;font-size:15px;font-weight:700;
 }
-.verify-sets span{display:inline-block;min-width:52px;}
+.verify-subtitle{
+  position:absolute;
+  left:9.3%;top:16.85%;width:70%;height:2.3%;
+  background:#EAE7DD;
+  display:flex;align-items:center;
+  color:rgba(60,56,48,0.85);font-size:13px;font-weight:500;
+  white-space:nowrap;
+}
 .verify-gallery{
   position:absolute;
   left:6.94%;top:21.84%;width:86.4%;height:18.12%;
@@ -568,7 +574,7 @@ body{
           <div class="popup-header">아래 기구 중 하나를 선택하여 운동하세요</div>
           <div class="popup-gallery" id="popupGallery"></div>
           <div class="popup-badge" id="popupBadge"></div>
-          <div class="popup-sets"><span id="popupSets"></span><span id="popupReps"></span></div>
+          <div class="popup-sets"><span id="popupSets"></span></div>
           <button class="popup-verify-btn" id="popupVerifyBtn" onclick="goToVerify()"></button>
         </div>
       </div>
@@ -580,9 +586,10 @@ body{
     <div class="verify-wrap">
       <img class="hero" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/mission_verify_bg.png">
       <a class="verify-back" onclick="closeVerify()"></a>
+      <div class="verify-subtitle">기구가 보이는 사진 한 장이면 충분합니다.</div>
       <div class="verify-gallery" id="verifyGallery"></div>
       <div class="verify-badge" id="verifyBadge"></div>
-      <div class="verify-sets"><span id="verifySets"></span><span id="verifyReps"></span></div>
+      <div class="verify-sets"><span id="verifySets"></span></div>
       <div class="verify-photo" id="verifyPhoto" onclick="document.getElementById('verifyFileInput').click();">
         <div class="verify-photo-placeholder">
           <div class="verify-photo-icon">
@@ -778,8 +785,7 @@ function openMissionPopup(key){
   const zoneKey = key.split('-')[0];
   const z = zones[zoneKey];
   document.getElementById('popupBadge').textContent = missionNameFromKey(key);
-  document.getElementById('popupSets').textContent = z.sets;
-  document.getElementById('popupReps').textContent = z.reps;
+  document.getElementById('popupSets').textContent = `${z.sets} X ${z.reps}씩`;
   renderGallery(document.getElementById('popupGallery'), key);
   document.getElementById('popupVerifyBtn').classList.toggle('disabled', usedStampToday());
   document.getElementById('missionPopup').classList.add('show');
@@ -802,8 +808,7 @@ function goToVerify(){
   const zoneKey = currentMissionKey.split('-')[0];
   const z = zones[zoneKey];
   document.getElementById('verifyBadge').textContent = missionNameFromKey(currentMissionKey);
-  document.getElementById('verifySets').textContent = z.sets;
-  document.getElementById('verifyReps').textContent = z.reps;
+  document.getElementById('verifySets').textContent = `${z.sets} X ${z.reps}씩`;
   renderGallery(document.getElementById('verifyGallery'), currentMissionKey);
   resetVerifyScreen();
   closeMissionPopup();
