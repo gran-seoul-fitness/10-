@@ -49,18 +49,10 @@ body{
 }
 .zone-hit:active{opacity:0.7;}
 
-/* ---------- Status overlay: sits inside the baked-in "미션 진행 상황" paper panel ---------- */
-.map-overlay{
-  position:absolute;
-  left:14%;top:81.5%;width:72%;height:10%;
-  display:flex;
-  align-items:center;
-  gap:6%;
-}
+/* ---------- Status overlay: sits inside the baked-in mission panel's empty slots ---------- */
 .char-block{
-  position:relative;
-  flex-shrink:0;
-  width:18%;
+  position:absolute;
+  left:8.1%;top:79.4%;width:21%;
   display:flex;
   justify-content:center;
 }
@@ -117,42 +109,34 @@ body{
 .char-mini .hat-group{opacity:0;transition:opacity .2s ease;}
 .char-mini .hat-group.show{opacity:1;}
 
-.status-block{
-  flex:1;
-  min-width:0;
-  display:flex;
-  align-items:center;
-  gap:4%;
-}
-.dday-badge{
-  flex-shrink:0;
-  background:var(--hanok-red);
-  color:#FFFFFF;
+.dday-num{
+  position:absolute;
+  left:57.6%;top:83.6%;width:6%;height:1.7%;
+  display:flex;align-items:center;
+  color:#F7F5F0;
   font-weight:800;
-  font-size:11.5px;
-  padding:4px 9px;
-  border-radius:4px;
+  font-size:11px;
   letter-spacing:0.3px;
 }
-.progress-wrap{flex:1;min-width:0;}
-.progress-label{
-  text-align:right;
-  font-size:10px;
-  font-weight:700;
-  color:var(--ink);
-  margin-bottom:4px;
-}
 .progress-track{
-  width:100%;height:6px;
-  background:rgba(28,28,26,0.18);
-  border-radius:3px;
+  position:absolute;
+  left:31.5%;top:85.5%;width:49.3%;height:1.05%;
+  border-radius:20px;
   overflow:hidden;
 }
 .progress-fill{
-  height:100%;
-  background:var(--teal);
-  border-radius:3px;
+  height:100%;width:0%;
+  background:#CD6226;
+  border-radius:20px;
   transition:width .4s ease;
+}
+.progress-count{
+  position:absolute;
+  left:80.5%;top:85.3%;width:8%;height:1.5%;
+  display:flex;align-items:center;
+  color:#3A3835;
+  font-weight:700;
+  font-size:13px;
 }
 
 /* ---------- Mission list screen ---------- */
@@ -211,10 +195,9 @@ body{
       <a class="zone-hit" data-zone="cardio" style="left:56%;top:60%;width:33%;height:14%;"></a>
       <a href="health_challenge.html#select" class="zone-hit" style="left:36%;top:35%;width:27%;height:16%;"></a>
 
-      <div class="map-overlay">
-        <div class="char-block">
-          <div class="speech-bubble" id="speechBubble">오늘도 화이팅! 💪</div>
-          <div class="char-mini" id="charMini">
+      <div class="char-block">
+        <div class="speech-bubble" id="speechBubble">오늘도 화이팅! 💪</div>
+        <div class="char-mini" id="charMini">
           <svg id="charSvgMini" viewBox="0 0 240 300" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <radialGradient id="skinGradMini" cx="38%" cy="30%" r="75%">
@@ -344,16 +327,11 @@ body{
             </g>
           </svg>
         </div>
-        </div>
-
-        <div class="status-block">
-          <div class="dday-badge" id="ddayBadge">D-13</div>
-          <div class="progress-wrap">
-            <div class="progress-label"><span id="progressCount">0/12</span></div>
-            <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-          </div>
-        </div>
       </div>
+
+      <div class="dday-num" id="ddayBadge">13</div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="progress-count" id="progressCount">0/12</div>
     </div>
   </section>
 
@@ -450,7 +428,7 @@ const CHALLENGE_END = new Date('2026-10-31T23:59:59+09:00');
 function updateDday(){
   const now = new Date();
   const diffDays = Math.ceil((CHALLENGE_END - now) / 86400000);
-  document.getElementById('ddayBadge').textContent = diffDays > 0 ? `D-${diffDays}` : 'D-DAY';
+  document.getElementById('ddayBadge').textContent = diffDays > 0 ? `${diffDays}` : 'DAY';
 }
 
 /* ---------- Character (restored from health_challenge.html's choice) ---------- */
