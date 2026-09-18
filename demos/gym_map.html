@@ -284,8 +284,15 @@ body{
 }
 
 /* ---------- Verify screen ---------- */
-#verify{padding:0;}
-.verify-wrap{position:relative;width:100%;}
+#verify{padding:0;background:var(--ivory-light);}
+.verify-wrap{
+  position:relative;
+  width:calc(100% - 20px);
+  margin:10px;
+  border:2px solid rgba(45,35,32,0.8);
+  border-radius:18px;
+  overflow:hidden;
+}
 .verify-wrap img.hero{width:100%;display:block;}
 .verify-back{
   position:absolute;
