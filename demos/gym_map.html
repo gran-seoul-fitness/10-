@@ -454,6 +454,121 @@ body{
 #puzzlePlay{padding:0;background:var(--ivory-light);}
 .puzzle-play-wrap{padding:22px 20px;}
 .puzzle-play-msg{padding:60px 10px;text-align:center;font-size:14px;color:var(--ink-soft);line-height:1.7;}
+.puzzle-play-title{margin:2px 0 4px;font-size:20px;color:var(--ink);}
+.puzzle-play-sub{margin:0 0 16px;font-size:12.5px;color:var(--ink-soft);line-height:1.5;}
+.jigsaw-board{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  grid-template-rows:repeat(4,1fr);
+  gap:2px;
+  width:100%;
+  aspect-ratio:480/710;
+  background:#2A2320;
+  border-radius:10px;
+  overflow:hidden;
+  margin-bottom:14px;
+}
+.jigsaw-tile{
+  position:relative;
+  background-image:url('https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/sejong_portrait.png');
+  background-size:300% 400%;
+  cursor:pointer;
+  transition:transform .12s ease, filter .12s ease;
+}
+.jigsaw-tile.selected{
+  outline:3px solid var(--orange);
+  outline-offset:-3px;
+  filter:brightness(1.12);
+  z-index:2;
+}
+.jigsaw-tile.solved-flash{outline:3px solid var(--teal);outline-offset:-3px;}
+.jigsaw-hint{text-align:center;font-size:12.5px;color:var(--ink-soft);margin-bottom:6px;}
+.jigsaw-reset{
+  display:block;margin:10px auto 0;
+  background:none;border:none;
+  color:var(--ink-soft);font-size:12px;font-weight:700;
+  text-decoration:underline;cursor:pointer;
+}
+.puzzle-complete-overlay{
+  display:none;
+  position:absolute;
+  left:0;top:0;width:100%;height:100%;
+  background:rgba(15,20,18,0.86);
+  z-index:45;
+  align-items:center;justify-content:center;
+  padding:0 8%;
+}
+.puzzle-complete-overlay.show{display:flex;}
+.puzzle-complete-card{
+  width:100%;max-width:320px;
+  background:#FBF9F4;
+  border-radius:22px;
+  padding:22px 20px;
+  display:flex;flex-direction:column;align-items:center;
+  text-align:center;
+  max-height:88vh;
+  overflow-y:auto;
+  box-shadow:0 10px 30px rgba(0,0,0,0.35);
+  animation:cardPop .35s cubic-bezier(.34,1.56,.64,1);
+}
+.puzzle-complete-img{
+  width:96px;border-radius:10px;margin-bottom:12px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.25);
+}
+.puzzle-complete-card h3{margin:0 0 12px;font-size:18px;color:var(--ink);}
+.puzzle-complete-text{
+  font-size:13px;line-height:1.7;color:var(--ink);
+  text-align:left;margin:0 0 18px;
+}
+.puzzle-complete-text p{margin:0 0 10px;}
+.puzzle-complete-text p:last-child{margin-bottom:0;}
+.puzzle-complete-btn{
+  width:100%;padding:12px 0;
+  background:var(--orange);border:none;border-radius:14px;
+  color:#FBF9F4;font-family:'Gowun Batang',serif;font-size:14px;font-weight:700;
+  cursor:pointer;
+}
+.puzzle-complete-btn:active{transform:scale(0.98);}
+
+/* ---------- Sejong shrine hub popup ---------- */
+.sejong-hub-overlay{
+  display:none;
+  position:absolute;
+  left:0;top:0;width:100%;height:100%;
+  background:rgba(15,20,18,0.78);
+  z-index:35;
+  align-items:center;justify-content:center;
+  padding:0 10%;
+}
+.sejong-hub-overlay.show{display:flex;}
+.sejong-hub-card{
+  width:100%;max-width:300px;
+  background:#FBF9F4;
+  border-radius:20px;
+  padding:24px 20px;
+  display:flex;flex-direction:column;align-items:stretch;
+  text-align:center;
+  box-shadow:0 10px 30px rgba(0,0,0,0.35);
+  animation:cardPop .3s cubic-bezier(.34,1.56,.64,1);
+}
+.sejong-hub-card h3{margin:0 0 4px;font-size:18px;color:var(--ink);}
+.sejong-hub-sub{margin:0 0 18px;font-size:12.5px;color:var(--ink-soft);}
+.sejong-hub-btn{
+  display:block;
+  padding:13px 0;margin-bottom:10px;
+  background:var(--orange);border:none;border-radius:14px;
+  color:#FBF9F4;font-family:'Gowun Batang',serif;font-size:14px;font-weight:700;
+  text-decoration:none;
+  cursor:pointer;
+}
+.sejong-hub-btn-alt{background:var(--teal);}
+.sejong-hub-btn:active{transform:scale(0.98);}
+.sejong-hub-close{
+  background:none;border:none;
+  color:var(--ink-soft);font-size:12px;font-weight:700;
+  text-decoration:underline;cursor:pointer;
+  padding:6px 0 0;
+}
 
 /* ---------- Mission-complete celebration overlay ---------- */
 .celebrate-overlay{
@@ -532,7 +647,7 @@ body{
       <a class="zone-hit" data-zone="gx" style="left:56%;top:31.5%;width:34%;height:15%;"></a>
       <a class="zone-hit" data-zone="strength" style="left:9%;top:54%;width:32%;height:14%;"></a>
       <a class="zone-hit" data-zone="cardio" style="left:56%;top:60%;width:33%;height:14%;"></a>
-      <a href="health_challenge.html#select" class="zone-hit" style="left:36%;top:35%;width:27%;height:16%;"></a>
+      <a class="zone-hit" onclick="openSejongHub()" style="left:36%;top:35%;width:27%;height:16%;"></a>
 
       <div class="char-block">
         <div class="speech-bubble" id="speechBubble">오늘도 화이팅! 💪</div>
@@ -737,13 +852,40 @@ body{
     </div>
   </section>
 
-  <!-- Screen 5: Puzzle play (placeholder until reference photo is provided) -->
+  <!-- Screen 5: Puzzle play -->
   <section id="puzzlePlay" class="screen">
     <div class="puzzle-play-wrap">
       <a class="puzzle-back" onclick="goTo('puzzle')">← 돌아가기</a>
-      <p class="puzzle-play-msg">사진을 보내주시면 이 화면에<br>십이교 조각으로 사진을 맞추는<br>놀이를 만들어드릴게요!</p>
+      <h2 class="puzzle-play-title">세종대왕 어진 맞추기</h2>
+      <p class="puzzle-play-sub">조각 두 개를 순서대로 탭하면 자리가 바뀌어요. 원래 그림대로 모두 맞춰보세요!</p>
+      <div class="jigsaw-board" id="jigsawBoard"></div>
+      <button class="jigsaw-reset" onclick="shuffleJigsaw()">다시 섞기</button>
     </div>
   </section>
+
+  <!-- Puzzle completion overlay -->
+  <div class="puzzle-complete-overlay" id="puzzleCompleteOverlay">
+    <div class="puzzle-complete-card">
+      <img class="puzzle-complete-img" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/sejong_portrait.png" alt="세종대왕 어진">
+      <h3>십이교 완성! 🎉</h3>
+      <div class="puzzle-complete-text">
+        <p>세종대왕은 백성이 말은 있어도 마음을 제대로 표현할 문자가 없어 억울한 일을 당하는 것을 안타깝게 여겨 훈민정음을 만들었습니다. 말을 통일해 나라의 공동체 의식을 심어주고, 글을 몰라 죄를 뒤집어쓰는 백성이 없도록 하기 위함이었지요. 신하들의 거센 반대에도 굴하지 않고 오랜 시간 비밀리에 연구를 거듭한 끝에 한글을 완성해 반포했습니다.</p>
+        <p>이는 세종대왕이 얼마나 백성을 아끼고 나라를 사랑했는지 보여주는 이야기예요. 오늘 십이교를 완성한 것처럼, 작은 정성이 모여 큰 변화를 만든다는 걸 기억해주세요.</p>
+      </div>
+      <button class="puzzle-complete-btn" onclick="closePuzzleComplete()">닫기</button>
+    </div>
+  </div>
+
+  <!-- Sejong shrine hub: character customization + puzzle entry -->
+  <div class="sejong-hub-overlay" id="sejongHubOverlay" onclick="if(event.target===this) closeSejongHub();">
+    <div class="sejong-hub-card">
+      <h3>세종대왕 어전</h3>
+      <p class="sejong-hub-sub">무엇을 하고 싶으신가요?</p>
+      <a class="sejong-hub-btn" href="health_challenge.html#select">캐릭터 소품 변경하기</a>
+      <button class="sejong-hub-btn sejong-hub-btn-alt" onclick="closeSejongHub(); goTo('puzzle');">십이교 놀이 하러 가기</button>
+      <button class="sejong-hub-close" onclick="closeSejongHub()">닫기</button>
+    </div>
+  </div>
 
   <!-- Mission-complete celebration overlay -->
   <div class="celebrate-overlay" id="celebrateOverlay">
@@ -870,6 +1012,14 @@ function goTo(id){
   window.scrollTo(0,0);
   if(id === 'map') updateProgressUI();
   if(id === 'puzzle') renderPuzzleGrid();
+  if(id === 'puzzlePlay') shuffleJigsaw();
+}
+
+function openSejongHub(){
+  document.getElementById('sejongHubOverlay').classList.add('show');
+}
+function closeSejongHub(){
+  document.getElementById('sejongHubOverlay').classList.remove('show');
 }
 
 let currentZoneKey = null;
@@ -1056,6 +1206,66 @@ function renderPuzzleGrid(){
     playBtn.textContent = '모든 조각을 모으면 시작할 수 있어요';
   }
 }
+
+/* ---------- 세종대왕 어진 맞추기 (photo jigsaw, 3x4 tap-to-swap) ---------- */
+const JIGSAW_COLS = 3;
+const JIGSAW_ROWS = 4;
+const JIGSAW_TOTAL = JIGSAW_COLS * JIGSAW_ROWS;
+let jigsawState = [];
+let jigsawSelected = null;
+
+function isSolved(state){
+  return state.every((pieceIdx, slotIdx) => pieceIdx === slotIdx);
+}
+function shuffleJigsaw(){
+  jigsawSelected = null;
+  const arr = [...Array(JIGSAW_TOTAL).keys()];
+  do {
+    for(let i = arr.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+  } while(isSolved(arr));
+  jigsawState = arr;
+  renderJigsaw();
+}
+function renderJigsaw(){
+  const board = document.getElementById('jigsawBoard');
+  board.innerHTML = jigsawState.map((pieceIdx, slotIdx) => {
+    const col = pieceIdx % JIGSAW_COLS;
+    const row = Math.floor(pieceIdx / JIGSAW_COLS);
+    const posX = (col / (JIGSAW_COLS - 1)) * 100;
+    const posY = (row / (JIGSAW_ROWS - 1)) * 100;
+    const sel = slotIdx === jigsawSelected ? ' selected' : '';
+    return `<div class="jigsaw-tile${sel}" data-slot="${slotIdx}" style="background-position:${posX}% ${posY}%;" onclick="onJigsawTileClick(${slotIdx})"></div>`;
+  }).join('');
+}
+function onJigsawTileClick(slotIdx){
+  if(jigsawSelected === null){
+    jigsawSelected = slotIdx;
+    renderJigsaw();
+    return;
+  }
+  if(jigsawSelected === slotIdx){
+    jigsawSelected = null;
+    renderJigsaw();
+    return;
+  }
+  [jigsawState[jigsawSelected], jigsawState[slotIdx]] = [jigsawState[slotIdx], jigsawState[jigsawSelected]];
+  jigsawSelected = null;
+  renderJigsaw();
+  if(isSolved(jigsawState)){
+    setTimeout(showPuzzleComplete, 350);
+  }
+}
+function showPuzzleComplete(){
+  document.getElementById('puzzleCompleteOverlay').classList.add('show');
+}
+function closePuzzleComplete(){
+  document.getElementById('puzzleCompleteOverlay').classList.remove('show');
+  goTo('puzzle');
+}
+
 function renderCelebrationCharacter(){
   const container = document.getElementById('celebrateCharacter');
   const original = document.getElementById('charMini');
