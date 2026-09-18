@@ -447,7 +447,11 @@ body{
   padding:12px;
 }
 .puzzle-slot.filled{background:#F7F1E4;}
-.puzzle-slot svg{width:100%;height:100%;}
+.puzzle-piece-icon{
+  width:100%;height:100%;
+  background-image:url('https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/sejong_portrait.png');
+  background-size:300% 200%;
+}
 .puzzle-slot-q{font-size:20px;font-weight:700;color:rgba(58,53,45,0.3);}
 .puzzle-progress{text-align:center;font-size:14px;font-weight:700;color:var(--ink);margin-bottom:18px;}
 .puzzle-play-btn{
@@ -1181,20 +1185,7 @@ function completeVerify(){
 }
 
 /* ---------- 십이교 놀이 (12-piece puzzle) ---------- */
-const PUZZLE_SHAPES = [
-  {name:'큰 세모',      color:'#D85A30', path:'M50,10 L90,90 L10,90 Z'},
-  {name:'네모',         color:'#0F6E56', path:'M25,25 L75,25 L75,75 L25,75 Z'},
-  {name:'평행사변형',    color:'#AD8A45', path:'M20,80 L50,20 L90,20 L60,80 Z'},
-  {name:'작은 세모',     color:'#7C2E22', path:'M50,30 L75,80 L25,80 Z'},
-  {name:'사다리꼴',      color:'#3A3835', path:'M30,80 L70,80 L85,30 L15,30 Z'},
-  {name:'세모',         color:'#0F6E56', path:'M50,15 L85,85 L15,85 Z'},
-  {name:'마름모',        color:'#D85A30', path:'M50,15 L85,50 L50,85 L15,50 Z'},
-  {name:'네모',         color:'#AD8A45', path:'M20,20 L80,20 L80,80 L20,80 Z'},
-  {name:'세모',         color:'#3A3835', path:'M50,20 L80,80 L20,80 Z'},
-  {name:'평행사변형',    color:'#7C2E22', path:'M15,85 L45,15 L85,15 L55,85 Z'},
-  {name:'오각형',        color:'#0F6E56', path:'M50,12 L88,40 L74,85 L26,85 L12,40 Z'},
-  {name:'세모',         color:'#D85A30', path:'M50,18 L82,82 L18,82 Z'},
-];
+const PUZZLE_PIECE_COUNT = 12;
 const celebrateMessages = [
   '오늘도 운동 완료! 정말 멋져요',
   '이 정도면 몸짱 각인데요?',
@@ -1212,25 +1203,28 @@ function savePuzzlePieces(arr){
 }
 function awardRandomPiece(){
   const owned = getPuzzlePieces();
-  if(owned.length >= PUZZLE_SHAPES.length) return null;
-  const remaining = PUZZLE_SHAPES.map((_,i)=>i).filter(i => !owned.includes(i));
+  if(owned.length >= PUZZLE_PIECE_COUNT) return null;
+  const remaining = [...Array(PUZZLE_PIECE_COUNT).keys()].filter(i => !owned.includes(i));
   const pick = remaining[Math.floor(Math.random()*remaining.length)];
   owned.push(pick);
   savePuzzlePieces(owned);
   return pick;
 }
+function puzzlePieceIconHTML(i){
+  return `<div class="puzzle-piece-icon" style="clip-path:${jigsawClipPath(i)};background-position:${jigsawBackgroundPos(i)};"></div>`;
+}
 function renderPuzzleGrid(){
   const owned = getPuzzlePieces();
   const grid = document.getElementById('puzzleGrid');
-  grid.innerHTML = PUZZLE_SHAPES.map((shape,i) => {
+  grid.innerHTML = [...Array(PUZZLE_PIECE_COUNT).keys()].map(i => {
     const has = owned.includes(i);
     return `<div class="puzzle-slot${has ? ' filled' : ''}">${
-      has ? `<svg viewBox="0 0 100 100"><path d="${shape.path}" fill="${shape.color}"/></svg>` : '<span class="puzzle-slot-q">?</span>'
+      has ? puzzlePieceIconHTML(i) : '<span class="puzzle-slot-q">?</span>'
     }</div>`;
   }).join('');
-  document.getElementById('puzzleProgress').textContent = `${owned.length}/${PUZZLE_SHAPES.length} 조각 모음`;
+  document.getElementById('puzzleProgress').textContent = `${owned.length}/${PUZZLE_PIECE_COUNT} 조각 모음`;
   const playBtn = document.getElementById('puzzlePlayBtn');
-  if(owned.length >= PUZZLE_SHAPES.length){
+  if(owned.length >= PUZZLE_PIECE_COUNT){
     playBtn.disabled = false;
     playBtn.textContent = '십이교 놀이 시작하기';
   } else {
@@ -1374,8 +1368,7 @@ function showCelebration(){
   const pieceIdx = awardRandomPiece();
   const pieceBox = document.getElementById('celebratePieceBox');
   if(pieceIdx !== null){
-    const shape = PUZZLE_SHAPES[pieceIdx];
-    document.getElementById('celebratePieceIcon').innerHTML = `<svg viewBox="0 0 100 100"><path d="${shape.path}" fill="${shape.color}"/></svg>`;
+    document.getElementById('celebratePieceIcon').innerHTML = puzzlePieceIconHTML(pieceIdx);
     pieceBox.style.display = 'flex';
   } else {
     pieceBox.style.display = 'none';
