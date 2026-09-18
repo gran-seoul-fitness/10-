@@ -67,7 +67,8 @@ body{
   border-radius:10px;
   padding:4px 7px;
   font-size:8.5px;
-  font-weight:700;
+  font-weight:800;
+  color:var(--ink);
   text-align:center;
   width:max-content;
   max-width:100px;
@@ -113,29 +114,29 @@ body{
   position:absolute;
   left:57.6%;top:83.6%;width:6%;height:1.7%;
   display:flex;align-items:center;
-  color:#F7F5F0;
-  font-weight:800;
+  color:#FFFFFF;
+  font-weight:900;
   font-size:11px;
   letter-spacing:0.3px;
 }
 .progress-track{
   position:absolute;
-  left:31.5%;top:85.5%;width:49.3%;height:1.05%;
+  left:31.5%;top:85.5%;width:37.4%;height:1.05%;
   border-radius:20px;
   overflow:hidden;
 }
 .progress-fill{
   height:100%;width:0%;
-  background:#CD6226;
+  background:#B84E14;
   border-radius:20px;
   transition:width .4s ease;
 }
 .progress-count{
   position:absolute;
-  left:80.5%;top:85.3%;width:8%;height:1.5%;
+  left:70%;top:85.3%;width:12%;height:1.5%;
   display:flex;align-items:center;
-  color:#3A3835;
-  font-weight:700;
+  color:#1C1C1A;
+  font-weight:900;
   font-size:13px;
 }
 
@@ -454,7 +455,15 @@ const speechPhrases = [
   '한 존씩 차근차근!',
   '작은 걸음이 큰 변화를 만들어요',
   '벌써 여기까지 왔어요, 대단해요!',
-  '오늘 미션 하나만 더 해볼까요?'
+  '오늘 미션 하나만 더 해볼까요?',
+  '꾸준함이 최고의 운동이에요',
+  '오늘의 나는 어제보다 강해요',
+  '잠깐이라도 몸을 움직여봐요',
+  '고을 한 바퀴 돌아볼까요?',
+  '땀 흘린 만큼 건강해져요',
+  '쉬는 것도 미션의 일부예요',
+  '오늘 컨디션은 어때요?',
+  '작은 습관이 큰 변화를 만들어요'
 ];
 let speechIndex = 0;
 const speechBubbleEl = document.getElementById('speechBubble');
