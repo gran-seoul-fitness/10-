@@ -206,122 +206,174 @@ body{
   pointer-events:none;
 }
 
-/* ---------- Dark theme tokens (mission popup + verify) ---------- */
-:root{
-  --dk-bg-deep:#101718;
-  --dk-bg-panel:#1a2224;
-  --dk-bg-panel2:#212b2d;
-  --dk-mint:#3EE3C7;
-  --dk-mint-soft:#8FF4E1;
-  --dk-text:#F2F6F5;
-  --dk-muted:#829894;
-  --dk-muted2:#7E9591;
-  --dk-line:rgba(62,227,199,0.16);
-  --dk-locked:#2a3436;
-}
-
-/* ---------- Mission popup (dark bottom sheet) ---------- */
+/* ---------- Mission popup ---------- */
 .popup-overlay{
   display:none;
   position:absolute;
   left:0;top:0;width:100%;height:100%;
-  background:rgba(8,12,13,0.72);
+  background:rgba(12,11,10,0.86);
   z-index:20;
-  align-items:flex-end;
+  align-items:center;
   justify-content:center;
+  padding:0 8%;
 }
 .popup-overlay.show{display:flex;}
 .popup-card{
+  position:relative;
   width:100%;
-  max-height:88%;
-  background:var(--dk-bg-panel);
-  border:1px solid rgba(255,255,255,0.06);
-  border-radius:24px 24px 0 0;
-  padding:18px 20px 24px;
-  overflow-y:auto;
-  font-family:'Gowun Batang',sans-serif;
+  aspect-ratio:1080/1254;
+  background-image:url('https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/mission_popup.png');
+  background-size:100% 100%;
+  background-repeat:no-repeat;
 }
-.gallery-label{color:var(--dk-muted2);font-size:10.5px;font-weight:700;margin-bottom:6px;letter-spacing:0.3px;}
-.photo-gallery{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;margin-bottom:14px;}
-.photo-gallery::-webkit-scrollbar{display:none;}
-.gallery-item{position:relative;flex:0 0 auto;width:78%;aspect-ratio:16/10;border-radius:14px;overflow:hidden;background:var(--dk-bg-panel2);}
-.gallery-item img{width:100%;height:100%;object-fit:cover;display:block;}
-.gallery-badge{
-  position:absolute;left:10px;bottom:8px;z-index:2;
-  background:rgba(16,23,24,0.75);border:1px solid rgba(62,227,199,0.4);
-  color:var(--dk-mint-soft);font-size:9.5px;font-weight:800;
-  padding:4px 9px;border-radius:100px;white-space:nowrap;
+.popup-header{
+  position:absolute;
+  left:6%;top:2.8%;width:85%;
+  color:#8A8680;font-size:10.5px;font-weight:700;
+  letter-spacing:0.2px;
 }
-.popup-title{color:var(--dk-text);font-size:16px;font-weight:800;margin-bottom:8px;}
-.set-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
-.set-chip{
-  background:var(--dk-bg-panel2);color:var(--dk-mint-soft);
-  font-size:10.5px;font-weight:700;padding:4px 9px;border-radius:100px;
-  border:1px solid var(--dk-line);
+.popup-gallery{
+  position:absolute;
+  left:5.5%;top:9.5%;width:89%;height:42%;
+  display:flex;gap:6px;overflow-x:auto;
+  border-radius:6px;
 }
-.dark-btn{
-  width:100%;padding:15px;border:none;border-radius:14px;
-  font-family:'Gowun Batang',sans-serif;font-size:14.5px;font-weight:800;cursor:pointer;
+.popup-gallery::-webkit-scrollbar{display:none;}
+.popup-gallery-item{
+  position:relative;flex:0 0 auto;height:100%;
+  border-radius:6px;overflow:hidden;
+  background:#EDE8DD;
 }
-.dark-btn.active{
-  background:linear-gradient(135deg, var(--dk-mint), #22B79E);color:#0a1211;
-  box-shadow:0 8px 20px rgba(62,227,199,0.28);
+.popup-gallery-item img{width:100%;height:100%;object-fit:cover;display:block;}
+.popup-gallery-item span{
+  position:absolute;left:5px;bottom:5px;
+  background:rgba(20,18,16,0.72);color:#F7F5F0;
+  font-size:8px;font-weight:700;padding:3px 7px;border-radius:20px;
+  white-space:nowrap;
 }
-.dark-btn.disabled{
-  background:var(--dk-locked);color:#6c7d7a;cursor:not-allowed;box-shadow:none;
+.popup-badge{
+  position:absolute;
+  left:5.5%;top:56%;
+  background:#3A3835;
+  border-radius:9px;
+  display:inline-flex;align-items:center;justify-content:center;
+  color:#F7F5F0;font-size:18px;font-weight:700;
+  padding:11px 18px;
+  max-width:75%;
+  overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+}
+.popup-sets{
+  position:absolute;
+  left:5.5%;top:68.5%;width:70%;height:4.5%;
+  display:flex;align-items:center;
+  color:#3A3835;font-size:15px;font-weight:700;
+}
+.popup-sets span{display:inline-block;min-width:56px;}
+.popup-verify-btn{
+  position:absolute;
+  left:9.9%;top:80.9%;width:80.1%;height:11.3%;
+  background:none;border:none;cursor:pointer;
+}
+.popup-verify-btn.disabled::before{
+  content:'오늘은 이미 인증했어요 · 내일 다시';
+  position:absolute;inset:0;
+  background:rgba(50,48,44,0.92);
+  color:#F7F5F0;font-size:11px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:14px;
 }
 
-/* ---------- Verify screen (dark) ---------- */
-#verify{padding:0;background:var(--dk-bg-deep);}
-.verify-wrap{position:relative;width:100%;min-height:100vh;padding:18px 20px 28px;font-family:'Gowun Batang',sans-serif;}
-.verify-topbar{display:flex;align-items:center;gap:12px;margin-bottom:18px;}
+/* ---------- Verify screen ---------- */
+#verify{padding:0;}
+.verify-wrap{position:relative;width:100%;}
+.verify-wrap img.hero{width:100%;display:block;}
 .verify-back{
-  width:30px;height:30px;border-radius:50%;
-  background:var(--dk-bg-panel);border:1px solid rgba(255,255,255,0.06);
-  display:flex;align-items:center;justify-content:center;
-  color:var(--dk-text);font-size:16px;cursor:pointer;flex-shrink:0;
+  position:absolute;
+  left:6%;top:2.8%;width:45%;height:2.4%;
+  cursor:pointer;
 }
-.verify-topbar-title{color:var(--dk-text);font-size:14px;font-weight:800;}
-.verify-eyebrow{color:var(--dk-mint);font-size:10px;font-weight:700;letter-spacing:2px;margin-bottom:6px;}
-.verify-h1{color:var(--dk-text);font-size:24px;font-weight:900;line-height:1.25;margin:0 0 8px;}
-.verify-h1 .mint{color:var(--dk-mint);}
-.verify-sub{color:var(--dk-muted2);font-size:12px;margin-bottom:18px;}
-.verify-combo-title{color:var(--dk-text);font-size:15px;font-weight:800;margin-bottom:8px;}
+.verify-back:active{opacity:0.6;}
+.verify-badge{
+  position:absolute;
+  left:6.9%;top:42%;
+  background:#3A3835;
+  border-radius:7px;
+  display:inline-flex;align-items:center;justify-content:center;
+  color:#F7F5F0;font-size:16px;font-weight:700;
+  padding:9px 14px;
+  max-width:70%;
+  overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+}
+.verify-sets{
+  position:absolute;
+  left:6.9%;top:47.4%;width:60%;height:2.6%;
+  display:flex;align-items:center;
+  color:#3A3835;font-size:13px;font-weight:700;
+}
+.verify-sets span{display:inline-block;min-width:52px;}
+.verify-gallery{
+  position:absolute;
+  left:6.94%;top:21.84%;width:86.4%;height:18.12%;
+  display:flex;gap:6px;overflow-x:auto;
+  border-radius:6px;
+}
+.verify-gallery::-webkit-scrollbar{display:none;}
+.verify-gallery-item{
+  position:relative;flex:0 0 auto;height:100%;
+  border-radius:6px;overflow:hidden;
+  background:#EDE8DD;
+}
+.verify-gallery-item img{width:100%;height:100%;object-fit:cover;display:block;}
+.verify-gallery-item span{
+  position:absolute;left:5px;bottom:5px;
+  background:rgba(20,18,16,0.72);color:#F7F5F0;
+  font-size:8px;font-weight:700;padding:3px 7px;border-radius:20px;
+  white-space:nowrap;
+}
 .verify-photo{
-  position:relative;
-  border:1.5px dashed rgba(62,227,199,0.35);
-  border-radius:16px;background:var(--dk-bg-panel2);
-  aspect-ratio:16/9;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
-  cursor:pointer;margin-bottom:16px;overflow:hidden;
+  position:absolute;
+  left:6.85%;top:52%;width:86.4%;height:31.6%;
+  border-radius:6px;
+  overflow:hidden;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
 }
-.verify-photo.has-photo{border-style:solid;border-color:var(--dk-mint);}
-.verify-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;opacity:0.35;}
+.verify-photo img{width:100%;height:100%;object-fit:cover;display:none;}
 .verify-photo.has-photo img{display:block;}
-.verify-photo-icon{
-  width:52px;height:52px;border-radius:50%;
-  background:var(--dk-bg-panel);display:flex;align-items:center;justify-content:center;
-  z-index:1;
+.verify-photo-hint{
+  color:rgba(58,42,30,0.7);font-size:12px;font-weight:700;
+  text-align:center;
 }
-.verify-photo.has-photo .verify-photo-icon{background:var(--dk-mint);}
-.verify-photo-icon svg{width:22px;height:22px;}
-.verify-photo-icon .icon-check{display:none;}
-.verify-photo.has-photo .verify-photo-icon .icon-upload{display:none;}
-.verify-photo.has-photo .verify-photo-icon .icon-check{display:block;}
-.verify-photo-title{color:var(--dk-text);font-size:12.5px;font-weight:700;z-index:1;}
-.verify-photo.has-photo .verify-photo-title{color:var(--dk-mint-soft);}
-.verify-photo-hint{color:var(--dk-muted2);font-size:10.5px;z-index:1;}
-.verify-checkbox-row{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+.verify-photo.has-photo .verify-photo-hint{display:none;}
+.verify-checkbox-row{
+  position:absolute;
+  left:10%;top:85.04%;width:79.9%;height:3.2%;
+  display:flex;align-items:center;gap:10px;
+  padding:0 14px;
+  pointer-events:none;
+}
 .verify-checkbox{
-  flex-shrink:0;width:22px;height:22px;
-  border:2px solid var(--dk-muted2);border-radius:6px;
-  display:flex;align-items:center;justify-content:center;cursor:pointer;
-  transition:background .12s ease, border-color .12s ease;
+  flex-shrink:0;
+  width:22px;height:22px;
+  border:2px solid var(--ink);
+  border-radius:5px;
+  background:#FBF9F4;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  pointer-events:auto;
+  transition:background .12s ease;
 }
-.verify-checkbox.checked{background:var(--dk-mint);border-color:var(--dk-mint);}
-.verify-checkbox svg{width:65%;height:65%;display:none;}
+.verify-checkbox.checked{background:var(--teal);border-color:var(--teal);}
+.verify-checkbox svg{width:70%;height:70%;display:none;}
 .verify-checkbox.checked svg{display:block;}
-.verify-checkbox-label{color:var(--dk-text);font-size:12px;font-weight:700;}
+.verify-checkbox-label{
+  color:var(--ink);font-size:11.5px;font-weight:700;
+}
+.verify-complete-btn{
+  position:absolute;
+  left:10.1%;top:89.5%;width:80.1%;height:5.6%;
+  background:none;border:none;cursor:pointer;
+}
 </style>
 </head>
 <body>
@@ -487,11 +539,11 @@ body{
 
       <div class="popup-overlay" id="missionPopup" onclick="if(event.target===this) closeMissionPopup();">
         <div class="popup-card">
-          <div class="gallery-label">기구 사진 (아래 중 택1)</div>
-          <div class="photo-gallery" id="popupGallery"></div>
-          <div class="popup-title" id="popupBadge"></div>
-          <div class="set-chips"><span class="set-chip" id="popupSets"></span><span class="set-chip" id="popupReps"></span></div>
-          <button class="dark-btn active" id="popupVerifyBtn" onclick="goToVerify()">인증하러 가기</button>
+          <div class="popup-header">아래 기구 중 하나를 선택하여 운동하세요</div>
+          <div class="popup-gallery" id="popupGallery"></div>
+          <div class="popup-badge" id="popupBadge"></div>
+          <div class="popup-sets"><span id="popupSets"></span><span id="popupReps"></span></div>
+          <button class="popup-verify-btn" id="popupVerifyBtn" onclick="goToVerify()"></button>
         </div>
       </div>
     </div>
@@ -500,39 +552,23 @@ body{
   <!-- Screen 3: Photo verification -->
   <section id="verify" class="screen">
     <div class="verify-wrap">
-      <div class="verify-topbar">
-        <div class="verify-back" onclick="closeVerify()">&lsaquo;</div>
-        <div class="verify-topbar-title">미션 인증</div>
-      </div>
-      <div class="verify-eyebrow" id="verifyEyebrow"></div>
-      <h1 class="verify-h1">인증샷을<br><span class="mint">올려줘</span></h1>
-      <div class="verify-sub">기구가 보이게 찍은 사진 한 장이면 충분해요.</div>
-
-      <div class="gallery-label">기구 사진 (아래 중 택1)</div>
-      <div class="photo-gallery" id="verifyGallery"></div>
-
-      <div class="verify-combo-title" id="verifyBadge"></div>
-      <div class="set-chips"><span class="set-chip" id="verifySets"></span><span class="set-chip" id="verifyReps"></span></div>
-
+      <img class="hero" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/mission_verify_bg.png">
+      <a class="verify-back" onclick="closeVerify()"></a>
+      <div class="verify-gallery" id="verifyGallery"></div>
+      <div class="verify-badge" id="verifyBadge"></div>
+      <div class="verify-sets"><span id="verifySets"></span><span id="verifyReps"></span></div>
       <div class="verify-photo" id="verifyPhoto" onclick="document.getElementById('verifyFileInput').click();">
+        <span class="verify-photo-hint">탭해서 기구 사진 올리기</span>
         <img id="verifyPhotoImg" src="">
-        <div class="verify-photo-icon" id="verifyPhotoIcon">
-          <svg class="icon-upload" viewBox="0 0 24 24" fill="none" stroke="#F2F6F5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-5 5M12 4l5 5"/><path d="M4 16v3a2 2 0 002 2h12a2 2 0 002-2v-3"/></svg>
-          <svg class="icon-check" viewBox="0 0 24 24" fill="none" stroke="#0a1211" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
-        </div>
-        <div class="verify-photo-title" id="verifyPhotoTitle">탭해서 사진 올리기</div>
-        <div class="verify-photo-hint" id="verifyPhotoHint">기구와 함께 나와야 인증돼요</div>
       </div>
       <input type="file" id="verifyFileInput" accept="image/*" capture="environment" style="display:none;">
-
       <div class="verify-checkbox-row">
         <div class="verify-checkbox" id="verifyCheckbox" onclick="toggleVerifyCheckbox()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#0a1211" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
         </div>
-        <div class="verify-checkbox-label">운동 기구 사진을 찍어 인증해주세요</div>
+        <div class="verify-checkbox-label">운동 기구 사진을 찍어 인증해주세요.</div>
       </div>
-
-      <button class="dark-btn disabled" id="verifyCompleteBtn" onclick="completeVerify()">사진을 먼저 올려주세요</button>
+      <button class="verify-complete-btn" onclick="completeVerify()"></button>
     </div>
   </section>
 
@@ -621,9 +657,9 @@ function renderGallery(containerEl, missionKey){
   const options = EQUIP_OPTIONS[missionKey] || [];
   const single = options.length <= 1;
   containerEl.innerHTML = options.map(opt => `
-    <div class="gallery-item" style="width:${single ? '100%' : '78%'};">
+    <div class="popup-gallery-item verify-gallery-item" style="width:${single ? '100%' : '68%'};">
       <img src="${EQUIP_DIR + opt.img}">
-      <span class="gallery-badge">${opt.name}</span>
+      <span>${opt.name}</span>
     </div>
   `).join('');
 }
@@ -713,11 +749,7 @@ function openMissionPopup(key){
   document.getElementById('popupSets').textContent = z.sets;
   document.getElementById('popupReps').textContent = z.reps;
   renderGallery(document.getElementById('popupGallery'), key);
-  const btn = document.getElementById('popupVerifyBtn');
-  const locked = usedStampToday();
-  btn.classList.toggle('active', !locked);
-  btn.classList.toggle('disabled', locked);
-  btn.textContent = locked ? '오늘은 이미 인증했어요 · 내일 다시' : '인증하러 가기';
+  document.getElementById('popupVerifyBtn').classList.toggle('disabled', usedStampToday());
   document.getElementById('missionPopup').classList.add('show');
 }
 function closeMissionPopup(){
@@ -730,12 +762,6 @@ function resetVerifyScreen(){
   document.getElementById('verifyPhotoImg').src = '';
   document.getElementById('verifyFileInput').value = '';
   document.getElementById('verifyCheckbox').classList.remove('checked');
-  document.getElementById('verifyPhotoTitle').textContent = '탭해서 사진 올리기';
-  document.getElementById('verifyPhotoHint').textContent = '기구와 함께 나와야 인증돼요';
-  const btn = document.getElementById('verifyCompleteBtn');
-  btn.classList.remove('active');
-  btn.classList.add('disabled');
-  btn.textContent = '사진을 먼저 올려주세요';
 }
 
 function goToVerify(){
@@ -743,9 +769,7 @@ function goToVerify(){
   if(usedStampToday()) return;
   const zoneKey = currentMissionKey.split('-')[0];
   const z = zones[zoneKey];
-  const missionName = missionNameFromKey(currentMissionKey);
-  document.getElementById('verifyEyebrow').textContent = z.name;
-  document.getElementById('verifyBadge').textContent = z.name + ' · ' + missionName;
+  document.getElementById('verifyBadge').textContent = missionNameFromKey(currentMissionKey);
   document.getElementById('verifySets').textContent = z.sets;
   document.getElementById('verifyReps').textContent = z.reps;
   renderGallery(document.getElementById('verifyGallery'), currentMissionKey);
@@ -765,29 +789,21 @@ document.getElementById('verifyFileInput').addEventListener('change', (e)=>{
   document.getElementById('verifyPhotoImg').src = url;
   document.getElementById('verifyPhoto').classList.add('has-photo');
   document.getElementById('verifyCheckbox').classList.add('checked');
-  document.getElementById('verifyPhotoTitle').textContent = '사진이 담겼어요';
-  document.getElementById('verifyPhotoHint').textContent = '다시 탭하면 바꿀 수 있어요';
-  updateVerifyButtonState();
 });
 
 function toggleVerifyCheckbox(){
   document.getElementById('verifyCheckbox').classList.toggle('checked');
-  updateVerifyButtonState();
-}
-
-function updateVerifyButtonState(){
-  const hasPhoto = document.getElementById('verifyPhoto').classList.contains('has-photo');
-  const checked = document.getElementById('verifyCheckbox').classList.contains('checked');
-  const btn = document.getElementById('verifyCompleteBtn');
-  const ready = hasPhoto && checked;
-  btn.classList.toggle('active', ready);
-  btn.classList.toggle('disabled', !ready);
-  btn.textContent = ready ? '인증 완료하기' : (hasPhoto ? '체크박스를 확인해주세요' : '사진을 먼저 올려주세요');
 }
 
 function completeVerify(){
-  const btn = document.getElementById('verifyCompleteBtn');
-  if(btn.classList.contains('disabled')) return;
+  if(!document.getElementById('verifyCheckbox').classList.contains('checked')){
+    const box = document.getElementById('verifyCheckbox');
+    box.style.transition = 'transform .1s ease';
+    box.style.transform = 'translateX(-4px)';
+    setTimeout(()=>{ box.style.transform = 'translateX(4px)'; }, 80);
+    setTimeout(()=>{ box.style.transform = ''; }, 160);
+    return;
+  }
   setDone(currentMissionKey, true);
   markStampToday();
   updateProgressUI();
