@@ -348,6 +348,13 @@ function goTo(id){
 const hatEls = { gat: document.getElementById('hatGat'), binyeo: document.getElementById('hatBinyeo') };
 const outfitEls = { gym: document.getElementById('outfitGym'), chima: document.getElementById('outfitChima'), baji: document.getElementById('outfitBaji') };
 
+function saveCharacter(hatKey, outfitKey){
+  try{
+    localStorage.setItem('gsf_hat', hatKey);
+    localStorage.setItem('gsf_outfit', outfitKey);
+  }catch(e){}
+}
+
 document.getElementById('hatRow').addEventListener('click', (e)=>{
   const chip = e.target.closest('.chip');
   if(!chip) return;
@@ -356,6 +363,7 @@ document.getElementById('hatRow').addEventListener('click', (e)=>{
   Object.values(hatEls).forEach(el=>el.classList.remove('show'));
   const key = chip.dataset.hat;
   if(hatEls[key]) hatEls[key].classList.add('show');
+  saveCharacter(key, document.querySelector('#outfitRow .chip.active').dataset.outfit);
 });
 
 document.getElementById('outfitRow').addEventListener('click', (e)=>{
@@ -366,6 +374,7 @@ document.getElementById('outfitRow').addEventListener('click', (e)=>{
   Object.values(outfitEls).forEach(el=>el.classList.remove('show'));
   const key = chip.dataset.outfit;
   if(outfitEls[key]) outfitEls[key].classList.add('show');
+  saveCharacter(document.querySelector('#hatRow .chip.active').dataset.hat, key);
 });
 
 document.getElementById('quickstartBtn').addEventListener('click', ()=>{
@@ -377,11 +386,32 @@ document.getElementById('quickstartBtn').addEventListener('click', ()=>{
   document.querySelector('#outfitRow .chip[data-outfit="gym"]').classList.add('active');
   Object.values(outfitEls).forEach(el=>el.classList.remove('show'));
   outfitEls.gym.classList.add('show');
+  saveCharacter('none', 'gym');
 
   const toast = document.getElementById('toast');
   toast.classList.add('show');
   setTimeout(()=> toast.classList.remove('show'), 1600);
 });
+
+(function restoreCharacter(){
+  let hatKey, outfitKey;
+  try{
+    hatKey = localStorage.getItem('gsf_hat');
+    outfitKey = localStorage.getItem('gsf_outfit');
+  }catch(e){}
+  if(hatKey && hatEls[hatKey]){
+    document.querySelectorAll('#hatRow .chip').forEach(c=>c.classList.remove('active'));
+    document.querySelector(`#hatRow .chip[data-hat="${hatKey}"]`).classList.add('active');
+    Object.values(hatEls).forEach(el=>el.classList.remove('show'));
+    hatEls[hatKey].classList.add('show');
+  }
+  if(outfitKey && outfitEls[outfitKey]){
+    document.querySelectorAll('#outfitRow .chip').forEach(c=>c.classList.remove('active'));
+    document.querySelector(`#outfitRow .chip[data-outfit="${outfitKey}"]`).classList.add('active');
+    Object.values(outfitEls).forEach(el=>el.classList.remove('show'));
+    outfitEls[outfitKey].classList.add('show');
+  }
+})();
 
 if (location.hash === '#select') {
   goTo('select');
