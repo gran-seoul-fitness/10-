@@ -336,7 +336,8 @@ body{
 .verify-photo{
   position:absolute;
   left:6.85%;top:52%;width:86.4%;height:31.6%;
-  border:3px dashed rgba(45,35,32,0.85);
+  background:#221F1C;
+  border:3px dashed rgba(247,245,240,0.28);
   border-radius:10px;
   overflow:hidden;
   cursor:pointer;
@@ -345,11 +346,23 @@ body{
 }
 .verify-photo img{width:100%;height:100%;object-fit:cover;display:none;}
 .verify-photo.has-photo img{display:block;}
-.verify-photo-hint{
-  color:rgba(58,42,30,0.7);font-size:12px;font-weight:700;
-  text-align:center;
+.verify-photo-placeholder{
+  display:flex;flex-direction:column;align-items:center;gap:9px;
 }
-.verify-photo.has-photo .verify-photo-hint{display:none;}
+.verify-photo.has-photo .verify-photo-placeholder{display:none;}
+.verify-photo-icon{
+  width:44px;height:44px;
+  border-radius:50%;
+  background:rgba(247,245,240,0.1);
+  display:flex;align-items:center;justify-content:center;
+}
+.verify-photo-icon svg{width:22px;height:22px;}
+.verify-photo-title{
+  color:#F7F5F0;font-size:13.5px;font-weight:700;
+}
+.verify-photo-subtitle{
+  color:#9C9990;font-size:11px;font-weight:500;
+}
 .verify-checkbox-row{
   position:absolute;
   left:10%;top:85.04%;width:79.9%;height:3.2%;
@@ -568,7 +581,13 @@ body{
       <div class="verify-badge" id="verifyBadge"></div>
       <div class="verify-sets"><span id="verifySets"></span><span id="verifyReps"></span></div>
       <div class="verify-photo" id="verifyPhoto" onclick="document.getElementById('verifyFileInput').click();">
-        <span class="verify-photo-hint">탭해서 기구 사진 올리기</span>
+        <div class="verify-photo-placeholder">
+          <div class="verify-photo-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#F7F5F0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10"/><path d="M8 8l4-4 4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+          </div>
+          <div class="verify-photo-title">탭해서 사진 올리기</div>
+          <div class="verify-photo-subtitle">기구와 함께 나와야 인증돼요</div>
+        </div>
         <img id="verifyPhotoImg" src="">
       </div>
       <input type="file" id="verifyFileInput" accept="image/*" capture="environment" style="display:none;">
