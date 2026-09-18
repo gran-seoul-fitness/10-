@@ -458,10 +458,29 @@ body{
 }
 .puzzle-play-btn:disabled{background:#C9C2B3;cursor:default;}
 #puzzlePlay{padding:0;background:var(--ivory-light);}
-.puzzle-play-wrap{padding:22px 20px;}
+.puzzle-play-wrap{position:relative;width:100%;}
+.puzzle-play-wrap img.hero{width:100%;display:block;}
+.puzzle-play-back{
+  position:absolute;
+  left:6%;top:2.8%;width:40%;height:3.6%;
+  cursor:pointer;
+}
+.puzzle-play-back:active{opacity:0.6;}
 .puzzle-play-msg{padding:60px 10px;text-align:center;font-size:14px;color:var(--ink-soft);line-height:1.7;}
-.puzzle-play-title{margin:2px 0 4px;font-size:20px;color:var(--ink);}
-.puzzle-play-sub{margin:0 0 16px;font-size:12.5px;color:var(--ink-soft);line-height:1.5;}
+.puzzle-play-title{
+  position:absolute;
+  left:7%;top:9.5%;width:86%;
+  margin:0;font-size:20px;color:var(--ink);
+}
+.puzzle-play-sub{
+  position:absolute;
+  left:7%;top:13.3%;width:86%;
+  margin:0;font-size:12.5px;color:var(--ink-soft);line-height:1.5;
+}
+.jigsaw-board-wrap{
+  position:absolute;
+  left:7%;top:18%;width:86%;
+}
 .jigsaw-board{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -865,11 +884,14 @@ body{
   <!-- Screen 5: Puzzle play -->
   <section id="puzzlePlay" class="screen">
     <div class="puzzle-play-wrap">
-      <a class="puzzle-back" onclick="goTo('puzzle')">← 돌아가기</a>
+      <img class="hero" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/puzzle_play_bg.png">
+      <a class="puzzle-play-back" onclick="goTo('map')"></a>
       <h2 class="puzzle-play-title">세종대왕 어진 맞추기</h2>
       <p class="puzzle-play-sub">조각 두 개를 순서대로 탭하면 자리가 바뀌어요. 원래 그림대로 모두 맞춰보세요!</p>
-      <div class="jigsaw-board" id="jigsawBoard"></div>
-      <button class="jigsaw-reset" onclick="shuffleJigsaw()">다시 섞기</button>
+      <div class="jigsaw-board-wrap">
+        <div class="jigsaw-board" id="jigsawBoard"></div>
+        <button class="jigsaw-reset" onclick="shuffleJigsaw()">다시 섞기</button>
+      </div>
     </div>
   </section>
 
