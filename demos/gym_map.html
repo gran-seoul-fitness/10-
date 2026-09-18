@@ -353,7 +353,7 @@ body{
 .verify-photo{
   position:absolute;
   left:6.85%;top:52%;width:86.4%;height:24%;
-  background:rgba(36,15,12,0.83);
+  background:rgba(58,58,60,0.6);
   border:3px dashed rgba(247,245,240,0.28);
   border-radius:10px;
   overflow:hidden;
@@ -433,13 +433,28 @@ body{
 
 /* ---------- Puzzle collection screen ---------- */
 #puzzle{padding:0;background:var(--ivory-light);}
-.puzzle-wrap{padding:22px 20px;}
-.puzzle-back{display:block;margin-bottom:16px;color:var(--ink-soft);font-size:13px;font-weight:700;cursor:pointer;}
-.puzzle-header h2{margin:0 0 4px;font-size:22px;color:var(--ink);}
-.puzzle-sub{margin:0 0 22px;font-size:13px;color:var(--ink-soft);line-height:1.5;}
+.puzzle-wrap{position:relative;width:100%;}
+.puzzle-wrap img.hero{width:100%;display:block;}
+.puzzle-back{
+  position:absolute;
+  left:6%;top:2.8%;width:40%;height:3.6%;
+  cursor:pointer;
+}
+.puzzle-back:active{opacity:0.6;}
+.puzzle-title{
+  position:absolute;
+  left:7%;top:19%;width:86%;
+  margin:0;font-size:22px;color:var(--ink);
+}
+.puzzle-sub{
+  position:absolute;
+  left:7%;top:23%;width:86%;
+  margin:0;font-size:13px;color:var(--ink-soft);line-height:1.5;
+}
 .puzzle-grid{
+  position:absolute;
+  left:7%;top:29%;width:86%;
   display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
-  margin-bottom:18px;
 }
 .puzzle-slot{
   aspect-ratio:1/1;
@@ -455,9 +470,15 @@ body{
   background-size:300% 200%;
 }
 .puzzle-slot-q{font-size:20px;font-weight:700;color:rgba(58,53,45,0.3);}
-.puzzle-progress{text-align:center;font-size:14px;font-weight:700;color:var(--ink);margin-bottom:18px;}
+.puzzle-progress{
+  position:absolute;
+  left:7%;top:58.5%;width:86%;
+  text-align:center;font-size:14px;font-weight:700;color:var(--ink);
+}
 .puzzle-play-btn{
-  width:100%;padding:14px;
+  position:absolute;
+  left:7%;top:62%;width:86%;
+  padding:14px;
   background:var(--orange);border:none;border-radius:14px;
   color:#FBF9F4;font-family:'HoonminjeongeumH','Gowun Batang',serif;font-size:14px;font-weight:700;
   cursor:pointer;
@@ -475,17 +496,17 @@ body{
 .puzzle-play-msg{padding:60px 10px;text-align:center;font-size:14px;color:var(--ink-soft);line-height:1.7;}
 .puzzle-play-title{
   position:absolute;
-  left:7%;top:9.5%;width:86%;
+  left:7%;top:15%;width:86%;
   margin:0;font-size:20px;color:var(--ink);
 }
 .puzzle-play-sub{
   position:absolute;
-  left:7%;top:13.3%;width:86%;
+  left:7%;top:18.8%;width:86%;
   margin:0;font-size:12.5px;color:var(--ink-soft);line-height:1.5;
 }
 .jigsaw-board-wrap{
   position:absolute;
-  left:7%;top:18%;width:86%;
+  left:7%;top:23.5%;width:86%;
 }
 .jigsaw-board{
   display:grid;
@@ -591,12 +612,12 @@ body{
 .sejong-hub-btn{
   display:block;
   padding:13px 0;margin-bottom:10px;
-  background:#B26D56;border:none;border-radius:14px;
+  background:#C06648;border:none;border-radius:14px;
   color:#FBF9F4;font-family:'HoonminjeongeumH','Gowun Batang',serif;font-size:14px;font-weight:700;
   text-decoration:none;
   cursor:pointer;
 }
-.sejong-hub-btn-alt{background:#24594B;}
+.sejong-hub-btn-alt{background:#1C614F;}
 .sejong-hub-btn:active{transform:scale(0.98);}
 .sejong-hub-close{
   background:none;border:none;
@@ -885,11 +906,10 @@ body{
   <!-- Screen 4: Puzzle collection -->
   <section id="puzzle" class="screen">
     <div class="puzzle-wrap">
-      <a class="puzzle-back" onclick="goTo('map')">← 고을 지도로 돌아가기</a>
-      <div class="puzzle-header">
-        <h2>십이교 놀이</h2>
-        <p class="puzzle-sub">미션을 인증할 때마다 조각을 하나씩 랜덤으로 모을 수 있어요. 12개를 모두 모으면 십이교 놀이를 시작할 수 있어요!</p>
-      </div>
+      <img class="hero" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/puzzle_collection_bg.png">
+      <a class="puzzle-back" onclick="goTo('map')"></a>
+      <h2 class="puzzle-title">십이교 놀이</h2>
+      <p class="puzzle-sub">미션을 인증할 때마다 조각을 하나씩 랜덤으로 모을 수 있어요. 12개를 모두 모으면 십이교 놀이를 시작할 수 있어요!</p>
       <div class="puzzle-grid" id="puzzleGrid"></div>
       <div class="puzzle-progress" id="puzzleProgress">0/12 조각 모음</div>
       <button class="puzzle-play-btn" id="puzzlePlayBtn" onclick="if(!this.disabled) goTo('puzzlePlay')" disabled>모든 조각을 모으면 시작할 수 있어요</button>
@@ -916,7 +936,9 @@ body{
       <img class="puzzle-complete-img" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/sejong_portrait.png" alt="세종대왕 어진">
       <h3>십이교 완성! 🎉</h3>
       <div class="puzzle-complete-text">
-        <p>세종대왕은 백성이 말은 있어도 마음을 제대로 표현할 문자가 없어 억울한 일을 당하는 것을 안타깝게 여겨 훈민정음을 만들었습니다. 말을 통일해 나라의 공동체 의식을 심어주고, 글을 몰라 죄를 뒤집어쓰는 백성이 없도록 하기 위함이었지요. 신하들의 거센 반대에도 굴하지 않고 오랜 시간 비밀리에 연구를 거듭한 끝에 한글을 완성해 반포했습니다.</p>
+        <p>세종대왕은 백성이 말은 있어도 마음을 제대로 표현할 문자가 없어 억울한 일을 당하는 것을 안타깝게 여겼습니다.</p>
+        <p>그래서 훈민정음을 만들었습니다. 말을 통일해 나라의 공동체 의식을 심어주고, 글을 몰라 죄를 뒤집어쓰는 백성이 없도록 하기 위함이었지요.</p>
+        <p>신하들의 거센 반대에도 굴하지 않고, 오랜 시간 비밀리에 연구를 거듭한 끝에 한글을 완성해 반포했습니다.</p>
         <p>이는 세종대왕이 얼마나 백성을 아끼고 나라를 사랑했는지 보여주는 이야기예요. 오늘 십이교를 완성한 것처럼, 작은 정성이 모여 큰 변화를 만든다는 걸 기억해주세요.</p>
       </div>
       <button class="puzzle-complete-btn" onclick="closePuzzleComplete()">닫기</button>
