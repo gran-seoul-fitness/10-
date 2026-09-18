@@ -138,14 +138,19 @@ body{
 }
 .progress-count{
   position:absolute;
-  left:81%;top:85.3%;width:14%;height:1.5%;
-  display:flex;align-items:center;
+  left:78.5%;top:85.1%;width:17.5%;height:1.8%;
+  background:#ECEBE7;
+  border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
   color:var(--ink);
   font-weight:700;
   font-size:12px;
-  font-family:'Gowun Batang',serif;
-  letter-spacing:0.3px;
+  white-space:nowrap;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  font-variant-numeric:tabular-nums;
 }
+.progress-count span{display:inline-block;}
+.progress-count .progress-slash{margin:0 3px;}
 
 /* ---------- Mission list screen ---------- */
 #missions{padding:0;}
@@ -416,21 +421,6 @@ body{
 .verify-complete-btn:active{transform:scale(0.98);}
 
 /* ---------- Puzzle entry button (map screen) ---------- */
-.puzzle-entry-btn{
-  position:absolute;
-  top:3%;right:4%;
-  width:38px;height:38px;
-  background:#FBF9F4;
-  border:2px solid rgba(45,35,32,0.3);
-  border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:18px;
-  cursor:pointer;
-  box-shadow:0 3px 8px rgba(0,0,0,0.15);
-  z-index:5;
-}
-.puzzle-entry-btn:active{transform:scale(0.92);}
-
 /* ---------- Puzzle collection screen ---------- */
 #puzzle{padding:0;background:var(--ivory-light);}
 .puzzle-wrap{position:relative;width:100%;}
@@ -706,7 +696,6 @@ body{
   <section id="map" class="screen active">
     <div class="village-wrap">
       <img class="hero" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/village_bg.png">
-      <a class="puzzle-entry-btn" onclick="goTo('puzzle')">🧩</a>
 
       <a class="zone-hit" data-zone="stretch" style="left:9%;top:25.5%;width:30%;height:14%;"></a>
       <a class="zone-hit" data-zone="gx" style="left:56%;top:31.5%;width:34%;height:15%;"></a>
@@ -850,7 +839,7 @@ body{
 
       <div class="dday-num" id="ddayBadge">D-13</div>
       <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-      <div class="progress-count" id="progressCount">0/12</div>
+      <div class="progress-count"><span id="progressDone">0</span><span class="progress-slash">/</span><span id="progressTotal">12</span></div>
     </div>
   </section>
 
@@ -1435,7 +1424,8 @@ function totalMissionCount(){
 function updateProgressUI(){
   const total = totalMissionCount();
   const done = Object.keys(getDoneSet()).length;
-  document.getElementById('progressCount').textContent = `${done}/${total}`;
+  document.getElementById('progressDone').textContent = done;
+  document.getElementById('progressTotal').textContent = total;
   document.getElementById('progressFill').style.width = (total ? done/total*100 : 0) + '%';
 }
 
