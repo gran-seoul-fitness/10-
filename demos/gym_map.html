@@ -242,10 +242,37 @@ body{
   display:flex;align-items:center;gap:14px;
   color:#3A3835;font-size:11px;font-weight:700;
 }
+.popup-gallery{
+  position:absolute;
+  left:6.76%;top:11.4%;width:86.4%;height:40.1%;
+  background:#F5F0E8;
+  display:flex;gap:6px;overflow-x:auto;
+  border-radius:6px;
+}
+.popup-gallery::-webkit-scrollbar{display:none;}
+.popup-gallery-item{
+  position:relative;flex:0 0 auto;height:100%;
+  border-radius:6px;overflow:hidden;
+}
+.popup-gallery-item img{width:100%;height:100%;object-fit:cover;display:block;}
+.popup-gallery-item span{
+  position:absolute;left:5px;bottom:5px;
+  background:rgba(20,18,16,0.72);color:#F7F5F0;
+  font-size:8px;font-weight:700;padding:3px 7px;border-radius:20px;
+  white-space:nowrap;
+}
 .popup-verify-btn{
   position:absolute;
   left:9.9%;top:72.6%;width:80.1%;height:16.2%;
   background:none;border:none;cursor:pointer;
+}
+.popup-verify-btn.disabled::before{
+  content:'오늘은 이미 인증했어요 · 내일 다시';
+  position:absolute;inset:0;
+  background:rgba(50,48,44,0.92);
+  color:#F7F5F0;font-size:11px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:14px;
 }
 
 /* ---------- Verify screen ---------- */
@@ -272,6 +299,25 @@ body{
   background:#F2F1EC;
   display:flex;align-items:center;gap:14px;
   color:#3A3835;font-size:11px;font-weight:700;
+}
+.verify-gallery{
+  position:absolute;
+  left:6.94%;top:21.84%;width:86.4%;height:18.12%;
+  background:#F5F0E8;
+  display:flex;gap:6px;overflow-x:auto;
+  border-radius:6px;
+}
+.verify-gallery::-webkit-scrollbar{display:none;}
+.verify-gallery-item{
+  position:relative;flex:0 0 auto;height:100%;
+  border-radius:6px;overflow:hidden;
+}
+.verify-gallery-item img{width:100%;height:100%;object-fit:cover;display:block;}
+.verify-gallery-item span{
+  position:absolute;left:5px;bottom:5px;
+  background:rgba(20,18,16,0.72);color:#F7F5F0;
+  font-size:8px;font-weight:700;padding:3px 7px;border-radius:20px;
+  white-space:nowrap;
 }
 .verify-photo{
   position:absolute;
@@ -465,9 +511,10 @@ body{
 
       <div class="popup-overlay" id="missionPopup" onclick="if(event.target===this) closeMissionPopup();">
         <div class="popup-card">
+          <div class="popup-gallery" id="popupGallery"></div>
           <div class="popup-badge" id="popupBadge"></div>
           <div class="popup-sets"><span id="popupSets"></span><span id="popupReps"></span></div>
-          <button class="popup-verify-btn" onclick="goToVerify()"></button>
+          <button class="popup-verify-btn" id="popupVerifyBtn" onclick="goToVerify()"></button>
         </div>
       </div>
     </div>
@@ -478,6 +525,7 @@ body{
     <div class="verify-wrap">
       <img class="hero" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/mission_verify_bg.png">
       <a class="verify-back" onclick="closeVerify()"></a>
+      <div class="verify-gallery" id="verifyGallery"></div>
       <div class="verify-badge" id="verifyBadge"></div>
       <div class="verify-sets"><span id="verifySets"></span><span id="verifyReps"></span></div>
       <div class="verify-photo" id="verifyPhoto" onclick="document.getElementById('verifyFileInput').click();">
@@ -511,6 +559,91 @@ const zones = {
 };
 
 const ordinalKo = ['첫 번째','두 번째','세 번째','네 번째','다섯 번째','여섯 번째'];
+
+const EQUIP_DIR = GH_RAW + 'equipment/';
+const EQUIP_OPTIONS = {
+  'strength-0': [ // 스쿼트
+    {name:'레그프레스', img:'legs-press.jpg'},
+    {name:'레그익스텐션·컬', img:'legs-extcurl.jpg'},
+    {name:'어덕터·어브덕터', img:'legs-abd.jpg'},
+    {name:'플레이트로드 스쿼트', img:'legs-squat.jpg'},
+  ],
+  'strength-1': [ // 데드리프트
+    {name:'랫풀다운', img:'back-lat.jpg'},
+    {name:'로우머신', img:'back-lowrow.jpg'},
+    {name:'암풀다운·펑셔널', img:'back-cable.jpg'},
+    {name:'플레이트로드 로우', img:'back-platerow.jpg'},
+  ],
+  'strength-2': [ // 벤치프레스
+    {name:'체스트프레스', img:'chest-press.jpg'},
+    {name:'펙덱', img:'chest-pectoral.jpg'},
+    {name:'인클라인 체스트프레스', img:'chest-incline.jpg'},
+    {name:'벤치프레스', img:'chest-bench.jpg'},
+  ],
+  'cardio-0': [ // 트레드밀 걷기
+    {name:'러닝머신', img:'cardio-treadmill.jpg'},
+    {name:'무동력머신', img:'cardio-manual.jpg'},
+    {name:'싱크로', img:'cardio-synchro.jpg'},
+    {name:'일립티컬', img:'cardio-elliptical.jpg'},
+  ],
+  'cardio-1': [ // 사이클 타기
+    {name:'사이클', img:'cardio-bike.jpg'},
+    {name:'로잉머신', img:'cardio-row.jpg'},
+    {name:'천국의 계단', img:'cardio-stepmill.jpg'},
+  ],
+  'cardio-2': [ // 줄넘기
+    {name:'사이클', img:'cardio-bike.jpg'},
+    {name:'로잉머신', img:'cardio-row.jpg'},
+    {name:'천국의 계단', img:'cardio-stepmill.jpg'},
+  ],
+  'gx-0': [ // 요가
+    {name:'요가', img:'gx-yoga.jpg'},
+    {name:'매트필라테스', img:'gx-matpilates.jpg'},
+  ],
+  'gx-1': [ // 줌바
+    {name:'덤벨 트레이닝', img:'gx-dumbbell.jpg'},
+    {name:'파워코어트레이닝', img:'gx-powercore.jpg'},
+  ],
+  'gx-2': [ // 필라테스
+    {name:'매트필라테스', img:'gx-matpilates.jpg'},
+    {name:'요가', img:'gx-yoga.jpg'},
+  ],
+  'stretch-0': [ // 매트 전신 스트레칭
+    {name:'FLEXABILITY ANTERIOR', img:'stretch-anterior.jpg'},
+    {name:'FLEXABILITY POSTERIOR', img:'stretch-posterior.jpg'},
+  ],
+  'stretch-1': [ // 고관절 모빌리티
+    {name:'FLEXABILITY ANTERIOR', img:'stretch-anterior.jpg'},
+    {name:'FLEXABILITY POSTERIOR', img:'stretch-posterior.jpg'},
+  ],
+  'stretch-2': [ // 폼롤러 스트레칭
+    {name:'폼롤러', img:'stretch-foamroll.jpg'},
+  ],
+};
+
+function renderGallery(containerEl, missionKey){
+  const options = EQUIP_OPTIONS[missionKey] || [];
+  const single = options.length <= 1;
+  containerEl.innerHTML = options.map(opt => `
+    <div class="popup-gallery-item verify-gallery-item" style="width:${single ? '100%' : '68%'};">
+      <img src="${EQUIP_DIR + opt.img}">
+      <span>${opt.name}</span>
+    </div>
+  `).join('');
+}
+
+/* ---------- Daily certification limit (once per day, like the Sept challenge) ---------- */
+function todayStr(){
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function usedStampToday(){
+  try{ return localStorage.getItem('gsf_last_certify_date') === todayStr(); }
+  catch(e){ return false; }
+}
+function markStampToday(){
+  try{ localStorage.setItem('gsf_last_certify_date', todayStr()); }catch(e){}
+}
 
 function goTo(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -583,6 +716,8 @@ function openMissionPopup(key){
   document.getElementById('popupBadge').textContent = missionNameFromKey(key);
   document.getElementById('popupSets').textContent = z.sets;
   document.getElementById('popupReps').textContent = z.reps;
+  renderGallery(document.getElementById('popupGallery'), key);
+  document.getElementById('popupVerifyBtn').classList.toggle('disabled', usedStampToday());
   document.getElementById('missionPopup').classList.add('show');
 }
 function closeMissionPopup(){
@@ -599,11 +734,13 @@ function resetVerifyScreen(){
 
 function goToVerify(){
   if(!currentMissionKey) return;
+  if(usedStampToday()) return;
   const zoneKey = currentMissionKey.split('-')[0];
   const z = zones[zoneKey];
   document.getElementById('verifyBadge').textContent = missionNameFromKey(currentMissionKey);
   document.getElementById('verifySets').textContent = z.sets;
   document.getElementById('verifyReps').textContent = z.reps;
+  renderGallery(document.getElementById('verifyGallery'), currentMissionKey);
   resetVerifyScreen();
   closeMissionPopup();
   goTo('verify');
@@ -636,6 +773,7 @@ function completeVerify(){
     return;
   }
   setDone(currentMissionKey, true);
+  markStampToday();
   updateProgressUI();
   const zoneKey = currentMissionKey.split('-')[0];
   renderMissionList(zoneKey);
