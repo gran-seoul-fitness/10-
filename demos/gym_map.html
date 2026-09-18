@@ -176,7 +176,6 @@ body{
   background:transparent;
   transition:background .15s ease;
 }
-.mission-item.done .mission-icon{background:var(--teal);}
 .mission-badge{
   position:absolute;
   left:23.9%;top:26%;width:25.9%;height:15.4%;
@@ -193,16 +192,20 @@ body{
   transition:color .15s ease;
   overflow:hidden;
 }
+.mission-item.done .mission-icon,
+.mission-item.done .mission-badge,
 .mission-item.done .mission-name-bar{
-  color:rgba(42,35,32,0.55);
-  text-decoration:line-through;
+  visibility:hidden;
 }
 .mission-item.done::after{
-  content:'';
+  content:'미션 완료';
   position:absolute;
-  left:23.9%;top:45.1%;width:56.5%;height:28.6%;
-  background:rgba(255,255,255,0.4);
-  border-radius:8px;
+  inset:0;
+  background:rgba(36,15,12,0.73);
+  border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  color:#F7F5F0;font-size:15px;font-weight:700;
+  letter-spacing:0.4px;
   pointer-events:none;
 }
 
