@@ -63,7 +63,7 @@ body{
   transform:translateX(-50%);
   margin-bottom:6px;
   background:#FBF9F4;
-  border:1.3px solid var(--ink);
+  border:1.3px solid #9C9990;
   border-radius:10px;
   padding:4px 7px;
   font-size:8.5px;
@@ -85,7 +85,7 @@ body{
   width:0;height:0;
   border-left:4px solid transparent;
   border-right:4px solid transparent;
-  border-top:5px solid var(--ink);
+  border-top:5px solid #9C9990;
 }
 .speech-bubble::before{
   content:'';
@@ -109,9 +109,18 @@ body{
 .char-mini .hat-group{opacity:0;transition:opacity .2s ease;}
 .char-mini .hat-group.show{opacity:1;}
 
+.dday-num{
+  position:absolute;
+  left:55.3%;top:82.3%;width:9.4%;height:2%;
+  display:flex;align-items:center;justify-content:center;
+  color:#FFFFFF;
+  font-weight:700;
+  font-size:11px;
+  letter-spacing:0.3px;
+}
 .progress-track{
   position:absolute;
-  left:31.5%;top:85.5%;width:44%;height:1.05%;
+  left:31.5%;top:85.5%;width:48%;height:1.05%;
   border-radius:20px;
   overflow:hidden;
 }
@@ -123,7 +132,7 @@ body{
 }
 .progress-count{
   position:absolute;
-  left:77%;top:85.3%;width:14%;height:1.5%;
+  left:81%;top:85.3%;width:14%;height:1.5%;
   display:flex;align-items:center;
   color:var(--ink);
   font-weight:700;
@@ -342,6 +351,7 @@ body{
         </div>
       </div>
 
+      <div class="dday-num" id="ddayBadge">D-13</div>
       <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
       <div class="progress-count" id="progressCount">0/12</div>
     </div>
@@ -363,6 +373,13 @@ body{
 </div>
 
 <script>
+const missionIcons = {
+  stretch: `<svg viewBox="0 0 24 24" fill="none" stroke="#FBF9F4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><circle cx="12" cy="4.5" r="2" fill="#FBF9F4" stroke="none"/><path d="M12 7v6M12 9l-5 3M12 9l5 3M12 13l-3 7M12 13l3 7"/></svg>`,
+  gx: `<svg viewBox="0 0 24 24" fill="none" stroke="#FBF9F4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><circle cx="12" cy="4.5" r="2" fill="#FBF9F4" stroke="none"/><path d="M12 7v5M12 8l-5-3M12 8l5-3M12 12l-4 8M12 12l4 8"/></svg>`,
+  strength: `<svg viewBox="0 0 24 24" width="24" height="24"><rect x="1.5" y="9.5" width="4" height="5" rx="1.2" fill="#FBF9F4"/><rect x="18.5" y="9.5" width="4" height="5" rx="1.2" fill="#FBF9F4"/><rect x="4.5" y="11" width="15" height="2" fill="#FBF9F4"/></svg>`,
+  cardio: `<svg viewBox="0 0 24 24" fill="none" stroke="#FBF9F4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><circle cx="15" cy="4.5" r="2" fill="#FBF9F4" stroke="none"/><path d="M4 20l4-5 3 2 3-6 2 3h4"/><path d="M11 11l2-3-3-2-2 3 2 2z" fill="#FBF9F4" stroke="none"/></svg>`
+};
+
 const zones = {
   stretch: { name:'스트레칭', color:'#AD8A45', icon:'🧘', missions:['매트 전신 스트레칭','고관절 모빌리티','폼롤러 스트레칭'] },
   gx: { name:'그룹운동', color:'#D85A30', icon:'🤸', missions:['요가','줌바','필라테스'] },
@@ -411,7 +428,7 @@ function renderMissionList(key){
     item.className = 'mission-item' + (isDone ? ' done' : '');
     item.dataset.key = missionKey;
     item.innerHTML = `
-      <div class="mission-icon">${isDone ? '✓' : (i+1)}</div>
+      <div class="mission-icon">${isDone ? '✓' : missionIcons[key]}</div>
       <div class="mission-body">
         <div class="mission-badge">미션 ${ordinal}</div>
         <div class="mission-name-bar">${m}</div>
@@ -428,7 +445,8 @@ document.getElementById('missionList').addEventListener('click', (e)=>{
   const nowDone = !done[key];
   setDone(key, nowDone);
   item.classList.toggle('done', nowDone);
-  item.querySelector('.mission-icon').textContent = nowDone ? '✓' : (Array.from(item.parentNode.children).indexOf(item) + 1);
+  const zoneKey = key.split('-')[0];
+  item.querySelector('.mission-icon').innerHTML = nowDone ? '✓' : missionIcons[zoneKey];
   updateProgressUI();
 });
 
@@ -492,6 +510,15 @@ speechBubbleEl.addEventListener('click', ()=>{
   speechBubbleEl.textContent = speechPhrases[speechIndex];
 });
 
+/* ---------- D-day ---------- */
+const CHALLENGE_END = new Date('2026-10-31T23:59:59+09:00');
+function updateDday(){
+  const now = new Date();
+  const diffDays = Math.ceil((CHALLENGE_END - now) / 86400000);
+  document.getElementById('ddayBadge').textContent = diffDays > 0 ? `D-${diffDays}` : 'D-DAY';
+}
+
+updateDday();
 updateProgressUI();
 restoreCharacterMini();
 </script>
