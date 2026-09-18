@@ -6,6 +6,12 @@
 <title>그랑서울 피트니스 · 고을 지도</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap">
 <style>
+@font-face{
+  font-family:'HoonminjeongeumH';
+  src:url('https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/fonts/HancomHoonminjeongeumH.woff2') format('woff2');
+  font-weight:400 700;
+  font-display:swap;
+}
 :root{
   --ink:#1C1C1A;
   --ink-soft:#5F5E5A;
@@ -20,7 +26,7 @@
 *{box-sizing:border-box;}
 body{
   margin:0;
-  font-family:'Gowun Batang',serif;
+  font-family:'HoonminjeongeumH','Gowun Batang',serif;
   background:var(--ivory-light);
   color:var(--ink);
   display:flex;
@@ -401,7 +407,7 @@ body{
   left:10.1%;top:89.5%;width:80.1%;height:5.6%;
   background:#CE6A30;
   border:none;border-radius:14px;
-  color:#FBF9F4;font-family:'Gowun Batang',serif;font-size:14px;font-weight:700;
+  color:#FBF9F4;font-family:'HoonminjeongeumH','Gowun Batang',serif;font-size:14px;font-weight:700;
   cursor:pointer;
   box-shadow:0 4px 10px rgba(206,106,48,0.35);
 }
@@ -447,7 +453,7 @@ body{
 .puzzle-play-btn{
   width:100%;padding:14px;
   background:var(--orange);border:none;border-radius:14px;
-  color:#FBF9F4;font-family:'Gowun Batang',serif;font-size:14px;font-weight:700;
+  color:#FBF9F4;font-family:'HoonminjeongeumH','Gowun Batang',serif;font-size:14px;font-weight:700;
   cursor:pointer;
 }
 .puzzle-play-btn:disabled{background:#C9C2B3;cursor:default;}
@@ -459,8 +465,7 @@ body{
 .jigsaw-board{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  grid-template-rows:repeat(4,1fr);
-  gap:2px;
+  grid-template-rows:repeat(2,1fr);
   width:100%;
   aspect-ratio:629/878;
   background:#2A2320;
@@ -468,18 +473,23 @@ body{
   overflow:hidden;
   margin-bottom:14px;
 }
+.jigsaw-cell{position:relative;}
 .jigsaw-tile{
-  position:relative;
+  position:absolute;
+  inset:0;
   background-image:url('https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/sejong_portrait.png');
-  background-size:300% 400%;
+  background-size:300% 200%;
   cursor:pointer;
-  transition:transform .12s ease, filter .12s ease;
+  transition:filter .12s ease;
 }
 .jigsaw-tile.selected{
-  outline:3px solid var(--orange);
-  outline-offset:-3px;
-  filter:brightness(1.12);
+  filter:brightness(1.25) saturate(1.15);
   z-index:2;
+}
+.jigsaw-tile::after{
+  content:'';
+  position:absolute;inset:0;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,0.35);
 }
 .jigsaw-tile.solved-flash{outline:3px solid var(--teal);outline-offset:-3px;}
 .jigsaw-hint{text-align:center;font-size:12.5px;color:var(--ink-soft);margin-bottom:6px;}
@@ -525,7 +535,7 @@ body{
 .puzzle-complete-btn{
   width:100%;padding:12px 0;
   background:var(--orange);border:none;border-radius:14px;
-  color:#FBF9F4;font-family:'Gowun Batang',serif;font-size:14px;font-weight:700;
+  color:#FBF9F4;font-family:'HoonminjeongeumH','Gowun Batang',serif;font-size:14px;font-weight:700;
   cursor:pointer;
 }
 .puzzle-complete-btn:active{transform:scale(0.98);}
@@ -557,7 +567,7 @@ body{
   display:block;
   padding:13px 0;margin-bottom:10px;
   background:var(--orange);border:none;border-radius:14px;
-  color:#FBF9F4;font-family:'Gowun Batang',serif;font-size:14px;font-weight:700;
+  color:#FBF9F4;font-family:'HoonminjeongeumH','Gowun Batang',serif;font-size:14px;font-weight:700;
   text-decoration:none;
   cursor:pointer;
 }
@@ -627,7 +637,7 @@ body{
 .celebrate-btn{
   background:var(--orange);
   border:none;border-radius:14px;
-  color:#FBF9F4;font-family:'Gowun Batang',serif;font-size:14px;font-weight:700;
+  color:#FBF9F4;font-family:'HoonminjeongeumH','Gowun Batang',serif;font-size:14px;font-weight:700;
   padding:12px 0;width:100%;
   cursor:pointer;
 }
@@ -1207,10 +1217,10 @@ function renderPuzzleGrid(){
   }
 }
 
-/* ---------- 세종대왕 어진 맞추기 (photo jigsaw, 3x4 tap-to-swap) ---------- */
-const JIGSAW_COLS = 3;
-const JIGSAW_ROWS = 4;
-const JIGSAW_TOTAL = JIGSAW_COLS * JIGSAW_ROWS;
+/* ---------- 세종대왕 어진 맞추기 (photo jigsaw, triangular tangram-style tap-to-swap) ---------- */
+const JIGSAW_CELL_COLS = 3;
+const JIGSAW_CELL_ROWS = 2;
+const JIGSAW_TOTAL = JIGSAW_CELL_COLS * JIGSAW_CELL_ROWS * 2;
 let jigsawState = [];
 let jigsawSelected = null;
 
@@ -1229,16 +1239,48 @@ function shuffleJigsaw(){
   jigsawState = arr;
   renderJigsaw();
 }
+function jigsawCellRowCol(cellIdx){
+  return { row: Math.floor(cellIdx / JIGSAW_CELL_COLS), col: cellIdx % JIGSAW_CELL_COLS };
+}
+function jigsawDiagonal(cellIdx){
+  const { row, col } = jigsawCellRowCol(cellIdx);
+  return (row + col) % 2 === 0 ? 'nwse' : 'nesw';
+}
+function jigsawClipPath(slotIdx){
+  const cellIdx = Math.floor(slotIdx / 2);
+  const half = slotIdx % 2;
+  const dir = jigsawDiagonal(cellIdx);
+  if(dir === 'nwse'){
+    return half === 0
+      ? 'polygon(0% 0%, 100% 0%, 100% 100%)'
+      : 'polygon(0% 0%, 100% 100%, 0% 100%)';
+  }
+  return half === 0
+    ? 'polygon(0% 0%, 100% 0%, 0% 100%)'
+    : 'polygon(100% 0%, 100% 100%, 0% 100%)';
+}
+function jigsawBackgroundPos(pieceIdx){
+  const cellIdx = Math.floor(pieceIdx / 2);
+  const { row, col } = jigsawCellRowCol(cellIdx);
+  const posX = (col / (JIGSAW_CELL_COLS - 1)) * 100;
+  const posY = (row / (JIGSAW_CELL_ROWS - 1)) * 100;
+  return `${posX}% ${posY}%`;
+}
 function renderJigsaw(){
   const board = document.getElementById('jigsawBoard');
-  board.innerHTML = jigsawState.map((pieceIdx, slotIdx) => {
-    const col = pieceIdx % JIGSAW_COLS;
-    const row = Math.floor(pieceIdx / JIGSAW_COLS);
-    const posX = (col / (JIGSAW_COLS - 1)) * 100;
-    const posY = (row / (JIGSAW_ROWS - 1)) * 100;
-    const sel = slotIdx === jigsawSelected ? ' selected' : '';
-    return `<div class="jigsaw-tile${sel}" data-slot="${slotIdx}" style="background-position:${posX}% ${posY}%;" onclick="onJigsawTileClick(${slotIdx})"></div>`;
-  }).join('');
+  const cellCount = JIGSAW_CELL_COLS * JIGSAW_CELL_ROWS;
+  let html = '';
+  for(let cellIdx = 0; cellIdx < cellCount; cellIdx++){
+    html += '<div class="jigsaw-cell">';
+    for(let half = 0; half < 2; half++){
+      const slotIdx = cellIdx * 2 + half;
+      const pieceIdx = jigsawState[slotIdx];
+      const sel = slotIdx === jigsawSelected ? ' selected' : '';
+      html += `<div class="jigsaw-tile${sel}" style="clip-path:${jigsawClipPath(slotIdx)};background-position:${jigsawBackgroundPos(pieceIdx)};" onclick="onJigsawTileClick(${slotIdx})"></div>`;
+    }
+    html += '</div>';
+  }
+  board.innerHTML = html;
 }
 function onJigsawTileClick(slotIdx){
   if(jigsawSelected === null){
