@@ -140,60 +140,50 @@ body{
 }
 
 /* ---------- Mission list screen ---------- */
-#missions{padding:26px 22px 40px;background:#DED6C4;}
+#missions{padding:0;}
+.mission-wrap{position:relative;width:100%;}
+.mission-wrap img.hero{width:100%;display:block;}
 .mission-back{
-  display:inline-flex;align-items:center;gap:4px;
-  font-size:12px;color:var(--ink-soft);
-  background:none;border:none;cursor:pointer;
-  margin-bottom:18px;padding:0;
-  font-family:'Gowun Batang',serif;
+  position:absolute;
+  left:4%;top:2.6%;width:40%;height:3.6%;
+  display:block;
+  cursor:pointer;
 }
-.mission-head{text-align:center;margin-bottom:20px;}
-.mission-head .zone-icon{
-  width:52px;height:52px;border-radius:50%;
-  margin:0 auto 10px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:24px;
-  border:2px solid rgba(28,28,26,0.15);
-}
-.mission-head .eyebrow{font-size:12px;letter-spacing:3px;margin-bottom:6px;font-weight:700;}
-.mission-head h1{font-weight:700;font-size:20px;margin:0;}
+.mission-back:active{opacity:0.6;}
 
-.mission-panel{
-  background:#C7CBB6;
-  border:1px solid rgba(28,28,26,0.18);
-  border-radius:18px;
-  padding:16px;
+.mission-list{
+  position:absolute;
+  left:16.2%;top:25.9%;width:68%;
+  display:flex;flex-direction:column;gap:1.3%;
 }
-.mission-list{display:flex;flex-direction:column;gap:14px;}
 .mission-item{
-  display:flex;align-items:center;gap:14px;
-  border:1px solid #ddd8cc;border-radius:16px;padding:12px;
+  display:flex;align-items:center;gap:10px;
+  border:1px solid #ddd8cc;border-radius:14px;padding:10px;
   background:#FBF9F4;
   cursor:pointer;
   transition:transform .12s ease;
 }
 .mission-item:active{transform:scale(0.98);}
 .mission-icon{
-  width:50px;height:50px;border-radius:14px;flex-shrink:0;
+  width:42px;height:42px;border-radius:11px;flex-shrink:0;
   background:#CD6226;
   display:flex;align-items:center;justify-content:center;
-  color:#FBF9F4;font-size:20px;font-weight:700;
+  color:#FBF9F4;font-size:17px;font-weight:700;
   transition:background .15s ease;
 }
 .mission-item.done .mission-icon{background:var(--teal);}
-.mission-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;}
+.mission-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;}
 .mission-badge{
   align-self:flex-start;
   background:var(--ink);color:#F7F5F0;
-  font-size:10px;font-weight:700;
-  padding:3px 9px;border-radius:20px;
+  font-size:8.5px;font-weight:700;
+  padding:3px 8px;border-radius:20px;
   letter-spacing:0.3px;
 }
 .mission-name-bar{
-  background:#DA966E;border-radius:10px;
-  padding:9px 12px;
-  font-size:14.5px;font-weight:700;color:#2A2320;
+  background:#DA966E;border-radius:9px;
+  padding:7px 10px;
+  font-size:12.5px;font-weight:700;color:#2A2320;
   transition:background .15s ease, color .15s ease;
 }
 .mission-item.done .mission-name-bar{
@@ -359,13 +349,9 @@ body{
 
   <!-- Screen 2: Mission list -->
   <section id="missions" class="screen">
-    <button class="mission-back" onclick="goTo('map')">&larr; 고을 지도로 돌아가기</button>
-    <div class="mission-head">
-      <div class="zone-icon" id="zoneIcon"></div>
-      <div class="eyebrow" id="zoneEyebrow"></div>
-      <h1 id="zoneTitle"></h1>
-    </div>
-    <div class="mission-panel">
+    <div class="mission-wrap">
+      <img class="hero" id="missionHero" src="">
+      <a class="mission-back" onclick="goTo('map')"></a>
       <div class="mission-list" id="missionList"></div>
     </div>
   </section>
@@ -380,11 +366,12 @@ const missionIcons = {
   cardio: `<svg viewBox="0 0 24 24" fill="none" stroke="#FBF9F4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><circle cx="15" cy="4.5" r="2" fill="#FBF9F4" stroke="none"/><path d="M4 20l4-5 3 2 3-6 2 3h4"/><path d="M11 11l2-3-3-2-2 3 2 2z" fill="#FBF9F4" stroke="none"/></svg>`
 };
 
+const GH_RAW = 'https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/';
 const zones = {
-  stretch: { name:'스트레칭', color:'#AD8A45', icon:'🧘', missions:['매트 전신 스트레칭','고관절 모빌리티','폼롤러 스트레칭'] },
-  gx: { name:'그룹운동', color:'#D85A30', icon:'🤸', missions:['요가','줌바','필라테스'] },
-  strength: { name:'근력', color:'#1C1C1A', icon:'🏋️', missions:['스쿼트','데드리프트','벤치프레스'] },
-  cardio: { name:'유산소', color:'#0F6E56', icon:'🏃', missions:['트레드밀 걷기','사이클 타기','줄넘기'] }
+  stretch: { name:'스트레칭', color:'#AD8A45', bg: GH_RAW + 'mission_stretch_bg.png', missions:['매트 전신 스트레칭','고관절 모빌리티','폼롤러 스트레칭'] },
+  gx: { name:'그룹운동', color:'#D85A30', bg: GH_RAW + 'mission_gx_bg.png', missions:['요가','줌바','필라테스'] },
+  strength: { name:'근력', color:'#1C1C1A', bg: GH_RAW + 'mission_strength_bg.png', missions:['스쿼트','데드리프트','벤치프레스'] },
+  cardio: { name:'유산소', color:'#0F6E56', bg: GH_RAW + 'mission_cardio_bg.png', missions:['트레드밀 걷기','사이클 타기','줄넘기'] }
 };
 
 const ordinalKo = ['첫 번째','두 번째','세 번째','네 번째','다섯 번째','여섯 번째'];
@@ -403,13 +390,7 @@ document.querySelectorAll('.zone-hit[data-zone]').forEach(zoneEl=>{
     const key = zoneEl.dataset.zone;
     currentZoneKey = key;
     const z = zones[key];
-    document.getElementById('zoneEyebrow').textContent = z.name + ' 존';
-    document.getElementById('zoneEyebrow').style.color = z.color;
-    document.getElementById('zoneTitle').textContent = z.name + ' 미션';
-    const iconEl = document.getElementById('zoneIcon');
-    iconEl.textContent = z.icon;
-    iconEl.style.background = '#FBF9F4';
-    iconEl.style.borderColor = z.color;
+    document.getElementById('missionHero').src = z.bg;
     renderMissionList(key);
     goTo('missions');
   });
