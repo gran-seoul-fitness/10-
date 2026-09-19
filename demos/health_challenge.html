@@ -133,6 +133,16 @@ body{
 .btn-quickstart span{font-size:9.5px;font-weight:400;opacity:0.75;}
 .btn-quickstart:active{animation-play-state:paused;transform:scale(0.97);}
 
+.btn-start{
+  display:block;width:100%;
+  font-family:'HoonminjeongeumH','Gowun Batang',serif;font-weight:700;font-size:13px;
+  color:#FBF9F4;background:var(--orange);border:none;border-radius:12px;
+  padding:12px;margin-top:14px;
+  cursor:pointer;letter-spacing:0.3px;
+  box-shadow:0 4px 10px rgba(216,90,48,0.35);
+}
+.btn-start:active{transform:scale(0.98);}
+
 .divider{
   display:flex;align-items:center;text-align:center;color:var(--ink-soft);
   font-size:9px;letter-spacing:0.5px;margin-bottom:9px;
@@ -338,6 +348,7 @@ body{
         </div>
 
         <div class="footer-note">소품을 선택하면 캐릭터에 바로 입혀져요.</div>
+        <button class="btn-start" id="startBtn">시작하기</button>
       </div>
     </div>
   </section>
@@ -396,7 +407,11 @@ document.getElementById('quickstartBtn').addEventListener('click', ()=>{
 
   const toast = document.getElementById('toast');
   toast.classList.add('show');
-  setTimeout(()=> toast.classList.remove('show'), 1600);
+  setTimeout(()=>{ location.href = 'gym_map.html'; }, 900);
+});
+
+document.getElementById('startBtn').addEventListener('click', ()=>{
+  location.href = 'gym_map.html';
 });
 
 (function restoreCharacter(){
