@@ -462,6 +462,7 @@ button,
   position:absolute;inset:0;
   background:rgba(50,48,44,0.92);
   color:#F7F5F0;font-size:11px;font-weight:700;
+  font-family:'HoonminjeongeumH','Gowun Batang',serif;
   display:flex;align-items:center;justify-content:center;
   border-radius:14px;
 }
@@ -1337,7 +1338,7 @@ const missionIcons = {
 const GH_RAW = 'https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/';
 const zones = {
   stretch: { name:'스트레칭', color:'#AD8A45', bg: GH_RAW + 'mission_stretch_bg.png', sets:'1세트', reps:'10분', missions:['기구 스트레칭','폼롤러·매트 스트레칭','엘라스코 스트레칭'] },
-  gx: { name:'그룹운동', color:'#D85A30', bg: GH_RAW + 'mission_gx_bg.png', sets:'1세트', reps:'30분', missions:['요가·줌바·필라테스'] },
+  gx: { name:'그룹운동', color:'#D85A30', bg: GH_RAW + 'mission_gx_bg.png', sets:'1세트', reps:'30분', missions:['그룹운동 프로그램'] },
   strength: { name:'근력', color:'#1C1C1A', bg: GH_RAW + 'mission_strength_bg.png', sets:'3세트', reps:'12회', missions:['등 운동','하체 운동','가슴 운동','어깨 운동','프리웨이트'] },
   cardio: { name:'유산소', color:'#0F6E56', bg: GH_RAW + 'mission_cardio_bg.png', sets:'1세트', reps:'20분', missions:['사이클 타기','트레드밀·계단·일립티컬','무동력·싱크로'] }
 };
@@ -1390,7 +1391,7 @@ const EQUIP_OPTIONS = {
     {name:'무동력머신', img:'cardio-manual.jpg'},
     {name:'싱크로', img:'cardio-synchro.jpg'},
   ],
-  'gx-0': [ // 요가·줌바·필라테스
+  'gx-0': [ // 그룹운동 프로그램
     {name:'파워코어 트레이닝', img:'gx-powercore.jpg'},
     {name:'덤벨 트레이닝', img:'gx-dumbbell.jpg'},
     {name:'요가', img:'gx-yoga.jpg'},
@@ -1400,9 +1401,8 @@ const EQUIP_OPTIONS = {
     {name:'FLEXABILITY ANTERIOR', img:'stretch-anterior.jpg'},
     {name:'FLEXABILITY POSTERIOR', img:'stretch-posterior.jpg'},
   ],
-  'stretch-1': [ // 폼롤러·매트 스트레칭 (인증은 매트 사진으로)
+  'stretch-1': [ // 폼롤러·매트 스트레칭
     {name:'폼롤러', img:'stretch-foamroll.jpg'},
-    {name:'매트', img:'gx-matpilates.jpg'},
   ],
   'stretch-2': [ // 엘라스코 스트레칭
     {name:'엘라스코', img:'stretch-elasko.jpg'},
