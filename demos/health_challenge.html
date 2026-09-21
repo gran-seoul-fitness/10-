@@ -41,7 +41,40 @@ body{
   overflow:hidden;
 }
 .screen{display:none;min-height:100vh;flex-direction:column;position:relative;}
-.screen.active{display:flex;}
+.screen.active{display:flex;animation:screenFadeIn .5s ease;}
+@keyframes screenFadeIn{
+  0%{opacity:0;transform:scale(1.015) translateY(6px);filter:blur(8px);}
+  60%{filter:blur(1.5px);}
+  100%{opacity:1;transform:scale(1) translateY(0);filter:blur(0);}
+}
+
+/* ---------- Tap feedback: smoother, bouncier press for all buttons ---------- */
+button, .btn-mini, .btn-quickstart, .btn-start{
+  transition:transform .16s cubic-bezier(.34,1.56,.64,1), opacity .16s ease, box-shadow .16s ease;
+}
+
+/* ---------- Tap-burst particles (butterflies/flowers when the character is tapped) ---------- */
+.tap-burst-particle{
+  position:fixed;
+  left:0;top:0;
+  transform:translate(-50%,-50%);
+  font-size:22px;
+  pointer-events:none;
+  z-index:999;
+  animation:tapBurst .9s ease-out forwards;
+}
+@keyframes tapBurst{
+  0%{transform:translate(-50%,-50%) translate(0,0) scale(0.5) rotate(0deg);opacity:1;}
+  65%{opacity:1;}
+  100%{transform:translate(-50%,-50%) translate(var(--dx),var(--dy)) scale(1.15) rotate(var(--rot));opacity:0;}
+}
+.char-wrap.tapped{animation:charTapPop .5s ease;}
+@keyframes charTapPop{
+  0%{transform:scale(1) rotate(0deg);}
+  35%{transform:scale(1.18) rotate(-6deg);}
+  65%{transform:scale(0.95) rotate(4deg);}
+  100%{transform:scale(1) rotate(0deg);}
+}
 
 /* ---------- Landing ---------- */
 #landing{padding:0;background:#C7C3B8;}
@@ -437,6 +470,37 @@ document.getElementById('startBtn').addEventListener('click', ()=>{
 if (location.hash === '#select') {
   goTo('select');
 }
+
+/* ---------- Tap the character: butterflies & flowers pop out ---------- */
+function spawnEmojiBurst(anchorEl, emojis){
+  const rect = anchorEl.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const count = 7;
+  for(let i = 0; i < count; i++){
+    const el = document.createElement('div');
+    el.className = 'tap-burst-particle';
+    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    const angle = (Math.PI * 2 / count) * i + (Math.random() * 0.5 - 0.25);
+    const dist = 50 + Math.random() * 34;
+    el.style.left = cx + 'px';
+    el.style.top = cy + 'px';
+    el.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+    el.style.setProperty('--dy', (Math.sin(angle) * dist - 24) + 'px');
+    el.style.setProperty('--rot', (Math.random() * 80 - 40) + 'deg');
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 950);
+  }
+}
+
+const charWrapEl = document.querySelector('.char-wrap');
+charWrapEl.style.cursor = 'pointer';
+charWrapEl.addEventListener('click', () => {
+  spawnEmojiBurst(charWrapEl, ['🦋','🌸','🌼','✨']);
+  charWrapEl.classList.remove('tapped');
+  void charWrapEl.offsetWidth;
+  charWrapEl.classList.add('tapped');
+});
 </script>
 </body>
 </html>

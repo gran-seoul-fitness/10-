@@ -41,7 +41,45 @@ body{
   overflow:hidden;
 }
 .screen{display:none;min-height:100vh;flex-direction:column;position:relative;}
-.screen.active{display:flex;}
+.screen.active{display:flex;animation:screenFadeIn .5s ease;}
+@keyframes screenFadeIn{
+  0%{opacity:0;transform:scale(1.015) translateY(6px);filter:blur(8px);}
+  60%{filter:blur(1.5px);}
+  100%{opacity:1;transform:scale(1) translateY(0);filter:blur(0);}
+}
+
+/* ---------- Tap feedback: smoother, bouncier press for all buttons ---------- */
+button,
+.btn-mini, .btn-quickstart, .btn-start,
+.zone-hit, .mission-back, .verify-back, .puzzle-back, .puzzle-play-back,
+.sejong-hub-btn, .sejong-hub-close, .celebrate-btn,
+.puzzle-complete-btn, .puzzle-play-btn, .verify-complete-btn,
+.popup-verify-btn, .jigsaw-reset{
+  transition:transform .16s cubic-bezier(.34,1.56,.64,1), opacity .16s ease, box-shadow .16s ease;
+}
+
+/* ---------- Tap-burst particles (butterflies/flowers when the character is tapped) ---------- */
+.tap-burst-particle{
+  position:fixed;
+  left:0;top:0;
+  transform:translate(-50%,-50%);
+  font-size:20px;
+  pointer-events:none;
+  z-index:999;
+  animation:tapBurst .9s ease-out forwards;
+}
+@keyframes tapBurst{
+  0%{transform:translate(-50%,-50%) translate(0,0) scale(0.5) rotate(0deg);opacity:1;}
+  65%{opacity:1;}
+  100%{transform:translate(-50%,-50%) translate(var(--dx),var(--dy)) scale(1.15) rotate(var(--rot));opacity:0;}
+}
+.char-mini.tapped{animation:charTapPop .5s ease;}
+@keyframes charTapPop{
+  0%{transform:scale(1) rotate(0deg);}
+  35%{transform:scale(1.18) rotate(-6deg);}
+  65%{transform:scale(0.95) rotate(4deg);}
+  100%{transform:scale(1) rotate(0deg);}
+}
 
 /* ---------- Landing ---------- */
 #landing{padding:0;background:#C7C3B8;}
@@ -384,6 +422,19 @@ body{
   font-size:8px;font-weight:700;padding:3px 7px;border-radius:20px;
   white-space:nowrap;
 }
+.popup-gallery-item.no-photo,
+.verify-gallery-item.no-photo{
+  display:flex;align-items:center;justify-content:center;
+  padding:6px;text-align:center;
+  background:#E3DBC8;
+}
+.popup-gallery-item.no-photo span,
+.verify-gallery-item.no-photo span{
+  position:static;
+  background:none;color:#5F5E5A;
+  font-size:10px;font-weight:700;padding:0;
+  white-space:normal;line-height:1.3;
+}
 .popup-badge{
   position:absolute;
   left:5.5%;top:56%;
@@ -536,6 +587,9 @@ body{
   box-shadow:0 4px 10px rgba(206,106,48,0.35);
 }
 .verify-complete-btn:active{transform:scale(0.98);}
+.verify-complete-btn.disabled{background:#9C9990;box-shadow:none;cursor:default;}
+.verify-photo.review{cursor:default;pointer-events:none;}
+.verify-checkbox-row.review{pointer-events:none;}
 
 /* ---------- Puzzle entry button (map screen) ---------- */
 /* ---------- Puzzle collection screen ---------- */
@@ -1171,7 +1225,7 @@ body{
     <div class="verify-wrap">
       <img class="hero" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/mission_verify_bg.png">
       <a class="verify-back" onclick="closeVerify()"></a>
-      <div class="verify-subtitle">기구가 보이는 사진 한 장이면 충분합니다.</div>
+      <div class="verify-subtitle" id="verifySubtitle">기구가 보이는 사진 한 장이면 충분합니다.</div>
       <div class="verify-gallery" id="verifyGallery"></div>
       <div class="verify-badge" id="verifyBadge"></div>
       <div class="verify-sets"><span id="verifySets"></span></div>
@@ -1186,13 +1240,13 @@ body{
         <img id="verifyPhotoImg" src="">
       </div>
       <input type="file" id="verifyFileInput" accept="image/*" capture="environment" style="display:none;">
-      <div class="verify-checkbox-row">
+      <div class="verify-checkbox-row" id="verifyCheckboxRow">
         <div class="verify-checkbox" id="verifyCheckbox" onclick="toggleVerifyCheckbox()">
           <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
         </div>
-        <div class="verify-checkbox-label">운동 기구 사진을 찍어 인증해주세요.</div>
+        <div class="verify-checkbox-label" id="verifyCheckboxLabel">운동 기구 사진을 찍어 인증해주세요.</div>
       </div>
-      <button class="verify-complete-btn" onclick="completeVerify()">인증 완료하기</button>
+      <button class="verify-complete-btn" id="verifyCompleteBtn" onclick="completeVerify()">인증 완료하기</button>
     </div>
   </section>
 
@@ -1275,9 +1329,9 @@ const missionIcons = {
 
 const GH_RAW = 'https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/';
 const zones = {
-  stretch: { name:'스트레칭', color:'#AD8A45', bg: GH_RAW + 'mission_stretch_bg.png', sets:'1세트', reps:'10분', missions:['매트 전신 스트레칭','고관절 모빌리티','폼롤러 스트레칭'] },
+  stretch: { name:'스트레칭', color:'#AD8A45', bg: GH_RAW + 'mission_stretch_bg.png', sets:'1세트', reps:'10분', missions:['기구 스트레칭','폼롤러·매트 스트레칭'] },
   gx: { name:'그룹운동', color:'#D85A30', bg: GH_RAW + 'mission_gx_bg.png', sets:'1세트', reps:'30분', missions:['요가','줌바','필라테스'] },
-  strength: { name:'근력', color:'#1C1C1A', bg: GH_RAW + 'mission_strength_bg.png', sets:'3세트', reps:'12회', missions:['스쿼트','데드리프트','벤치프레스'] },
+  strength: { name:'근력', color:'#1C1C1A', bg: GH_RAW + 'mission_strength_bg.png', sets:'3세트', reps:'12회', missions:['등 운동','하체 운동','가슴 운동','어깨 운동'] },
   cardio: { name:'유산소', color:'#0F6E56', bg: GH_RAW + 'mission_cardio_bg.png', sets:'1세트', reps:'20분', missions:['트레드밀 걷기','사이클 타기','줄넘기'] }
 };
 
@@ -1285,23 +1339,35 @@ const ordinalKo = ['첫 번째','두 번째','세 번째','네 번째','다섯 �
 
 const EQUIP_DIR = GH_RAW + 'equipment/';
 const EQUIP_OPTIONS = {
-  'strength-0': [ // 스쿼트
-    {name:'레그프레스', img:'legs-press.jpg'},
-    {name:'레그익스텐션·컬', img:'legs-extcurl.jpg'},
-    {name:'어덕터·어브덕터', img:'legs-abd.jpg'},
-    {name:'플레이트로드 스쿼트', img:'legs-squat.jpg'},
-  ],
-  'strength-1': [ // 데드리프트
+  'strength-0': [ // 등 운동
     {name:'랫풀다운', img:'back-lat.jpg'},
     {name:'로우머신', img:'back-lowrow.jpg'},
     {name:'암풀다운·펑셔널', img:'back-cable.jpg'},
     {name:'플레이트로드 로우', img:'back-platerow.jpg'},
   ],
-  'strength-2': [ // 벤치프레스
+  'strength-1': [ // 하체 운동 (머신 + 프리웨이트)
+    {name:'레그프레스', img:'legs-press.jpg'},
+    {name:'레그익스텐션·컬', img:'legs-extcurl.jpg'},
+    {name:'어덕터·어브덕터', img:'legs-abd.jpg'},
+    {name:'플레이트로드 스쿼트', img:'legs-squat.jpg'},
+    {name:'스쿼트'},
+    {name:'불가리안 스플릿 스쿼트'},
+    {name:'런지'},
+    {name:'데드리프트'},
+  ],
+  'strength-2': [ // 가슴 운동 (머신 + 프리웨이트)
     {name:'체스트프레스', img:'chest-press.jpg'},
     {name:'펙덱', img:'chest-pectoral.jpg'},
     {name:'인클라인 체스트프레스', img:'chest-incline.jpg'},
     {name:'벤치프레스', img:'chest-bench.jpg'},
+    {name:'스미스 머신'},
+    {name:'바벨'},
+    {name:'덤벨'},
+  ],
+  'strength-3': [ // 어깨 운동 (머신 + 프리웨이트) - 어깨 기구 사진 없음, 이름만 임시 표시
+    {name:'숄더프레스 머신'},
+    {name:'스미스 머신'},
+    {name:'덤벨'},
   ],
   'cardio-0': [ // 트레드밀 걷기
     {name:'러닝머신', img:'cardio-treadmill.jpg'},
@@ -1331,16 +1397,13 @@ const EQUIP_OPTIONS = {
     {name:'매트필라테스', img:'gx-matpilates.jpg'},
     {name:'요가', img:'gx-yoga.jpg'},
   ],
-  'stretch-0': [ // 매트 전신 스트레칭
+  'stretch-0': [ // 기구 스트레칭
     {name:'FLEXABILITY ANTERIOR', img:'stretch-anterior.jpg'},
     {name:'FLEXABILITY POSTERIOR', img:'stretch-posterior.jpg'},
   ],
-  'stretch-1': [ // 고관절 모빌리티
-    {name:'FLEXABILITY ANTERIOR', img:'stretch-anterior.jpg'},
-    {name:'FLEXABILITY POSTERIOR', img:'stretch-posterior.jpg'},
-  ],
-  'stretch-2': [ // 폼롤러 스트레칭
+  'stretch-1': [ // 폼롤러·매트 스트레칭 (인증은 매트 사진으로)
     {name:'폼롤러', img:'stretch-foamroll.jpg'},
+    {name:'매트', img:'gx-matpilates.jpg'},
   ],
 };
 
@@ -1348,8 +1411,8 @@ function renderGallery(containerEl, missionKey){
   const options = EQUIP_OPTIONS[missionKey] || [];
   const single = options.length <= 1;
   containerEl.innerHTML = options.map(opt => `
-    <div class="popup-gallery-item verify-gallery-item" style="width:${single ? '100%' : '68%'};">
-      <img src="${EQUIP_DIR + opt.img}">
+    <div class="popup-gallery-item verify-gallery-item${opt.img ? '' : ' no-photo'}" style="width:${single ? '100%' : '68%'};">
+      ${opt.img ? `<img src="${EQUIP_DIR + opt.img}">` : ''}
       <span>${opt.name}</span>
     </div>
   `).join('');
@@ -1423,11 +1486,7 @@ document.getElementById('missionList').addEventListener('click', (e)=>{
   const key = item.dataset.key;
   const done = getDoneSet();
   if(done[key]){
-    setDone(key, false);
-    item.classList.remove('done');
-    const zoneKey = key.split('-')[0];
-    item.querySelector('.mission-icon').innerHTML = missionIcons[zoneKey];
-    updateProgressUI();
+    openMissionReview(key);
   } else {
     openMissionPopup(key);
   }
@@ -1435,6 +1494,18 @@ document.getElementById('missionList').addEventListener('click', (e)=>{
 
 /* ---------- Mission verification popup + photo verify screen ---------- */
 let currentMissionKey = null;
+let verifyReviewMode = false;
+let pendingVerifyPhoto = null;
+
+function getMissionPhotos(){
+  try{ return JSON.parse(localStorage.getItem('gsf_mission_photos') || '{}'); }
+  catch(e){ return {}; }
+}
+function saveMissionPhoto(key, dataUrl){
+  const photos = getMissionPhotos();
+  photos[key] = dataUrl;
+  try{ localStorage.setItem('gsf_mission_photos', JSON.stringify(photos)); }catch(e){}
+}
 
 function missionNameFromKey(key){
   const [zoneKey, idx] = key.split('-');
@@ -1456,11 +1527,20 @@ function closeMissionPopup(){
 }
 
 function resetVerifyScreen(){
+  verifyReviewMode = false;
+  pendingVerifyPhoto = null;
   const photoBox = document.getElementById('verifyPhoto');
   photoBox.classList.remove('has-photo');
+  photoBox.classList.remove('review');
   document.getElementById('verifyPhotoImg').src = '';
   document.getElementById('verifyFileInput').value = '';
   document.getElementById('verifyCheckbox').classList.remove('checked');
+  document.getElementById('verifyCheckboxRow').classList.remove('review');
+  document.getElementById('verifySubtitle').textContent = '기구가 보이는 사진 한 장이면 충분합니다.';
+  document.getElementById('verifyCheckboxLabel').textContent = '운동 기구 사진을 찍어 인증해주세요.';
+  const btn = document.getElementById('verifyCompleteBtn');
+  btn.textContent = '인증 완료하기';
+  btn.classList.remove('disabled');
 }
 
 function goToVerify(){
@@ -1476,24 +1556,73 @@ function goToVerify(){
   goTo('verify');
 }
 
+/* ---------- Review a mission already certified (like the Sept challenge) ---------- */
+function openMissionReview(key){
+  currentMissionKey = key;
+  verifyReviewMode = true;
+  const zoneKey = key.split('-')[0];
+  const z = zones[zoneKey];
+  document.getElementById('verifyBadge').textContent = missionNameFromKey(key);
+  document.getElementById('verifySets').textContent = `${z.sets} X ${z.reps}씩`;
+  renderGallery(document.getElementById('verifyGallery'), key);
+
+  const photo = getMissionPhotos()[key];
+  const photoBox = document.getElementById('verifyPhoto');
+  document.getElementById('verifyPhotoImg').src = photo || '';
+  photoBox.classList.toggle('has-photo', !!photo);
+  photoBox.classList.add('review');
+
+  document.getElementById('verifyCheckbox').classList.add('checked');
+  document.getElementById('verifyCheckboxRow').classList.add('review');
+  document.getElementById('verifySubtitle').textContent = '인증했던 사진과 기구예요.';
+  document.getElementById('verifyCheckboxLabel').textContent = '이미 인증을 완료한 미션이에요.';
+
+  const btn = document.getElementById('verifyCompleteBtn');
+  btn.textContent = '인증 완료됨';
+  btn.classList.add('disabled');
+
+  closeMissionPopup();
+  goTo('verify');
+}
+
 function closeVerify(){
+  verifyReviewMode = false;
   goTo('missions');
 }
 
 document.getElementById('verifyFileInput').addEventListener('change', (e)=>{
   const file = e.target.files && e.target.files[0];
   if(!file) return;
-  const url = URL.createObjectURL(file);
-  document.getElementById('verifyPhotoImg').src = url;
-  document.getElementById('verifyPhoto').classList.add('has-photo');
-  document.getElementById('verifyCheckbox').classList.add('checked');
+  const reader = new FileReader();
+  reader.onload = (ev)=>{
+    const img = new Image();
+    img.onload = ()=>{
+      const maxDim = 640;
+      let w = img.width, h = img.height;
+      if(w > maxDim || h > maxDim){
+        if(w >= h){ h = Math.round(h * maxDim / w); w = maxDim; }
+        else { w = Math.round(w * maxDim / h); h = maxDim; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      pendingVerifyPhoto = canvas.toDataURL('image/jpeg', 0.82);
+      document.getElementById('verifyPhotoImg').src = pendingVerifyPhoto;
+      document.getElementById('verifyPhoto').classList.add('has-photo');
+      document.getElementById('verifyCheckbox').classList.add('checked');
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
 });
 
 function toggleVerifyCheckbox(){
+  if(verifyReviewMode) return;
   document.getElementById('verifyCheckbox').classList.toggle('checked');
 }
 
 function completeVerify(){
+  if(verifyReviewMode) return;
   if(!document.getElementById('verifyCheckbox').classList.contains('checked')){
     const box = document.getElementById('verifyCheckbox');
     box.style.transition = 'transform .1s ease';
@@ -1504,6 +1633,7 @@ function completeVerify(){
   }
   setDone(currentMissionKey, true);
   markStampToday();
+  if(pendingVerifyPhoto){ saveMissionPhoto(currentMissionKey, pendingVerifyPhoto); }
   updateProgressUI();
   const zoneKey = currentMissionKey.split('-')[0];
   renderMissionList(zoneKey);
@@ -1860,6 +1990,68 @@ document.getElementById('startBtn').addEventListener('click', ()=>{
 if (location.hash === '#select') {
   goTo('select');
 }
+
+/* ---------- Tap the character: butterflies & flowers pop out ---------- */
+function spawnEmojiBurst(anchorEl, emojis){
+  const rect = anchorEl.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const count = 7;
+  for(let i = 0; i < count; i++){
+    const el = document.createElement('div');
+    el.className = 'tap-burst-particle';
+    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    const angle = (Math.PI * 2 / count) * i + (Math.random() * 0.5 - 0.25);
+    const dist = 50 + Math.random() * 34;
+    el.style.left = cx + 'px';
+    el.style.top = cy + 'px';
+    el.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+    el.style.setProperty('--dy', (Math.sin(angle) * dist - 24) + 'px');
+    el.style.setProperty('--rot', (Math.random() * 80 - 40) + 'deg');
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 950);
+  }
+}
+
+const charWrapEl = document.querySelector('.char-wrap');
+charWrapEl.style.cursor = 'pointer';
+charWrapEl.addEventListener('click', () => {
+  spawnEmojiBurst(charWrapEl, ['🦋','🌸','🌼','✨']);
+  charWrapEl.classList.remove('tapped');
+  void charWrapEl.offsetWidth;
+  charWrapEl.classList.add('tapped');
+});
+
+/* ---------- Tap the character: butterflies & flowers pop out ---------- */
+function spawnEmojiBurst(anchorEl, emojis){
+  const rect = anchorEl.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const count = 7;
+  for(let i = 0; i < count; i++){
+    const el = document.createElement('div');
+    el.className = 'tap-burst-particle';
+    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    const angle = (Math.PI * 2 / count) * i + (Math.random() * 0.5 - 0.25);
+    const dist = 46 + Math.random() * 30;
+    el.style.left = cx + 'px';
+    el.style.top = cy + 'px';
+    el.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+    el.style.setProperty('--dy', (Math.sin(angle) * dist - 20) + 'px');
+    el.style.setProperty('--rot', (Math.random() * 80 - 40) + 'deg');
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 950);
+  }
+}
+
+const charMiniEl = document.getElementById('charMini');
+charMiniEl.style.cursor = 'pointer';
+charMiniEl.addEventListener('click', () => {
+  spawnEmojiBurst(charMiniEl, ['🦋','🌸','🌼','✨']);
+  charMiniEl.classList.remove('tapped');
+  void charMiniEl.offsetWidth;
+  charMiniEl.classList.add('tapped');
+});
 </script>
 </body>
 </html>
