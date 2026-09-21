@@ -1165,6 +1165,18 @@ document.querySelectorAll('.zone-hit[data-zone]').forEach(zoneEl=>{
   });
 });
 
+/* Panel border box (measured from the mission background art) and
+   per-card size, both as % of the mission-wrap's height. A short list
+   stays pinned at the default top so it doesn't float in empty space,
+   but a list dense enough to nearly fill the panel (like strength's 5
+   cards, which left almost no bottom margin at a fixed top) is shifted
+   up just enough to give equal top/bottom margins. */
+const MISSION_LIST_DEFAULT_TOP = 25.9;
+const MISSION_PANEL_TOP = 17.4;
+const MISSION_PANEL_BOTTOM = 86.5;
+const MISSION_CARD_H = 10.5;
+const MISSION_CARD_GAP_PCT = 1.85;
+
 function renderMissionList(key){
   const z = zones[key];
   const done = getDoneSet();
@@ -1183,6 +1195,12 @@ function renderMissionList(key){
       <div class="mission-name-bar">${m}</div>`;
     list.appendChild(item);
   });
+
+  const n = z.missions.length;
+  const contentH = n * MISSION_CARD_H + (n - 1) * MISSION_CARD_GAP_PCT;
+  const panelH = MISSION_PANEL_BOTTOM - MISSION_PANEL_TOP;
+  const centeredTop = MISSION_PANEL_TOP + (panelH - contentH) / 2;
+  list.style.top = (centeredTop < MISSION_LIST_DEFAULT_TOP ? centeredTop : MISSION_LIST_DEFAULT_TOP) + '%';
 }
 
 document.getElementById('missionList').addEventListener('click', (e)=>{
