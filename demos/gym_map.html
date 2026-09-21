@@ -1025,7 +1025,7 @@ const GH_RAW = 'https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/
 const zones = {
   stretch: { name:'스트레칭', color:'#AD8A45', bg: GH_RAW + 'mission_stretch_bg.png', sets:'1세트', reps:'10분', missions:['기구 스트레칭','폼롤러·매트 스트레칭'] },
   gx: { name:'그룹운동', color:'#D85A30', bg: GH_RAW + 'mission_gx_bg.png', sets:'1세트', reps:'30분', missions:['요가','줌바','필라테스'] },
-  strength: { name:'근력', color:'#1C1C1A', bg: GH_RAW + 'mission_strength_bg.png', sets:'3세트', reps:'12회', missions:['등 운동','하체 운동','가슴 운동','어깨 운동'] },
+  strength: { name:'근력', color:'#1C1C1A', bg: GH_RAW + 'mission_strength_bg.png', sets:'3세트', reps:'12회', missions:['등 운동','하체 운동','가슴 운동','어깨 운동','프리웨이트 · 상체','프리웨이트 · 하체'] },
   cardio: { name:'유산소', color:'#0F6E56', bg: GH_RAW + 'mission_cardio_bg.png', sets:'1세트', reps:'20분', missions:['트레드밀 걷기','사이클 타기','줄넘기'] }
 };
 
@@ -1039,17 +1039,13 @@ const EQUIP_OPTIONS = {
     {name:'암풀다운·펑셔널', img:'back-cable.jpg'},
     {name:'플레이트로드 로우', img:'back-platerow.jpg'},
   ],
-  'strength-1': [ // 하체 운동 (머신 + 프리웨이트)
+  'strength-1': [ // 하체 운동 (머신)
     {name:'레그프레스', img:'legs-press.jpg'},
     {name:'레그익스텐션·컬', img:'legs-extcurl.jpg'},
     {name:'어덕터·어브덕터', img:'legs-abd.jpg'},
     {name:'플레이트로드 스쿼트', img:'legs-squat.jpg'},
-    {name:'스쿼트'},
-    {name:'불가리안 스플릿 스쿼트'},
-    {name:'런지'},
-    {name:'데드리프트'},
   ],
-  'strength-2': [ // 가슴 운동 (머신 + 프리웨이트)
+  'strength-2': [ // 가슴 운동 (머신 + 프리웨이트: 스미스 머신·바벨·덤벨)
     {name:'체스트프레스', img:'chest-press.jpg'},
     {name:'펙덱', img:'chest-pectoral.jpg'},
     {name:'인클라인 체스트프레스', img:'chest-incline.jpg'},
@@ -1058,10 +1054,22 @@ const EQUIP_OPTIONS = {
     {name:'바벨'},
     {name:'덤벨'},
   ],
-  'strength-3': [ // 어깨 운동 (머신 + 프리웨이트) - 어깨 기구 사진 없음, 이름만 임시 표시
+  'strength-3': [ // 어깨 운동 (머신 + 프리웨이트: 스미스 머신·덤벨) - 어깨 기구 사진 없음, 이름만 임시 표시
     {name:'숄더프레스 머신'},
     {name:'스미스 머신'},
     {name:'덤벨'},
+  ],
+  'strength-4': [ // 프리웨이트 · 상체 (덤벨로우·바벨로우·데드리프트) - 사진은 아래 기구 중 하나로 인증
+    {name:'덤벨'},
+    {name:'바벨'},
+    {name:'케틀벨'},
+    {name:'스미스 머신'},
+  ],
+  'strength-5': [ // 프리웨이트 · 하체 (스쿼트·불가리안 스플릿 스쿼트·런지·스티프 데드리프트 등) - 사진은 아래 기구 중 하나로 인증
+    {name:'덤벨'},
+    {name:'바벨'},
+    {name:'케틀벨'},
+    {name:'스미스 머신'},
   ],
   'cardio-0': [ // 트레드밀 걷기
     {name:'러닝머신', img:'cardio-treadmill.jpg'},
