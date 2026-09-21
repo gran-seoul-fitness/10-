@@ -1023,10 +1023,10 @@ const missionIcons = {
 
 const GH_RAW = 'https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/';
 const zones = {
-  stretch: { name:'스트레칭', color:'#AD8A45', bg: GH_RAW + 'mission_stretch_bg.png', sets:'1세트', reps:'10분', missions:['기구 스트레칭','폼롤러·매트 스트레칭'] },
-  gx: { name:'그룹운동', color:'#D85A30', bg: GH_RAW + 'mission_gx_bg.png', sets:'1세트', reps:'30분', missions:['요가','줌바','필라테스'] },
-  strength: { name:'근력', color:'#1C1C1A', bg: GH_RAW + 'mission_strength_bg.png', sets:'3세트', reps:'12회', missions:['등 운동','하체 운동','가슴 운동','어깨 운동','프리웨이트 · 상체','프리웨이트 · 하체'] },
-  cardio: { name:'유산소', color:'#0F6E56', bg: GH_RAW + 'mission_cardio_bg.png', sets:'1세트', reps:'20분', missions:['트레드밀 걷기','사이클 타기','줄넘기'] }
+  stretch: { name:'스트레칭', color:'#AD8A45', bg: GH_RAW + 'mission_stretch_bg.png', sets:'1세트', reps:'10분', missions:['기구 스트레칭','폼롤러·매트 스트레칭','엘라스코 스트레칭'] },
+  gx: { name:'그룹운동', color:'#D85A30', bg: GH_RAW + 'mission_gx_bg.png', sets:'1세트', reps:'30분', missions:['요가·줌바·필라테스'] },
+  strength: { name:'근력', color:'#1C1C1A', bg: GH_RAW + 'mission_strength_bg.png', sets:'3세트', reps:'12회', missions:['등 운동','하체 운동','가슴 운동','어깨 운동','프리웨이트'] },
+  cardio: { name:'유산소', color:'#0F6E56', bg: GH_RAW + 'mission_cardio_bg.png', sets:'1세트', reps:'20분', missions:['사이클 타기','트레드밀·계단·일립티컬','무동력·싱크로'] }
 };
 
 const ordinalKo = ['첫 번째','두 번째','세 번째','네 번째','다섯 번째','여섯 번째'];
@@ -1059,45 +1059,29 @@ const EQUIP_OPTIONS = {
     {name:'스미스 머신'},
     {name:'덤벨'},
   ],
-  'strength-4': [ // 프리웨이트 · 상체 (덤벨로우·바벨로우·데드리프트) - 사진은 아래 기구 중 하나로 인증
+  'strength-4': [ // 프리웨이트 (상체: 덤벨로우·바벨로우·데드리프트 / 하체: 스쿼트·불가리안 스플릿 스쿼트·런지·스티프 데드리프트 등) - 사진은 아래 기구 중 하나로 인증
     {name:'덤벨'},
     {name:'바벨'},
     {name:'케틀벨'},
-    {name:'스미스 머신'},
   ],
-  'strength-5': [ // 프리웨이트 · 하체 (스쿼트·불가리안 스플릿 스쿼트·런지·스티프 데드리프트 등) - 사진은 아래 기구 중 하나로 인증
-    {name:'덤벨'},
-    {name:'바벨'},
-    {name:'케틀벨'},
-    {name:'스미스 머신'},
+  'cardio-0': [ // 사이클 타기
+    {name:'사이클', img:'cardio-bike.jpg'},
+    {name:'로잉머신', img:'cardio-row.jpg'},
   ],
-  'cardio-0': [ // 트레드밀 걷기
+  'cardio-1': [ // 트레드밀·계단·일립티컬
     {name:'러닝머신', img:'cardio-treadmill.jpg'},
-    {name:'무동력머신', img:'cardio-manual.jpg'},
-    {name:'싱크로', img:'cardio-synchro.jpg'},
+    {name:'천국의 계단', img:'cardio-stepmill.jpg'},
     {name:'일립티컬', img:'cardio-elliptical.jpg'},
   ],
-  'cardio-1': [ // 사이클 타기
-    {name:'사이클', img:'cardio-bike.jpg'},
-    {name:'로잉머신', img:'cardio-row.jpg'},
-    {name:'천국의 계단', img:'cardio-stepmill.jpg'},
+  'cardio-2': [ // 무동력·싱크로
+    {name:'무동력머신', img:'cardio-manual.jpg'},
+    {name:'싱크로', img:'cardio-synchro.jpg'},
   ],
-  'cardio-2': [ // 줄넘기
-    {name:'사이클', img:'cardio-bike.jpg'},
-    {name:'로잉머신', img:'cardio-row.jpg'},
-    {name:'천국의 계단', img:'cardio-stepmill.jpg'},
-  ],
-  'gx-0': [ // 요가
+  'gx-0': [ // 요가·줌바·필라테스
     {name:'요가', img:'gx-yoga.jpg'},
     {name:'매트필라테스', img:'gx-matpilates.jpg'},
-  ],
-  'gx-1': [ // 줌바
     {name:'덤벨 트레이닝', img:'gx-dumbbell.jpg'},
     {name:'파워코어트레이닝', img:'gx-powercore.jpg'},
-  ],
-  'gx-2': [ // 필라테스
-    {name:'매트필라테스', img:'gx-matpilates.jpg'},
-    {name:'요가', img:'gx-yoga.jpg'},
   ],
   'stretch-0': [ // 기구 스트레칭
     {name:'FLEXABILITY ANTERIOR', img:'stretch-anterior.jpg'},
@@ -1106,6 +1090,9 @@ const EQUIP_OPTIONS = {
   'stretch-1': [ // 폼롤러·매트 스트레칭 (인증은 매트 사진으로)
     {name:'폼롤러', img:'stretch-foamroll.jpg'},
     {name:'매트', img:'gx-matpilates.jpg'},
+  ],
+  'stretch-2': [ // 엘라스코 스트레칭
+    {name:'엘라스코', img:'stretch-elasko.jpg'},
   ],
 };
 
@@ -1162,6 +1149,14 @@ document.querySelectorAll('.zone-hit[data-zone]').forEach(zoneEl=>{
   });
 });
 
+/* Panel border box (measured from the mission background art) and per-card
+   size, both as % of the mission-wrap's height, used to vertically center
+   shorter mission lists inside the panel instead of hugging the top. */
+const MISSION_PANEL_TOP = 17.4;
+const MISSION_PANEL_BOTTOM = 86.5;
+const MISSION_CARD_H = 10.5;
+const MISSION_CARD_GAP_PCT = 1.85;
+
 function renderMissionList(key){
   const z = zones[key];
   const done = getDoneSet();
@@ -1180,6 +1175,12 @@ function renderMissionList(key){
       <div class="mission-name-bar">${m}</div>`;
     list.appendChild(item);
   });
+
+  const n = z.missions.length;
+  const contentH = n * MISSION_CARD_H + (n - 1) * MISSION_CARD_GAP_PCT;
+  const panelH = MISSION_PANEL_BOTTOM - MISSION_PANEL_TOP;
+  const centeredTop = MISSION_PANEL_TOP + Math.max(0, (panelH - contentH) / 2);
+  list.style.top = Math.max(centeredTop, 25.9) + '%';
 }
 
 document.getElementById('missionList').addEventListener('click', (e)=>{
