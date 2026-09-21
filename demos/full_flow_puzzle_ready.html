@@ -63,8 +63,8 @@ button,
 
 /* ---------- Tap-burst particles (butterflies/flowers when the character is tapped) ---------- */
 .tap-burst-particle{
-  position:fixed;
-  left:0;top:0;
+  position:absolute;
+  left:50%;top:50%;
   transform:translate(-50%,-50%);
   pointer-events:none;
   z-index:999;
@@ -2057,9 +2057,13 @@ function najeonBlossomSVG(uid){
   </svg>`;
 }
 function spawnEmojiBurst(anchorEl){
-  const rect = anchorEl.getBoundingClientRect();
-  const cx = rect.left + rect.width / 2;
-  const cy = rect.top + rect.height / 2;
+  /* Particles are appended inside the character's own (already
+     position:relative/absolute) container and placed with left:50%/
+     top:50% in CSS, so the effect is anchored purely by local layout —
+     no getBoundingClientRect()/position:fixed, which on real mobile
+     browsers can misread the viewport (URL bar show/hide) and make the
+     burst appear in the wrong place or shift the whole page. */
+  const parent = anchorEl.parentElement;
   const count = 7;
   for(let i = 0; i < count; i++){
     const el = document.createElement('div');
@@ -2068,12 +2072,10 @@ function spawnEmojiBurst(anchorEl){
     el.innerHTML = (i % 2 === 0) ? najeonButterflySVG(tapBurstIdCounter) : najeonBlossomSVG(tapBurstIdCounter);
     const angle = (Math.PI * 2 / count) * i + (Math.random() * 0.5 - 0.25);
     const dist = 46 + Math.random() * 30;
-    el.style.left = cx + 'px';
-    el.style.top = cy + 'px';
     el.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
     el.style.setProperty('--dy', (Math.sin(angle) * dist - 20) + 'px');
     el.style.setProperty('--rot', (Math.random() * 80 - 40) + 'deg');
-    document.body.appendChild(el);
+    parent.appendChild(el);
     setTimeout(() => el.remove(), 950);
   }
 }
