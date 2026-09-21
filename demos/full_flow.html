@@ -369,19 +369,20 @@ button,
   transition:color .15s ease;
   overflow:hidden;
 }
-.mission-item.done .mission-icon,
-.mission-item.done .mission-badge,
-.mission-item.done .mission-name-bar{
-  opacity:0.5;
+.mission-item.done::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  border-radius:14px;
+  pointer-events:none;
 }
 .mission-item.done::after{
-  content:'완료';
+  content:'미션완료';
   position:absolute;
   right:5%;top:10%;
-  background:rgba(15,110,86,0.92);
-  border-radius:20px;
-  padding:4px 12px;
-  color:#F7F5F0;font-size:10.5px;font-weight:700;
+  background:none;
+  color:var(--orange);font-size:11px;font-weight:700;
   letter-spacing:0.4px;
   pointer-events:none;
 }
