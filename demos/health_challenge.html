@@ -58,10 +58,10 @@ button, .btn-mini, .btn-quickstart, .btn-start{
   position:fixed;
   left:0;top:0;
   transform:translate(-50%,-50%);
-  font-size:22px;
   pointer-events:none;
   z-index:999;
   animation:tapBurst .9s ease-out forwards;
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,0.18));
 }
 @keyframes tapBurst{
   0%{transform:translate(-50%,-50%) translate(0,0) scale(0.5) rotate(0deg);opacity:1;}
@@ -472,7 +472,43 @@ if (location.hash === '#select') {
 }
 
 /* ---------- Tap the character: butterflies & flowers pop out ---------- */
-function spawnEmojiBurst(anchorEl, emojis){
+let tapBurstIdCounter = 0;
+function najeonButterflySVG(uid){
+  return `<svg viewBox="0 0 40 32" width="26" height="21">
+    <defs>
+      <linearGradient id="pearl${uid}" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#F8F6F2"/>
+        <stop offset="35%" stop-color="#CFE0DE"/>
+        <stop offset="65%" stop-color="#D9CBE8"/>
+        <stop offset="100%" stop-color="#F0D9E2"/>
+      </linearGradient>
+    </defs>
+    <path d="M20 16 C14 2 2 2 3 12 C4 20 14 20 20 16 Z" fill="url(#pearl${uid})" stroke="#8B93A8" stroke-width="0.6"/>
+    <path d="M20 16 C26 2 38 2 37 12 C36 20 26 20 20 16 Z" fill="url(#pearl${uid})" stroke="#8B93A8" stroke-width="0.6"/>
+    <path d="M20 16 C15 20 8 26 10 30 C13 32 18 26 20 16 Z" fill="url(#pearl${uid})" stroke="#8B93A8" stroke-width="0.6" opacity="0.9"/>
+    <path d="M20 16 C25 20 32 26 30 30 C27 32 22 26 20 16 Z" fill="url(#pearl${uid})" stroke="#8B93A8" stroke-width="0.6" opacity="0.9"/>
+    <line x1="20" y1="10" x2="20" y2="20" stroke="#5B5F6E" stroke-width="1.2"/>
+  </svg>`;
+}
+function najeonBlossomSVG(uid){
+  return `<svg viewBox="0 0 32 32" width="22" height="22">
+    <defs>
+      <linearGradient id="pearlB${uid}" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#F8F6F2"/>
+        <stop offset="40%" stop-color="#E6D6E8"/>
+        <stop offset="100%" stop-color="#CFE0DE"/>
+      </linearGradient>
+    </defs>
+    <g fill="url(#pearlB${uid})" stroke="#8B93A8" stroke-width="0.6">
+      <ellipse cx="16" cy="7" rx="5" ry="7"/>
+      <ellipse cx="25" cy="16" rx="7" ry="5"/>
+      <ellipse cx="16" cy="25" rx="5" ry="7"/>
+      <ellipse cx="7" cy="16" rx="7" ry="5"/>
+    </g>
+    <circle cx="16" cy="16" r="3.5" fill="#E9C9A9"/>
+  </svg>`;
+}
+function spawnEmojiBurst(anchorEl){
   const rect = anchorEl.getBoundingClientRect();
   const cx = rect.left + rect.width / 2;
   const cy = rect.top + rect.height / 2;
@@ -480,7 +516,8 @@ function spawnEmojiBurst(anchorEl, emojis){
   for(let i = 0; i < count; i++){
     const el = document.createElement('div');
     el.className = 'tap-burst-particle';
-    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    tapBurstIdCounter++;
+    el.innerHTML = (i % 2 === 0) ? najeonButterflySVG(tapBurstIdCounter) : najeonBlossomSVG(tapBurstIdCounter);
     const angle = (Math.PI * 2 / count) * i + (Math.random() * 0.5 - 0.25);
     const dist = 50 + Math.random() * 34;
     el.style.left = cx + 'px';
@@ -496,7 +533,7 @@ function spawnEmojiBurst(anchorEl, emojis){
 const charWrapEl = document.querySelector('.char-wrap');
 charWrapEl.style.cursor = 'pointer';
 charWrapEl.addEventListener('click', () => {
-  spawnEmojiBurst(charWrapEl, ['🦋','🌸','🌼','✨']);
+  spawnEmojiBurst(charWrapEl);
   charWrapEl.classList.remove('tapped');
   void charWrapEl.offsetWidth;
   charWrapEl.classList.add('tapped');
