@@ -1328,6 +1328,10 @@ button,
 </div>
 
 <script>
+/* QA convenience: pre-fill all 12 puzzle pieces so 십이교 놀이 can be
+   tested immediately, without completing 12 real missions first. */
+try{ localStorage.setItem('gsf_puzzle_pieces', JSON.stringify([0,1,2,3,4,5,6,7,8,9,10,11])); }catch(e){}
+
 const missionIcons = {
   stretch: `<svg viewBox="0 0 24 24" fill="none" stroke="#FBF9F4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><circle cx="12" cy="4.5" r="2" fill="#FBF9F4" stroke="none"/><path d="M12 7v6M12 9l-5 3M12 9l5 3M12 13l-3 7M12 13l3 7"/></svg>`,
   gx: `<svg viewBox="0 0 24 24" fill="none" stroke="#FBF9F4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><circle cx="12" cy="4.5" r="2" fill="#FBF9F4" stroke="none"/><path d="M12 7v5M12 8l-5-3M12 8l5-3M12 12l-4 8M12 12l4 8"/></svg>`,
