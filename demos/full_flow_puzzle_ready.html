@@ -240,6 +240,12 @@ button,
   transition:transform .12s ease;
 }
 .speech-bubble:active{transform:translateX(-50%) scale(0.94);}
+.speech-bubble.popped{animation:bubblePop .4s cubic-bezier(.34,1.56,.64,1);}
+@keyframes bubblePop{
+  0%{transform:translateX(-50%) scale(0.5);opacity:0;}
+  60%{transform:translateX(-50%) scale(1.15);opacity:1;}
+  100%{transform:translateX(-50%) scale(1);opacity:1;}
+}
 .speech-bubble::after{
   content:'';
   position:absolute;
@@ -1291,10 +1297,10 @@ button,
       <img class="puzzle-complete-img" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/sejong_portrait.png" alt="세종대왕 어진">
       <h3>십이교 완성! 🎉</h3>
       <div class="puzzle-complete-text">
-        <p>세종대왕은 백성이 말은 있어도 마음을 제대로 표현할 문자가 없어 억울한 일을 당하는 것을 안타깝게 여겼습니다.</p>
-        <p>그래서 훈민정음을 만들었습니다. 말을 통일해 나라의 공동체 의식을 심어주고, 글을 몰라 죄를 뒤집어쓰는 백성이 없도록 하기 위함이었지요.</p>
-        <p>신하들의 거센 반대에도 굴하지 않고, 오랜 시간 비밀리에 연구를 거듭한 끝에 한글을 완성해 반포했습니다.</p>
-        <p>이는 세종대왕이 얼마나 백성을 아끼고 나라를 사랑했는지 보여주는 이야기예요. 오늘 십이교를 완성한 것처럼, 작은 정성이 모여 큰 변화를 만든다는 걸 기억해주세요.</p>
+        <p>세종대왕은 재위 기간 동안 백성을 위한 수많은 업적을 남긴 조선의 왕이에요.</p>
+        <p>백성이 글을 몰라 억울한 일을 당하지 않도록 훈민정음(한글)을 창제했고, 측우기·앙부일구·자격루 같은 과학 기구를 만들어 농사와 시간 관리를 도왔어요.</p>
+        <p>또한 4군 6진을 개척해 국경을 안정시키고, 농사직설을 펴내 농업 기술을 널리 전하는 등 다방면에서 나라를 튼튼하게 했습니다.</p>
+        <p>이 모든 업적은 백성을 아끼는 마음에서 비롯됐어요. 오늘 십이교를 완성한 것처럼, 작은 정성이 모여 큰 변화를 만든다는 걸 기억해주세요.</p>
       </div>
       <button class="puzzle-complete-btn" onclick="closePuzzleComplete()">닫기</button>
     </div>
@@ -1440,7 +1446,7 @@ function goTo(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
-  if(id === 'map') updateProgressUI();
+  if(id === 'map'){ updateProgressUI(); restoreCharacterMini(); }
   if(id === 'puzzle') renderPuzzleGrid();
   if(id === 'puzzlePlay') shuffleJigsaw();
 }
@@ -1903,10 +1909,14 @@ const speechPhrases = [
 ];
 let speechIndex = 0;
 const speechBubbleEl = document.getElementById('speechBubble');
-speechBubbleEl.addEventListener('click', ()=>{
+function cycleSpeechBubble(){
   speechIndex = (speechIndex + 1) % speechPhrases.length;
   speechBubbleEl.textContent = speechPhrases[speechIndex];
-});
+  speechBubbleEl.classList.remove('popped');
+  void speechBubbleEl.offsetWidth;
+  speechBubbleEl.classList.add('popped');
+}
+speechBubbleEl.addEventListener('click', cycleSpeechBubble);
 
 /* ---------- D-day ---------- */
 const CHALLENGE_END = new Date('2026-10-31T23:59:59+09:00');
@@ -2072,6 +2082,7 @@ charMiniEl.addEventListener('click', () => {
   charMiniEl.classList.remove('tapped');
   void charMiniEl.offsetWidth;
   charMiniEl.classList.add('tapped');
+  cycleSpeechBubble();
 });
 </script>
 </body>
