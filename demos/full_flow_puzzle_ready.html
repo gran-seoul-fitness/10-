@@ -369,16 +369,16 @@ button,
 .mission-item.done .mission-icon,
 .mission-item.done .mission-badge,
 .mission-item.done .mission-name-bar{
-  visibility:hidden;
+  opacity:0.5;
 }
 .mission-item.done::after{
-  content:'미션 완료';
+  content:'완료';
   position:absolute;
-  inset:0;
-  background:rgba(58,58,60,0.6);
-  border-radius:14px;
-  display:flex;align-items:center;justify-content:center;
-  color:#F7F5F0;font-size:15px;font-weight:700;
+  right:5%;top:10%;
+  background:rgba(15,110,86,0.92);
+  border-radius:20px;
+  padding:4px 12px;
+  color:#F7F5F0;font-size:10.5px;font-weight:700;
   letter-spacing:0.4px;
   pointer-events:none;
 }
@@ -1334,6 +1334,8 @@ button,
 </div>
 
 <script>
+/* QA convenience: pre-fill all 12 puzzle pieces so 십이교 놀이 can be
+   tested immediately, without completing 12 real missions first. */
 try{ localStorage.setItem('gsf_puzzle_pieces', JSON.stringify([0,1,2,3,4,5,6,7,8,9,10,11])); }catch(e){}
 
 const missionIcons = {

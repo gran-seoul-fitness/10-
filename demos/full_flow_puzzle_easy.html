@@ -1334,6 +1334,10 @@ button,
 </div>
 
 <script>
+/* QA convenience: pre-fill all 12 puzzle pieces so 십이교 놀이 can be
+   tested immediately, without completing 12 real missions first. */
+try{ localStorage.setItem('gsf_puzzle_pieces', JSON.stringify([0,1,2,3,4,5,6,7,8,9,10,11])); }catch(e){}
+
 const missionIcons = {
   stretch: `<svg viewBox="0 0 24 24" fill="none" stroke="#FBF9F4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><circle cx="12" cy="4.5" r="2" fill="#FBF9F4" stroke="none"/><path d="M12 7v6M12 9l-5 3M12 9l5 3M12 13l-3 7M12 13l3 7"/></svg>`,
   gx: `<svg viewBox="0 0 24 24" fill="none" stroke="#FBF9F4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><circle cx="12" cy="4.5" r="2" fill="#FBF9F4" stroke="none"/><path d="M12 7v5M12 8l-5-3M12 8l5-3M12 12l-4 8M12 12l4 8"/></svg>`,
@@ -1708,14 +1712,14 @@ function isSolved(state){
   return state.every((pieceIdx, slotIdx) => pieceIdx === slotIdx);
 }
 function shuffleJigsaw(){
+  /* Demo build: swap just one random pair of pieces so the puzzle can be
+     completed in a single move, for quick reporting/demo purposes. */
   jigsawSelected = null;
   const arr = [...Array(JIGSAW_TOTAL).keys()];
-  do {
-    for(let i = arr.length - 1; i > 0; i--){
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-  } while(isSolved(arr));
+  const i = Math.floor(Math.random() * arr.length);
+  let j = Math.floor(Math.random() * arr.length);
+  while(j === i) j = Math.floor(Math.random() * arr.length);
+  [arr[i], arr[j]] = [arr[j], arr[i]];
   jigsawState = arr;
   renderJigsaw();
 }
