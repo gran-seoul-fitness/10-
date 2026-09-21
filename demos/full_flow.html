@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>그랑서울 피트니스 · 고을 지도</title>
+<title>그랑서울 피트니스 · 4주 건강 챌린지</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap">
 <style>
 @font-face{
@@ -42,6 +42,125 @@ body{
 }
 .screen{display:none;min-height:100vh;flex-direction:column;position:relative;}
 .screen.active{display:flex;}
+
+/* ---------- Landing ---------- */
+#landing{padding:0;background:#C7C3B8;}
+.hero-wrap{position:relative;width:100%;}
+.hero-wrap img.hero{width:100%;display:block;}
+
+.gate-title{
+  position:absolute;
+  top:49.8%;left:31.1%;width:39.4%;height:16%;
+  z-index:2;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:10px;
+  padding:4%;
+}
+.gate-title-text{
+  font-weight:700;
+  font-size:clamp(11px, 3.1vw, 13.5px);
+  line-height:1.5;
+  color:var(--ink);
+  text-align:center;
+}
+.btn-mini{
+  font-family:'HoonminjeongeumH','Gowun Batang',serif;
+  font-weight:700;
+  font-size:11.5px;
+  color:var(--ivory-light);
+  background:var(--ink);
+  border:none;
+  padding:8px 22px;
+  cursor:pointer;
+  letter-spacing:0.5px;
+  animation:ctaPulse 2.6s ease-in-out infinite;
+}
+.btn-mini:active{animation-play-state:paused;transform:scale(0.94);}
+@keyframes ctaPulse{
+  0%,100%{ box-shadow:0 0 0 0 rgba(28,28,26,0.28); }
+  50%{ box-shadow:0 0 0 7px rgba(28,28,26,0); }
+}
+
+/* ---------- Character select ---------- */
+#select{padding:0;background:#C1BDB2;}
+
+.char-box{
+  position:absolute;
+  top:24.9%;left:10%;width:78.5%;height:54.2%;
+  z-index:2;
+  display:flex;flex-direction:column;
+  padding:6% 7%;
+}
+
+.stage{
+  position:relative;
+  width:100%;
+  flex:0 0 auto;
+  aspect-ratio:1/0.92;
+  margin-bottom:6%;
+}
+.stage::before{
+  content:'';position:absolute;left:50%;bottom:4%;width:56%;height:12px;
+  background:rgba(28,28,26,0.14);border-radius:50%;transform:translateX(-50%);filter:blur(2px);
+}
+.char-wrap{
+  position:relative;width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  animation:charBob 3s ease-in-out infinite;
+}
+@keyframes charBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+#charSvg{width:58%;height:auto;overflow:visible;}
+.outfit-group{display:none;}
+.outfit-group.show{display:block;}
+.hat-group{opacity:0;transition:opacity .25s ease;}
+.hat-group.show{opacity:1;}
+
+.toast{
+  position:absolute;left:50%;bottom:2%;transform:translate(-50%,6px);
+  background:var(--ink);color:var(--ivory-light);font-size:10.5px;font-weight:700;
+  padding:6px 12px;border-radius:20px;white-space:nowrap;opacity:0;pointer-events:none;
+  transition:opacity .25s ease, transform .25s ease;
+}
+.toast.show{opacity:1;transform:translate(-50%,0);}
+
+.btn-quickstart{
+  display:block;width:100%;
+  font-family:'HoonminjeongeumH','Gowun Batang',serif;font-weight:700;font-size:11px;
+  color:var(--ivory-light);background:var(--ink);border:none;padding:8px;
+  cursor:pointer;letter-spacing:0.3px;margin-bottom:9px;
+  animation:ctaPulse 2.6s ease-in-out infinite;
+}
+.btn-quickstart span{font-size:9.5px;font-weight:400;opacity:0.75;}
+.btn-quickstart:active{animation-play-state:paused;transform:scale(0.97);}
+
+.btn-start{
+  display:block;width:100%;
+  font-family:'HoonminjeongeumH','Gowun Batang',serif;font-weight:700;font-size:13px;
+  color:#FBF9F4;background:var(--orange);border:none;border-radius:12px;
+  padding:12px;margin-top:14px;
+  cursor:pointer;letter-spacing:0.3px;
+  box-shadow:0 4px 10px rgba(216,90,48,0.35);
+}
+.btn-start:active{transform:scale(0.98);}
+
+.divider{
+  display:flex;align-items:center;text-align:center;color:var(--ink-soft);
+  font-size:9px;letter-spacing:0.5px;margin-bottom:9px;
+}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:#c9c2ae;}
+.divider span{padding:0 7px;}
+
+.picker-label{font-size:8.5px;letter-spacing:1.5px;color:var(--ink-soft);margin:0 1px 6px;}
+.chip-row{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
+.chip{
+  flex:1;min-width:0;background:rgba(255,255,255,0.55);border:1px solid var(--ink);
+  padding:5px 3px;text-align:center;font-size:9px;font-weight:700;cursor:pointer;
+  transition:transform .15s ease, background .15s ease;
+}
+.chip.active{background:var(--ink);color:var(--ivory-light);}
+.chip:active{transform:scale(0.96);}
+
+.footer-note{text-align:center;font-size:8.5px;color:var(--ink-soft);line-height:1.5;margin-top:1px;}
 
 /* ---------- Map screen ---------- */
 #map{padding:0;background:#DED6C4;}
@@ -690,8 +809,195 @@ body{
 <body>
 <div class="app">
 
-  <!-- Screen 1: Village map -->
-  <section id="map" class="screen active">
+  <!-- Screen 1: Landing -->
+  <section id="landing" class="screen active">
+    <div class="hero-wrap">
+      <img class="hero" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/1.png">
+      <div class="gate-title">
+        <div class="gate-title-text">10월의<br>건강한 4주를<br>만들어보세요.</div>
+        <button class="btn-mini" onclick="goTo('select')">시작하기</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Screen 2: Character select -->
+  <section id="select" class="screen">
+    <div class="hero-wrap">
+      <img class="hero" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/2.png">
+      <div class="char-box">
+        <div class="stage">
+          <div class="char-wrap">
+            <svg id="charSvg" viewBox="0 0 240 300" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="skinGrad" cx="38%" cy="30%" r="75%">
+                  <stop offset="0%" stop-color="#FFF3E4"/>
+                  <stop offset="55%" stop-color="#FFDDB0"/>
+                  <stop offset="100%" stop-color="#F2C48C"/>
+                </radialGradient>
+                <radialGradient id="hatGrad" cx="40%" cy="30%" r="80%">
+                  <stop offset="0%" stop-color="#3A3A38"/>
+                  <stop offset="100%" stop-color="#111110"/>
+                </radialGradient>
+              </defs>
+
+              <!-- feet (shared) -->
+              <circle cx="99" cy="258" r="14" fill="#F0C79A"/>
+              <circle cx="141" cy="258" r="14" fill="#F0C79A"/>
+
+              <!-- ============ OUTFIT: 운동복 (gym wear) ============ -->
+              <g id="outfitGym" class="outfit-group show">
+                <path d="M 78 205 Q 120 194 162 205 L 154 240 Q 120 250 86 240 Z" fill="#1C1C1A"/>
+                <circle cx="100" cy="246" r="10" fill="#F0C79A"/>
+                <circle cx="140" cy="246" r="10" fill="#F0C79A"/>
+                <path d="M 82 150 Q 120 139 158 150 L 165 206 Q 120 220 75 206 Z" fill="#A2A29A"/>
+                <circle cx="76" cy="172" r="17" fill="#8C8C84"/>
+                <circle cx="164" cy="172" r="17" fill="#8C8C84"/>
+              </g>
+
+              <!-- ============ OUTFIT: 치마 세트 (jeogori + chima) ============ -->
+              <g id="outfitChima" class="outfit-group">
+                <path d="M 78 180 Q 120 168 162 180 L 182 264 Q 120 284 58 264 Z" fill="#1E2233"/>
+                <path d="M 96 196 L 92 258" fill="none" stroke="#3A4058" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+                <path d="M 144 196 L 148 258" fill="none" stroke="#3A4058" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+                <path d="M 82 150 Q 120 140 158 150 L 161 181 Q 120 191 79 181 Z" fill="#F5EFDD"/>
+                <path d="M 82 150 Q 120 140 158 150" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.85"/>
+                <path d="M 108 153 L 120 172 L 132 153" fill="none" stroke="#3D3A32" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <rect x="110" y="177" width="10" height="9" rx="2" fill="#D85A30"/>
+                <path d="M 113 184 Q 106 196 113 208" fill="none" stroke="#D85A30" stroke-width="5" stroke-linecap="round"/>
+                <circle cx="113" cy="212" r="2.3" fill="#E8B84B"/>
+                <circle cx="113" cy="216.5" r="2.8" fill="#E8B84B"/>
+                <circle cx="113" cy="221" r="3.3" fill="#E8B84B"/>
+                <g transform="translate(113,229)">
+                  <ellipse cx="0" cy="-5.5" rx="3.2" ry="5.5" fill="#D85A30" transform="rotate(0)"/>
+                  <ellipse cx="0" cy="-5.5" rx="3.2" ry="5.5" fill="#D85A30" transform="rotate(90)"/>
+                  <ellipse cx="0" cy="-5.5" rx="3.2" ry="5.5" fill="#D85A30" transform="rotate(180)"/>
+                  <ellipse cx="0" cy="-5.5" rx="3.2" ry="5.5" fill="#D85A30" transform="rotate(270)"/>
+                  <circle r="2.8" fill="#E8B84B"/>
+                </g>
+                <path d="M 108 235 L 106 248" fill="none" stroke="#D85A30" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M 113 236 L 113 250" fill="none" stroke="#D85A30" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M 118 235 L 120 248" fill="none" stroke="#D85A30" stroke-width="1.8" stroke-linecap="round"/>
+                <circle cx="76" cy="172" r="16" fill="#F5EFDD"/>
+                <circle cx="164" cy="172" r="16" fill="#F5EFDD"/>
+              </g>
+
+              <!-- ============ OUTFIT: 바지 세트 (jeogori + baji) ============ -->
+              <g id="outfitBaji" class="outfit-group">
+                <path d="M 78 184 Q 120 173 162 184 L 150 244 Q 120 256 90 244 Z" fill="#1C1C1A"/>
+                <circle cx="100" cy="250" r="10" fill="#F0C79A"/>
+                <circle cx="140" cy="250" r="10" fill="#F0C79A"/>
+                <path d="M 82 150 Q 120 140 158 150 L 161 184 Q 120 194 79 184 Z" fill="#F5EFDD"/>
+                <path d="M 82 150 Q 120 140 158 150" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.85"/>
+                <path d="M 108 153 L 120 172 L 132 153" fill="none" stroke="#3D3A32" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <rect x="110" y="177" width="10" height="9" rx="2" fill="#0F6E56"/>
+                <path d="M 113 184 Q 106 196 113 208" fill="none" stroke="#0F6E56" stroke-width="5" stroke-linecap="round"/>
+                <circle cx="113" cy="212" r="2.3" fill="#E8B84B"/>
+                <circle cx="113" cy="216.5" r="2.8" fill="#E8B84B"/>
+                <circle cx="113" cy="221" r="3.3" fill="#E8B84B"/>
+                <g transform="translate(113,229)">
+                  <ellipse cx="0" cy="-5.5" rx="3.2" ry="5.5" fill="#0F6E56" transform="rotate(0)"/>
+                  <ellipse cx="0" cy="-5.5" rx="3.2" ry="5.5" fill="#0F6E56" transform="rotate(90)"/>
+                  <ellipse cx="0" cy="-5.5" rx="3.2" ry="5.5" fill="#0F6E56" transform="rotate(180)"/>
+                  <ellipse cx="0" cy="-5.5" rx="3.2" ry="5.5" fill="#0F6E56" transform="rotate(270)"/>
+                  <circle r="2.8" fill="#E8B84B"/>
+                </g>
+                <path d="M 108 235 L 106 248" fill="none" stroke="#0F6E56" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M 113 236 L 113 250" fill="none" stroke="#0F6E56" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M 118 235 L 120 248" fill="none" stroke="#0F6E56" stroke-width="1.8" stroke-linecap="round"/>
+                <circle cx="76" cy="172" r="16" fill="#F5EFDD"/>
+                <circle cx="164" cy="172" r="16" fill="#F5EFDD"/>
+              </g>
+
+              <!-- hands (paws, drawn on top of torso, no arm limb) -->
+              <circle cx="60" cy="192" r="19" fill="url(#skinGrad)"/>
+              <circle cx="180" cy="192" r="19" fill="url(#skinGrad)"/>
+
+              <!-- binyeo (hairpin) overlay: worn on one side only, rest hidden behind the head -->
+              <g id="hatBinyeo" class="hat-group">
+                <rect x="70" y="132" width="152" height="7" rx="3.5" fill="#8B6F3D"/>
+                <circle cx="222" cy="135.5" r="8.5" fill="#7C2E22"/>
+                <path d="M 222 135 Q 229 150 222 166" fill="none" stroke="#7C2E22" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="221" cy="168" r="3.5" fill="#D85A30"/>
+                <g transform="translate(230,120)">
+                  <ellipse cx="0" cy="-7" rx="4" ry="7" fill="#D85A30" transform="rotate(0)"/>
+                  <ellipse cx="0" cy="-7" rx="4" ry="7" fill="#D85A30" transform="rotate(72)"/>
+                  <ellipse cx="0" cy="-7" rx="4" ry="7" fill="#D85A30" transform="rotate(144)"/>
+                  <ellipse cx="0" cy="-7" rx="4" ry="7" fill="#D85A30" transform="rotate(216)"/>
+                  <ellipse cx="0" cy="-7" rx="4" ry="7" fill="#D85A30" transform="rotate(288)"/>
+                  <circle cx="0" cy="0" r="4" fill="#E8B84B"/>
+                </g>
+              </g>
+
+              <!-- ears (monkey-style, round and set low on the head) -->
+              <circle cx="41" cy="103" r="17" fill="url(#skinGrad)"/>
+              <circle cx="199" cy="103" r="17" fill="url(#skinGrad)"/>
+              <circle cx="44" cy="103" r="8" fill="#F5A28C" opacity="0.5"/>
+              <circle cx="196" cy="103" r="8" fill="#F5A28C" opacity="0.5"/>
+
+              <!-- head -->
+              <circle cx="120" cy="95" r="72" fill="url(#skinGrad)"/>
+
+              <!-- eyes -->
+              <circle cx="97" cy="97" r="6.5" fill="#241F1B"/>
+              <circle cx="143" cy="97" r="6.5" fill="#241F1B"/>
+              <path d="M 86 83 Q 96 77 106 82" fill="none" stroke="#241F1B" stroke-width="3.5" stroke-linecap="round"/>
+              <path d="M 134 82 Q 144 77 154 83" fill="none" stroke="#241F1B" stroke-width="3.5" stroke-linecap="round"/>
+
+              <!-- nose -->
+              <circle cx="120" cy="108" r="5.8" fill="#E8A96E"/>
+
+              <!-- mouth: sideways "3" -->
+              <path d="M 104 117 Q 112 126 120 117 Q 128 126 136 117" fill="none" stroke="#241F1B" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+              <!-- cheeks -->
+              <ellipse cx="86" cy="114" rx="13" ry="8" fill="#F5A28C" opacity="0.5"/>
+              <ellipse cx="154" cy="114" rx="13" ry="8" fill="#F5A28C" opacity="0.5"/>
+
+              <!-- hair: 5:5 가르마 (diagonal center part) -->
+              <path d="M 50 88 Q 44 18 120 15 Q 196 18 190 88 Q 190 58 120 58 Q 50 58 50 88 Z" fill="#2B2620"/>
+              <path d="M 108 16 L 132 56" fill="none" stroke="#3A342C" stroke-width="2.5" stroke-linecap="round" opacity="0.9"/>
+
+              <!-- gat (hat) overlay -->
+              <g id="hatGat" class="hat-group">
+                <ellipse cx="120" cy="44" rx="98" ry="13" fill="url(#hatGrad)"/>
+                <path d="M 90 46 L 87 -14 L 153 -14 L 150 46 Z" fill="url(#hatGrad)"/>
+                <ellipse cx="120" cy="-14" rx="33" ry="6" fill="#454542"/>
+                <path d="M 84 51 L 78 148 Q 78 158 100 167" fill="none" stroke="#B5342A" stroke-width="7" stroke-linecap="round"/>
+                <path d="M 156 51 L 162 148 Q 162 158 140 167" fill="none" stroke="#B5342A" stroke-width="7" stroke-linecap="round"/>
+                <path d="M 120 168 L 106 158 L 106 178 Z" fill="#B5342A"/>
+                <path d="M 120 168 L 134 158 L 134 178 Z" fill="#B5342A"/>
+                <rect x="115" y="161" width="10" height="13" rx="3" fill="#7C2E22"/>
+              </g>
+            </svg>
+          </div>
+          <div class="toast" id="toast">운동복 차림으로 시작할게요!</div>
+        </div>
+
+        <button class="btn-quickstart" id="quickstartBtn">바로 시작하기 <span>(기본 운동복)</span></button>
+        <div class="divider"><span>또는 직접 꾸며보기</span></div>
+
+        <div class="picker-label">머리</div>
+        <div class="chip-row" id="hatRow">
+          <div class="chip active" data-hat="none">맨머리</div>
+          <div class="chip" data-hat="gat">삿갓</div>
+          <div class="chip" data-hat="binyeo">비녀</div>
+        </div>
+
+        <div class="picker-label">옷</div>
+        <div class="chip-row" id="outfitRow">
+          <div class="chip active" data-outfit="gym">운동복</div>
+          <div class="chip" data-outfit="chima">치마</div>
+          <div class="chip" data-outfit="baji">바지</div>
+        </div>
+
+        <div class="footer-note">소품을 선택하면 캐릭터에 바로 입혀져요.</div>
+        <button class="btn-start" id="startBtn">시작하기</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Screen 3: Village map -->
+  <section id="map" class="screen">
     <div class="village-wrap">
       <img class="hero" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/village_bg.png">
 
@@ -1478,6 +1784,82 @@ function updateDday(){
 updateDday();
 updateProgressUI();
 restoreCharacterMini();
+
+const hatEls = { gat: document.getElementById('hatGat'), binyeo: document.getElementById('hatBinyeo') };
+const outfitEls = { gym: document.getElementById('outfitGym'), chima: document.getElementById('outfitChima'), baji: document.getElementById('outfitBaji') };
+
+function saveCharacter(hatKey, outfitKey){
+  try{
+    localStorage.setItem('gsf_hat', hatKey);
+    localStorage.setItem('gsf_outfit', outfitKey);
+  }catch(e){}
+}
+
+document.getElementById('hatRow').addEventListener('click', (e)=>{
+  const chip = e.target.closest('.chip');
+  if(!chip) return;
+  document.querySelectorAll('#hatRow .chip').forEach(c=>c.classList.remove('active'));
+  chip.classList.add('active');
+  Object.values(hatEls).forEach(el=>el.classList.remove('show'));
+  const key = chip.dataset.hat;
+  if(hatEls[key]) hatEls[key].classList.add('show');
+  saveCharacter(key, document.querySelector('#outfitRow .chip.active').dataset.outfit);
+});
+
+document.getElementById('outfitRow').addEventListener('click', (e)=>{
+  const chip = e.target.closest('.chip');
+  if(!chip) return;
+  document.querySelectorAll('#outfitRow .chip').forEach(c=>c.classList.remove('active'));
+  chip.classList.add('active');
+  Object.values(outfitEls).forEach(el=>el.classList.remove('show'));
+  const key = chip.dataset.outfit;
+  if(outfitEls[key]) outfitEls[key].classList.add('show');
+  saveCharacter(document.querySelector('#hatRow .chip.active').dataset.hat, key);
+});
+
+document.getElementById('quickstartBtn').addEventListener('click', ()=>{
+  document.querySelectorAll('#hatRow .chip').forEach(c=>c.classList.remove('active'));
+  document.querySelector('#hatRow .chip[data-hat="none"]').classList.add('active');
+  Object.values(hatEls).forEach(el=>el.classList.remove('show'));
+
+  document.querySelectorAll('#outfitRow .chip').forEach(c=>c.classList.remove('active'));
+  document.querySelector('#outfitRow .chip[data-outfit="gym"]').classList.add('active');
+  Object.values(outfitEls).forEach(el=>el.classList.remove('show'));
+  outfitEls.gym.classList.add('show');
+  saveCharacter('none', 'gym');
+
+  const toast = document.getElementById('toast');
+  toast.classList.add('show');
+  setTimeout(()=>{ goTo('map'); }, 900);
+});
+
+document.getElementById('startBtn').addEventListener('click', ()=>{
+  goTo('map');
+});
+
+(function restoreCharacter(){
+  let hatKey, outfitKey;
+  try{
+    hatKey = localStorage.getItem('gsf_hat');
+    outfitKey = localStorage.getItem('gsf_outfit');
+  }catch(e){}
+  if(hatKey && hatEls[hatKey]){
+    document.querySelectorAll('#hatRow .chip').forEach(c=>c.classList.remove('active'));
+    document.querySelector(`#hatRow .chip[data-hat="${hatKey}"]`).classList.add('active');
+    Object.values(hatEls).forEach(el=>el.classList.remove('show'));
+    hatEls[hatKey].classList.add('show');
+  }
+  if(outfitKey && outfitEls[outfitKey]){
+    document.querySelectorAll('#outfitRow .chip').forEach(c=>c.classList.remove('active'));
+    document.querySelector(`#outfitRow .chip[data-outfit="${outfitKey}"]`).classList.add('active');
+    Object.values(outfitEls).forEach(el=>el.classList.remove('show'));
+    outfitEls[outfitKey].classList.add('show');
+  }
+})();
+
+if (location.hash === '#select') {
+  goTo('select');
+}
 </script>
 </body>
 </html>
