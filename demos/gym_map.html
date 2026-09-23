@@ -513,9 +513,10 @@ button,
 .puzzle-grid{
   position:absolute;
   left:7%;top:29%;width:86%;
-  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+  display:grid;grid-template-columns:repeat(4, minmax(0,1fr));gap:10px;
 }
 .puzzle-slot{
+  min-width:0;
   aspect-ratio:1/1;
   background:#EDE8DD;
   border-radius:12px;
@@ -569,8 +570,8 @@ button,
 }
 .jigsaw-board{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
-  grid-template-rows:repeat(2,1fr);
+  grid-template-columns:repeat(3, minmax(0,1fr));
+  grid-template-rows:repeat(2, minmax(0,1fr));
   width:100%;
   aspect-ratio:629/878;
   background:#2A2320;
@@ -578,7 +579,7 @@ button,
   overflow:hidden;
   margin-bottom:14px;
 }
-.jigsaw-cell{position:relative;}
+.jigsaw-cell{position:relative;min-width:0;}
 .jigsaw-tile{
   position:absolute;
   inset:0;
