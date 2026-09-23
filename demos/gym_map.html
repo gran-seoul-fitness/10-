@@ -516,16 +516,31 @@ button,
   display:grid;grid-template-columns:repeat(4, minmax(0,1fr));gap:10px;
 }
 .puzzle-slot{
+  position:relative;
   min-width:0;
-  aspect-ratio:1/1;
   background:#EDE8DD;
   border-radius:12px;
-  display:flex;align-items:center;justify-content:center;
-  padding:12px;
+}
+.puzzle-slot::before{
+  content:'';
+  display:block;
+  /* Percentage padding is always resolved against the containing
+     block's width in every browser, unlike the newer aspect-ratio
+     property (which Safari has been observed sizing inconsistently
+     for these grid items) — this keeps every slot a reliable square
+     regardless of fill state. */
+  padding-top:100%;
 }
 .puzzle-slot.filled{background:#F7F1E4;}
+.puzzle-slot > .puzzle-piece-icon,
+.puzzle-slot > .puzzle-slot-q{
+  position:absolute;
+  inset:12px;
+}
+.puzzle-slot > .puzzle-slot-q{
+  display:flex;align-items:center;justify-content:center;
+}
 .puzzle-piece-icon{
-  width:100%;height:100%;
   background-image:url('https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/health/sejong_portrait.png');
   background-size:300% 200%;
 }
