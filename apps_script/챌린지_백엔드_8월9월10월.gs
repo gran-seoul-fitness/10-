@@ -15,6 +15,13 @@
  * - 8월(레거시, week 필드로 구분)도 기존 그대로 완전히 동일하게 동작합니다.
  * - 같은 배포 URL을 세 사이트가 동시에 써도 서로 안 섞입니다.
  *
+ * 【추가 수정: "10월 요약" 탭이 인증할 때마다 통째로 리셋되던 문제】
+ * 원래는 인증 한 건마다 "10월 요약" 탭 전체를 지우고 처음부터 다시 썼어요. 그래서
+ * 사람이 손으로 칠해둔 색이나 "수령 유무" 메모가 다음 인증이 들어오는 순간 사라졌어요.
+ * 이제는 그 사람의 그 미션 칸 하나, "달성" 칸 하나만 딱 채우고 나머지는 절대 건드리지
+ * 않습니다. 메뉴의 "10월 요약 다시 채우기"도 마찬가지로 전체를 지우지 않고 칸만
+ * 다시 채웁니다.
+ *
  * 【적용 방법】
  * 1. 이 파일 내용을 Apps Script 편집기에 그대로 붙여넣고 저장 (기존 코드는 전부 지우고
  *    이 파일로 통째로 교체하시면 됩니다 — 8월/9월 로직이 그대로 다 들어있어요).
@@ -641,7 +648,7 @@ function handleOctoberPost(data, lockMs) {
   });
   perf.tSheetWrite = Date.now();
 
-  rebuildSummaryOctober();
+  updateSummaryOctober(data.name, data.missionId, photoUrl);
   perf.tSummary = Date.now();
 
   logPerf({
@@ -676,69 +683,75 @@ function upsertStampRowOctober(sheet, row) {
   sheet.appendRow([row.time, row.name, row.zoneKey, row.missionId, row.title, row.equipment, row.photoUrl]);
 }
 
-function rebuildSummaryOctober() {
+// "요약" 탭은 매번 통째로 지우고 다시 쓰지 않아요(예전 방식은 그래서 인증할 때마다
+// 사장님이 수동으로 칠한 색이나 "수령 유무" 메모가 전부 날아갔어요). 대신 이 함수는
+// 딱 그 사람의 그 미션 칸 하나, 그리고 "달성" 칸 하나만 건드리고 나머지 행/열/서식은
+// 전혀 손대지 않아요. 그래서 노란색으로 칠해두거나 "수령 유무"에 적어둔 메모가 계속
+// 남아있어요.
+function getOrCreateOctoberSummarySheet() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const src = getOrCreateSheetOctober();
   let summary = ss.getSheetByName(OCTOBER_SUMMARY_SHEET_NAME);
-  if (!summary) summary = ss.insertSheet(OCTOBER_SUMMARY_SHEET_NAME);
-  summary.clear();
-  summary.clearConditionalFormatRules();
-
-  const rows = src.getDataRange().getValues();
-  const byMember = {};
-  const namesInOrder = [];
-
-  for (let i = 1; i < rows.length; i++) {
-    const rawName = rows[i][1];
-    if (!rawName) continue;
-    const key = normalizeName(rawName);
-    const missionId = rows[i][3];
-    const photoUrl = rows[i][6];
-    if (!byMember[key]) {
-      byMember[key] = { displayName: rawName, done: {} };
-      namesInOrder.push(key);
-    }
-    byMember[key].done[missionId] = photoUrl || true;
-  }
-
-  namesInOrder.sort((a, b) => byMember[a].displayName.localeCompare(byMember[b].displayName, "ko"));
-
-  const header = ["이름", "달성", ...OCTOBER_QUEST_COLUMNS.map((q) => q.label), "수령 유무"];
-  const dataRows = namesInOrder.map((key) => {
-    const member = byMember[key];
-    const done = member.done;
-    let count = 0;
-    const cells = OCTOBER_QUEST_COLUMNS.map((q) => {
-      const val = done[q.key];
-      if (val && typeof val === "string" && val.indexOf("http") === 0) {
-        count++;
-        return `=HYPERLINK("${val}","✓")`;
-      }
-      if (val) {
-        count++;
-        return "✓";
-      }
-      return "";
-    });
-    return [member.displayName, `${count}/${OCTOBER_QUEST_COLUMNS.length}`, ...cells, ""];
-  });
-
-  const allRows = [header, ...dataRows];
-  summary.getRange(1, 1, allRows.length, header.length).setValues(allRows);
-  summary.getRange(1, 1, 1, header.length).setFontWeight("bold").setBackground("#20392C").setFontColor("#FFFFFF");
-  summary.getRange(1, 2, allRows.length, 1).setNumberFormat("@");
-
-  summary.setFrozenRows(1);
-  summary.setFrozenColumns(2);
-
-  if (namesInOrder.length > 0) {
-    const range = summary.getRange(2, 3, namesInOrder.length, OCTOBER_QUEST_COLUMNS.length);
+  if (!summary) {
+    summary = ss.insertSheet(OCTOBER_SUMMARY_SHEET_NAME);
+    const header = ["이름", "달성", ...OCTOBER_QUEST_COLUMNS.map((q) => q.label), "수령 유무"];
+    summary.appendRow(header);
+    summary.getRange(1, 1, 1, header.length).setFontWeight("bold").setBackground("#20392C").setFontColor("#FFFFFF");
+    summary.setFrozenRows(1);
+    summary.setFrozenColumns(2);
+    const range = summary.getRange(2, 3, 500, OCTOBER_QUEST_COLUMNS.length);
     const rule = SpreadsheetApp.newConditionalFormatRule()
       .whenFormulaSatisfied('=NOT(ISBLANK(C2))')
       .setBackground("#D9EAD3")
       .setRanges([range])
       .build();
     summary.setConditionalFormatRules([rule]);
+  }
+  return summary;
+}
+
+function findOrCreateSummaryRowOctober(summary, name) {
+  const lastRow = summary.getLastRow();
+  const targetName = normalizeName(name);
+  if (lastRow >= 2) {
+    const names = summary.getRange(2, 1, lastRow - 1, 1).getValues();
+    for (let i = 0; i < names.length; i++) {
+      if (normalizeName(names[i][0]) === targetName) return i + 2;
+    }
+  }
+  const newRow = lastRow + 1;
+  summary.getRange(newRow, 1).setValue(name);
+  return newRow;
+}
+
+function updateSummaryOctober(name, missionId, photoUrl) {
+  const summary = getOrCreateOctoberSummarySheet();
+  const row = findOrCreateSummaryRowOctober(summary, name);
+  const colIdx = OCTOBER_QUEST_COLUMNS.findIndex((q) => q.key === missionId);
+  if (colIdx === -1) return;
+  const missionCol = 3 + colIdx;
+
+  if (photoUrl) {
+    summary.getRange(row, missionCol).setFormula(`=HYPERLINK("${photoUrl}","✓")`);
+  } else {
+    summary.getRange(row, missionCol).setValue("✓");
+  }
+
+  const missionValues = summary.getRange(row, 3, 1, OCTOBER_QUEST_COLUMNS.length).getDisplayValues()[0];
+  const doneCount = missionValues.filter((v) => v && v.toString().trim() !== "").length;
+  summary.getRange(row, 2).setValue(`${doneCount}/${OCTOBER_QUEST_COLUMNS.length}`).setNumberFormat("@");
+}
+
+// 복구/정리 도구에서만 쓰는 재동기화: stamps 탭 전체를 훑으면서 위 updateSummaryOctober를
+// 한 번씩 다시 불러줘요. 이것도 기존 행을 지우지 않고 칸만 채우는 방식이라 안전해요.
+function resyncSummaryOctober() {
+  const sheet = getOrCreateSheetOctober();
+  const rows = sheet.getDataRange().getValues();
+  for (let i = 1; i < rows.length; i++) {
+    const name = rows[i][1];
+    const missionId = rows[i][3];
+    const photoUrl = rows[i][6];
+    if (!name || !missionId) continue;
+    updateSummaryOctober(name, missionId, photoUrl);
   }
 }
 
@@ -779,7 +792,7 @@ function recoverMissingFromDriveOctober() {
     recovered++;
   }
 
-  rebuildSummaryOctober();
+  resyncSummaryOctober();
   const msg = `복구 완료: ${recovered}건의 누락된 기록을 되살렸습니다.` +
     (skippedUnknown.length ? `\n\n확인 필요(자동 인식 안 됨): ${skippedUnknown.join(", ")}` : "");
   SpreadsheetApp.getUi().alert(msg);
@@ -815,7 +828,7 @@ function dedupeStampsOctober() {
   ss.setActiveSheet(temp);
   ss.moveActiveSheet(originalIndex);
 
-  rebuildSummaryOctober();
+  resyncSummaryOctober();
   SpreadsheetApp.getUi().alert(
     `정리 완료: ${values.length - 1}개 행 -> ${newData.length - 1}개 행으로 정리되었습니다.\n` +
     `(원본은 "${backupName}" 탭에 백업되어 있습니다. 문제 없으면 나중에 지우셔도 됩니다.)`
@@ -931,7 +944,7 @@ function onOpen() {
     .addItem("9월 중복 기록 정리 (한 번만 실행)", "dedupeStampsCurrent")
     .addItem("9월 드라이브에서 누락된 기록 복구", "recoverMissingFromDriveCurrent")
     .addSeparator()
-    .addItem("10월 요약 다시 만들기", "rebuildSummaryOctober")
+    .addItem("10월 요약 다시 채우기(수동 표시는 안 건드림)", "resyncSummaryOctober")
     .addItem("10월 중복 기록 정리 (한 번만 실행)", "dedupeStampsOctober")
     .addItem("10월 드라이브에서 누락된 기록 복구", "recoverMissingFromDriveOctober")
     .addToUi();
