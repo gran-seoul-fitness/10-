@@ -138,7 +138,7 @@ button,
   width:100%;
   flex:0 0 auto;
   aspect-ratio:1/0.92;
-  margin-bottom:6%;
+  margin-bottom:3%;
 }
 .stage::before{
   content:'';position:absolute;left:50%;bottom:4%;width:56%;height:12px;
@@ -164,11 +164,30 @@ button,
 }
 .toast.show{opacity:1;transform:translate(-50%,0);}
 
+.name-row{display:flex;align-items:center;gap:7px;margin-bottom:5px;}
+.name-row-label{font-size:8.5px;letter-spacing:1px;color:var(--ink-soft);flex:0 0 auto;}
+.name-row-input{
+  flex:1;min-width:0;box-sizing:border-box;
+  font-family:'HoonminjeongeumH','Gowun Batang',serif;font-size:11px;
+  padding:5px 8px;border:1px solid var(--ink);border-radius:6px;
+  background:rgba(255,255,255,0.55);color:var(--ink);
+  outline:none;transition:border-color .15s ease;
+}
+.name-row-input:focus{border-color:var(--orange);}
+.name-row-input::placeholder{color:var(--ink-soft);opacity:0.7;}
+.name-row-input.invalid{border-color:var(--orange);animation:nameShake .3s ease;}
+.name-row-input.invalid::placeholder{color:var(--orange);}
+@keyframes nameShake{
+  0%,100%{transform:translateX(0);}
+  25%{transform:translateX(-4px);}
+  75%{transform:translateX(4px);}
+}
+
 .btn-quickstart{
   display:block;width:100%;
   font-family:'HoonminjeongeumH','Gowun Batang',serif;font-weight:700;font-size:11px;
   color:var(--ivory-light);background:var(--ink);border:none;padding:7px;
-  cursor:pointer;letter-spacing:0.3px;margin-bottom:6px;
+  cursor:pointer;letter-spacing:0.3px;margin-bottom:5px;
   animation:ctaPulse 2.6s ease-in-out infinite;
 }
 .btn-quickstart span{font-size:9.5px;font-weight:400;opacity:0.75;}
@@ -178,7 +197,7 @@ button,
   display:block;width:100%;
   font-family:'HoonminjeongeumH','Gowun Batang',serif;font-weight:700;font-size:13px;
   color:#FBF9F4;background:var(--orange);border:none;border-radius:12px;
-  padding:10px;margin-top:9px;
+  padding:10px;margin-top:8px;
   cursor:pointer;letter-spacing:0.3px;
   box-shadow:0 4px 10px rgba(216,90,48,0.35);
 }
@@ -186,13 +205,13 @@ button,
 
 .divider{
   display:flex;align-items:center;text-align:center;color:var(--ink-soft);
-  font-size:9px;letter-spacing:0.5px;margin-bottom:6px;
+  font-size:9px;letter-spacing:0.5px;margin-bottom:5px;
 }
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:#c9c2ae;}
 .divider span{padding:0 7px;}
 
-.picker-label{font-size:8.5px;letter-spacing:1.5px;color:var(--ink-soft);margin:0 1px 4px;}
-.chip-row{display:flex;gap:6px;margin-bottom:7px;flex-wrap:wrap;}
+.picker-label{font-size:8.5px;letter-spacing:1.5px;color:var(--ink-soft);margin:0 1px 3px;}
+.chip-row{display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap;}
 .chip{
   flex:1;min-width:0;background:rgba(255,255,255,0.55);border:1px solid var(--ink);
   padding:5px 3px;text-align:center;font-size:9px;font-weight:700;cursor:pointer;
@@ -200,8 +219,6 @@ button,
 }
 .chip.active{background:var(--ink);color:var(--ivory-light);}
 .chip:active{transform:scale(0.96);}
-
-.footer-note{text-align:center;font-size:8.5px;color:var(--ink-soft);line-height:1.5;margin-top:1px;}
 
 /* ---------- Map screen ---------- */
 #map{padding:0;background:#DED6C4;}
@@ -1061,6 +1078,11 @@ button,
           <div class="toast" id="toast">운동복 차림으로 시작할게요!</div>
         </div>
 
+        <div class="name-row">
+          <span class="name-row-label">성함</span>
+          <input type="text" id="charNameInput" class="name-row-input" placeholder="이름을 입력해주세요" maxlength="20" autocomplete="name">
+        </div>
+
         <button class="btn-quickstart" id="quickstartBtn">바로 시작하기 <span>(기본 운동복)</span></button>
         <div class="divider"><span>또는 직접 꾸며보기</span></div>
 
@@ -1078,7 +1100,6 @@ button,
           <div class="chip" data-outfit="baji">바지</div>
         </div>
 
-        <div class="footer-note">소품을 선택하면 캐릭터에 바로 입혀져요.</div>
         <button class="btn-start" id="startBtn">시작하기</button>
       </div>
     </div>
@@ -1983,7 +2004,28 @@ document.getElementById('outfitRow').addEventListener('click', (e)=>{
   saveCharacter(document.querySelector('#hatRow .chip.active').dataset.hat, key);
 });
 
+const charNameInput = document.getElementById('charNameInput');
+function saveCharacterName(){
+  try{ localStorage.setItem('gsf_name', charNameInput.value.trim()); }catch(e){}
+}
+function checkCharacterName(){
+  if(!charNameInput.value.trim()){
+    charNameInput.classList.remove('invalid');
+    void charNameInput.offsetWidth;
+    charNameInput.classList.add('invalid');
+    charNameInput.placeholder = '성함을 입력해주세요!';
+    charNameInput.focus();
+    return false;
+  }
+  charNameInput.classList.remove('invalid');
+  saveCharacterName();
+  return true;
+}
+charNameInput.addEventListener('input', ()=>{ charNameInput.classList.remove('invalid'); });
+
 document.getElementById('quickstartBtn').addEventListener('click', ()=>{
+  if(!checkCharacterName()) return;
+
   document.querySelectorAll('#hatRow .chip').forEach(c=>c.classList.remove('active'));
   document.querySelector('#hatRow .chip[data-hat="none"]').classList.add('active');
   Object.values(hatEls).forEach(el=>el.classList.remove('show'));
@@ -2000,8 +2042,16 @@ document.getElementById('quickstartBtn').addEventListener('click', ()=>{
 });
 
 document.getElementById('startBtn').addEventListener('click', ()=>{
+  if(!checkCharacterName()) return;
   goTo('map');
 });
+
+(function restoreCharacterName(){
+  try{
+    const saved = localStorage.getItem('gsf_name');
+    if(saved) charNameInput.value = saved;
+  }catch(e){}
+})();
 
 (function restoreCharacter(){
   let hatKey, outfitKey;
