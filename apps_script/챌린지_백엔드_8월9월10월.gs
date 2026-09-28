@@ -374,7 +374,7 @@ function handleCurrentPost(data, lockMs) {
   });
   perf.tSheetWrite = Date.now();
 
-  rebuildSummaryCurrent();
+  updateSummaryCurrent(data.name, data.missionId, photoUrl);
   perf.tSummary = Date.now();
 
   // 어느 단계가 오래 걸리는지 실측하려고 남겨요 ("성능로그" 탭에서 확인 가능).
@@ -410,76 +410,73 @@ function upsertStampRowCurrent(sheet, row) {
   sheet.appendRow([row.time, row.name, row.zoneKey, row.missionId, row.title, row.equipment, row.photoUrl]);
 }
 
-function rebuildSummaryCurrent() {
+// "요약" 탭은 매번 통째로 지우고 다시 쓰지 않아요(그러면 인증할 때마다 수동으로 칠한
+// 색이나 "수령 유무" 메모가 전부 날아가요). 대신 그 사람의 그 미션 칸 하나, "달성" 칸
+// 하나만 건드리고 나머지 행/열/서식은 전혀 손대지 않아요.
+function getOrCreateCurrentSummarySheet() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const src = getOrCreateSheetCurrent();
   let summary = ss.getSheetByName(CURRENT_SUMMARY_SHEET_NAME);
-  if (!summary) summary = ss.insertSheet(CURRENT_SUMMARY_SHEET_NAME);
-  summary.clear();
-  summary.clearConditionalFormatRules();
-
-  const rows = src.getDataRange().getValues();
-  const byMember = {};
-  const namesInOrder = [];
-
-  for (let i = 1; i < rows.length; i++) {
-    const rawName = rows[i][1];
-    if (!rawName) continue;
-    const key = normalizeName(rawName);
-    const missionId = rows[i][3];
-    const photoUrl = rows[i][6];
-    if (!byMember[key]) {
-      byMember[key] = { displayName: rawName, done: {} };
-      namesInOrder.push(key);
-    }
-    byMember[key].done[missionId] = photoUrl || true;
-  }
-
-  namesInOrder.sort((a, b) => byMember[a].displayName.localeCompare(byMember[b].displayName, "ko"));
-
-  // 회원이 늘어날수록 한 명씩 appendRow()로 쓰면(=API 호출 N번) 매 인증마다 점점
-  // 느려져요. 헤더 포함 전체를 한 번의 setValues() 호출로 몰아서 써서, 회원이
-  // 몇 명이든 인증 완료까지 걸리는 시간이 거의 일정하게 유지되도록 했어요.
-  const header = ["이름", "달성", ...CURRENT_QUEST_COLUMNS.map((q) => q.label)];
-  const dataRows = namesInOrder.map((key) => {
-    const member = byMember[key];
-    const done = member.done;
-    let count = 0;
-    const cells = CURRENT_QUEST_COLUMNS.map((q) => {
-      const val = done[q.key];
-      if (val && typeof val === "string" && val.indexOf("http") === 0) {
-        count++;
-        return `=HYPERLINK("${val}","✓")`;
-      }
-      if (val) {
-        count++;
-        return "✓";
-      }
-      return "";
-    });
-    return [member.displayName, `${count}/${CURRENT_QUEST_COLUMNS.length}`, ...cells];
-  });
-
-  const allRows = [header, ...dataRows];
-  summary.getRange(1, 1, allRows.length, header.length).setValues(allRows);
-  summary.getRange(1, 1, 1, header.length).setFontWeight("bold").setBackground("#20392C").setFontColor("#FFFFFF");
-  // 달성 열 텍스트 고정(자동 날짜 변환 방지) — 실제로 쓴 행까지만 서식 적용해요.
-  // 예전엔 getMaxRows()(최대 1000행)까지 매번 서식을 걸어서 느려졌어요.
-  summary.getRange(1, 2, allRows.length, 1).setNumberFormat("@");
-
-  summary.setFrozenRows(1);
-  summary.setFrozenColumns(2);
-  // 열 너비 자동 맞춤(autoResizeColumns)은 매번 할 필요 없어서 뺐어요 — 필요하면
-  // 시트에서 수동으로 "열 크기 자동 조정"을 한 번 해주시면 돼요.
-
-  if (namesInOrder.length > 0) {
-    const range = summary.getRange(2, 3, namesInOrder.length, CURRENT_QUEST_COLUMNS.length);
+  if (!summary) {
+    summary = ss.insertSheet(CURRENT_SUMMARY_SHEET_NAME);
+    const header = ["이름", "달성", ...CURRENT_QUEST_COLUMNS.map((q) => q.label)];
+    summary.appendRow(header);
+    summary.getRange(1, 1, 1, header.length).setFontWeight("bold").setBackground("#20392C").setFontColor("#FFFFFF");
+    summary.setFrozenRows(1);
+    summary.setFrozenColumns(2);
+    const range = summary.getRange(2, 3, 500, CURRENT_QUEST_COLUMNS.length);
     const rule = SpreadsheetApp.newConditionalFormatRule()
       .whenFormulaSatisfied('=NOT(ISBLANK(C2))')
       .setBackground("#D9EAD3")
       .setRanges([range])
       .build();
     summary.setConditionalFormatRules([rule]);
+  }
+  return summary;
+}
+
+function findOrCreateSummaryRowCurrent(summary, name) {
+  const lastRow = summary.getLastRow();
+  const targetName = normalizeName(name);
+  if (lastRow >= 2) {
+    const names = summary.getRange(2, 1, lastRow - 1, 1).getValues();
+    for (let i = 0; i < names.length; i++) {
+      if (normalizeName(names[i][0]) === targetName) return i + 2;
+    }
+  }
+  const newRow = lastRow + 1;
+  summary.getRange(newRow, 1).setValue(name);
+  return newRow;
+}
+
+function updateSummaryCurrent(name, missionId, photoUrl) {
+  const summary = getOrCreateCurrentSummarySheet();
+  const row = findOrCreateSummaryRowCurrent(summary, name);
+  const colIdx = CURRENT_QUEST_COLUMNS.findIndex((q) => q.key === missionId);
+  if (colIdx === -1) return;
+  const missionCol = 3 + colIdx;
+
+  if (photoUrl) {
+    summary.getRange(row, missionCol).setFormula(`=HYPERLINK("${photoUrl}","✓")`);
+  } else {
+    summary.getRange(row, missionCol).setValue("✓");
+  }
+
+  const missionValues = summary.getRange(row, 3, 1, CURRENT_QUEST_COLUMNS.length).getDisplayValues()[0];
+  const doneCount = missionValues.filter((v) => v && v.toString().trim() !== "").length;
+  summary.getRange(row, 2).setValue(`${doneCount}/${CURRENT_QUEST_COLUMNS.length}`).setNumberFormat("@");
+}
+
+// 복구/정리 도구에서만 쓰는 재동기화: stamps 탭 전체를 훑으면서 위 updateSummaryCurrent를
+// 한 번씩 다시 불러줘요. 이것도 기존 행을 지우지 않고 칸만 채우는 방식이라 안전해요.
+function resyncSummaryCurrent() {
+  const sheet = getOrCreateSheetCurrent();
+  const rows = sheet.getDataRange().getValues();
+  for (let i = 1; i < rows.length; i++) {
+    const name = rows[i][1];
+    const missionId = rows[i][3];
+    const photoUrl = rows[i][6];
+    if (!name || !missionId) continue;
+    updateSummaryCurrent(name, missionId, photoUrl);
   }
 }
 
@@ -520,7 +517,7 @@ function recoverMissingFromDriveCurrent() {
     recovered++;
   }
 
-  rebuildSummaryCurrent();
+  resyncSummaryCurrent();
   const msg = `복구 완료: ${recovered}건의 누락된 기록을 되살렸습니다.` +
     (skippedUnknown.length ? `\n\n확인 필요(자동 인식 안 됨): ${skippedUnknown.join(", ")}` : "");
   SpreadsheetApp.getUi().alert(msg);
@@ -556,7 +553,7 @@ function dedupeStampsCurrent() {
   ss.setActiveSheet(temp);
   ss.moveActiveSheet(originalIndex);
 
-  rebuildSummaryCurrent();
+  resyncSummaryCurrent();
   SpreadsheetApp.getUi().alert(
     `정리 완료: ${values.length - 1}개 행 -> ${newData.length - 1}개 행으로 정리되었습니다.\n` +
     `(원본은 "${backupName}" 탭에 백업되어 있습니다. 문제 없으면 나중에 지우셔도 됩니다.)`
@@ -940,7 +937,7 @@ function onOpen() {
     .addItem("8월 중복 기록 정리 (한 번만 실행)", "dedupeStampsLegacy")
     .addItem("8월 드라이브에서 누락된 기록 복구", "recoverMissingFromDriveLegacy")
     .addSeparator()
-    .addItem("9월 요약 다시 만들기", "rebuildSummaryCurrent")
+    .addItem("9월 요약 다시 채우기(수동 표시는 안 건드림)", "resyncSummaryCurrent")
     .addItem("9월 중복 기록 정리 (한 번만 실행)", "dedupeStampsCurrent")
     .addItem("9월 드라이브에서 누락된 기록 복구", "recoverMissingFromDriveCurrent")
     .addSeparator()
