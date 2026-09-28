@@ -1393,22 +1393,26 @@ const zones = {
 
 const ordinalKo = ['첫 번째','두 번째','세 번째','네 번째','다섯 번째','여섯 번째'];
 
-/* ---------- Google Sheet challenge log (Apps Script web app) ---------- */
-const SHEET_LOG_URL = ''; // 배포 후 Apps Script 웹앱 URL을 여기에 붙여넣으세요
-const SHEET_LOG_MONTH = '10월';
+/* ---------- Google Sheet challenge log (shared Apps Script backend) ---------- */
+// 자강피트니스 챌린지 백엔드(8월/9월과 같은 배포)의 웹앱 URL.
+// doPost가 month:"10월" 필드를 보고 10월 전용 분기로 자동 라우팅하므로,
+// 9월 사이트가 쓰는 배포와 URL이 같아도 서로 섞이지 않아요.
+const SHEET_LOG_URL = 'https://script.google.com/macros/s/AKfycbyp3GsKcm_TdD1qsFHHx7gWb3ZZC65xBVVBYRFr0-Iyt4WT0z9oVAeoaC5ZveEj8Jxg/exec';
 function logMissionToSheet(missionKey, photoDataUrl){
   if(!SHEET_LOG_URL) return;
   let name = '';
   try{ name = (localStorage.getItem('gsf_name') || '').trim(); }catch(e){}
   if(!name) return;
   const zoneKey = missionKey.split('-')[0];
+  const equipOptions = EQUIP_OPTIONS[missionKey] || [];
   const payload = {
-    month: SHEET_LOG_MONTH,
+    month: '10월',
     name,
     zoneKey,
-    zoneName: zones[zoneKey].name,
-    missionName: missionNameFromKey(missionKey),
-    photoBase64: photoDataUrl || ''
+    missionId: missionKey,
+    title: missionNameFromKey(missionKey),
+    equipment: equipOptions.map(o => o.name).join(' · '),
+    photo: photoDataUrl || ''
   };
   try{
     fetch(SHEET_LOG_URL, {
