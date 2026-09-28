@@ -1393,6 +1393,33 @@ const zones = {
 
 const ordinalKo = ['첫 번째','두 번째','세 번째','네 번째','다섯 번째','여섯 번째'];
 
+/* ---------- Google Sheet challenge log (Apps Script web app) ---------- */
+const SHEET_LOG_URL = ''; // 배포 후 Apps Script 웹앱 URL을 여기에 붙여넣으세요
+const SHEET_LOG_MONTH = '10월';
+function logMissionToSheet(missionKey, photoDataUrl){
+  if(!SHEET_LOG_URL) return;
+  let name = '';
+  try{ name = (localStorage.getItem('gsf_name') || '').trim(); }catch(e){}
+  if(!name) return;
+  const zoneKey = missionKey.split('-')[0];
+  const payload = {
+    month: SHEET_LOG_MONTH,
+    name,
+    zoneKey,
+    zoneName: zones[zoneKey].name,
+    missionName: missionNameFromKey(missionKey),
+    photoBase64: photoDataUrl || ''
+  };
+  try{
+    fetch(SHEET_LOG_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+  }catch(e){}
+}
+
 const EQUIP_DIR = GH_RAW + 'equipment/';
 const EQUIP_OPTIONS = {
   'strength-0': [ // 등 운동
@@ -1683,6 +1710,7 @@ function completeVerify(){
   setDone(currentMissionKey, true);
   markStampToday();
   if(pendingVerifyPhoto){ saveMissionPhoto(currentMissionKey, pendingVerifyPhoto); }
+  logMissionToSheet(currentMissionKey, pendingVerifyPhoto);
   updateProgressUI();
   const zoneKey = currentMissionKey.split('-')[0];
   renderMissionList(zoneKey);
