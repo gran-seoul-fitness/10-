@@ -117,48 +117,6 @@ button, .btn-mini, .btn-quickstart, .btn-start{
   50%{ box-shadow:0 0 0 7px rgba(28,28,26,0); }
 }
 
-/* ---------- Name gate ---------- */
-.namegate-wrap{
-  flex:1;display:flex;align-items:center;justify-content:center;
-  padding:8%;
-}
-.namegate-card{
-  width:100%;
-  background:var(--ivory);
-  border-radius:18px;
-  padding:32px 24px;
-  text-align:center;
-  box-shadow:0 6px 18px rgba(28,28,26,0.08);
-}
-.namegate-badge{
-  display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:1px;
-  color:var(--ivory-light);background:var(--hanok-red);
-  padding:5px 14px;border-radius:20px;margin-bottom:16px;
-}
-.namegate-title{font-size:19px;line-height:1.4;color:var(--ink);margin:0 0 8px;}
-.namegate-sub{font-size:12px;color:var(--ink-soft);margin:0 0 20px;}
-.namegate-input{
-  display:block;width:100%;box-sizing:border-box;
-  font-family:'HoonminjeongeumH','Gowun Batang',serif;font-size:14px;
-  padding:12px 14px;border:1.5px solid #c9c2ae;border-radius:12px;
-  background:#FBF9F4;color:var(--ink);text-align:center;
-  outline:none;transition:border-color .15s ease;
-}
-.namegate-input:focus{border-color:var(--orange);}
-.namegate-error{
-  font-size:11px;color:var(--orange);margin:0;height:0;opacity:0;overflow:hidden;
-  transition:opacity .15s ease;
-}
-.namegate-error.show{opacity:1;height:auto;margin-top:8px;}
-.namegate-btn{
-  display:block;width:100%;margin-top:18px;
-  font-family:'HoonminjeongeumH','Gowun Batang',serif;font-weight:700;font-size:14px;
-  color:#FBF9F4;background:var(--orange);border:none;border-radius:12px;
-  padding:12px;cursor:pointer;letter-spacing:0.3px;
-  box-shadow:0 4px 10px rgba(216,90,48,0.35);
-}
-.namegate-btn:active{transform:scale(0.98);}
-
 /* ---------- Character select ---------- */
 #select{padding:0;background:#C1BDB2;}
 
@@ -250,26 +208,12 @@ button, .btn-mini, .btn-quickstart, .btn-start{
       <img class="hero" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/1.png">
       <div class="gate-title">
         <div class="gate-title-text">10월의<br>건강한 4주를<br>만들어보세요.</div>
-        <button class="btn-mini" onclick="goTo('nameGate')">시작하기</button>
+        <button class="btn-mini" onclick="goTo('select')">시작하기</button>
       </div>
     </div>
   </section>
 
-  <!-- Screen 2: Name entry (required) -->
-  <section id="nameGate" class="screen">
-    <div class="namegate-wrap">
-      <div class="namegate-card">
-        <div class="namegate-badge">10월 건강 챌린지</div>
-        <h2 class="namegate-title">참여하시는<br>성함을 알려주세요</h2>
-        <p class="namegate-sub">기록을 위해 꼭 필요해요.</p>
-        <input type="text" id="nameGateInput" class="namegate-input" placeholder="성함을 입력해주세요" maxlength="20" autocomplete="name">
-        <p class="namegate-error" id="namegateError">성함을 입력해주세요.</p>
-        <button class="namegate-btn" id="namegateBtn">다음</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- Screen 3: Character select -->
+  <!-- Screen 2: Character select -->
   <section id="select" class="screen">
     <div class="hero-wrap">
       <img class="hero" src="https://raw.githubusercontent.com/gran-seoul-fitness/10-/claude/happy-wozniak-zu6wr0/images/2.png">
@@ -505,29 +449,6 @@ document.getElementById('quickstartBtn').addEventListener('click', ()=>{
 document.getElementById('startBtn').addEventListener('click', ()=>{
   location.href = 'gym_map.html';
 });
-
-const nameGateInput = document.getElementById('nameGateInput');
-const namegateError = document.getElementById('namegateError');
-function submitNameGate(){
-  const val = nameGateInput.value.trim();
-  if(!val){
-    namegateError.classList.add('show');
-    nameGateInput.focus();
-    return;
-  }
-  namegateError.classList.remove('show');
-  try{ localStorage.setItem('gsf_name', val); }catch(e){}
-  goTo('select');
-}
-document.getElementById('namegateBtn').addEventListener('click', submitNameGate);
-nameGateInput.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') submitNameGate(); });
-nameGateInput.addEventListener('input', ()=>{ if(nameGateInput.value.trim()) namegateError.classList.remove('show'); });
-(function restoreNameGate(){
-  try{
-    const saved = localStorage.getItem('gsf_name');
-    if(saved) nameGateInput.value = saved;
-  }catch(e){}
-})();
 
 (function restoreCharacter(){
   let hatKey, outfitKey;
