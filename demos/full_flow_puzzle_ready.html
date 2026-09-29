@@ -177,6 +177,10 @@ button,
 .name-row-input::placeholder{color:var(--ink-soft);opacity:0.7;}
 .name-row-input.invalid{border-color:var(--orange);animation:nameShake .3s ease;}
 .name-row-input.invalid::placeholder{color:var(--orange);}
+.name-row-input.locked{
+  background:rgba(28,28,26,0.08);color:var(--ink-soft);
+  border-color:#c9c2ae;cursor:not-allowed;
+}
 @keyframes nameShake{
   0%,100%{transform:translateX(0);}
   25%{transform:translateX(-4px);}
@@ -2081,7 +2085,11 @@ document.getElementById('startBtn').addEventListener('click', ()=>{
 (function restoreCharacterName(){
   try{
     const saved = localStorage.getItem('gsf_name');
-    if(saved) charNameInput.value = saved;
+    if(saved){
+      charNameInput.value = saved;
+      charNameInput.readOnly = true;
+      charNameInput.classList.add('locked');
+    }
   }catch(e){}
 })();
 
