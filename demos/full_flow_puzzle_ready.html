@@ -36,6 +36,24 @@ try{ localStorage.setItem('gsf_puzzle_pieces', JSON.stringify([0,1,2,3,4,5,6,7,8
   --gold:#AD8A45;
   --hanok-red:#7C2E22;
 }
+/* We only have one look (light/hanji paper theme). Redeclaring the same
+   values here tells browsers "this site already handles dark mode" so
+   their automatic re-coloring (e.g. Samsung Internet's "view websites in
+   dark mode") backs off instead of guessing new colors on its own. */
+@media (prefers-color-scheme: dark){
+  :root{
+    --ink:#1C1C1A;
+    --ink-soft:#5F5E5A;
+    --ivory:#EDE6D6;
+    --ivory-light:#F7F5F0;
+    --paper2:#E3DBC8;
+    --teal:#0F6E56;
+    --orange:#D85A30;
+    --gold:#AD8A45;
+    --hanok-red:#7C2E22;
+  }
+  html, body{background:#F7F5F0;color:#1C1C1A;}
+}
 *{box-sizing:border-box;}
 html{overflow-x:hidden;width:100%;color-scheme:light;}
 body{
