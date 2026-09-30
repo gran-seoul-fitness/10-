@@ -154,7 +154,8 @@ button, .btn-mini, .btn-quickstart, .btn-start{
   animation:charBob 3s ease-in-out infinite;
 }
 @keyframes charBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
-#charSvg{width:58%;height:auto;overflow:visible;}
+#charSvg{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none;}
+#charImg{width:58%;height:auto;}
 .outfit-group{display:none;}
 .outfit-group.show{display:block;}
 .hat-group{opacity:0;transition:opacity .25s ease;}
@@ -402,6 +403,7 @@ button, .btn-mini, .btn-quickstart, .btn-start{
                 <rect x="115" y="161" width="10" height="13" rx="3" fill="#7C2E22"/>
               </g>
             </svg>
+            <img id="charImg" alt="">
           </div>
           <div class="toast" id="toast">운동복 차림으로 시작할게요!</div>
         </div>
@@ -475,6 +477,20 @@ try{ history.replaceState({screen:'landing'}, ''); }catch(e){}
 const hatEls = { gat: document.getElementById('hatGat'), binyeo: document.getElementById('hatBinyeo') };
 const outfitEls = { gym: document.getElementById('outfitGym'), chima: document.getElementById('outfitChima'), baji: document.getElementById('outfitBaji') };
 
+function syncCharImg(){
+  try{
+    const svg = document.getElementById('charSvg');
+    const img = document.getElementById('charImg');
+    if(!svg || !img) return;
+    const clone = svg.cloneNode(true);
+    const style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+    style.textContent = '.outfit-group{display:none;}.outfit-group.show{display:block;}.hat-group{opacity:0;}.hat-group.show{opacity:1;}';
+    clone.insertBefore(style, clone.firstChild);
+    const svgString = new XMLSerializer().serializeToString(clone);
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgString);
+  }catch(e){}
+}
+
 function saveCharacter(hatKey, outfitKey){
   try{
     localStorage.setItem('gsf_hat', hatKey);
@@ -491,6 +507,7 @@ document.getElementById('hatRow').addEventListener('click', (e)=>{
   const key = chip.dataset.hat;
   if(hatEls[key]) hatEls[key].classList.add('show');
   saveCharacter(key, document.querySelector('#outfitRow .chip.active').dataset.outfit);
+  syncCharImg();
 });
 
 document.getElementById('outfitRow').addEventListener('click', (e)=>{
@@ -502,6 +519,7 @@ document.getElementById('outfitRow').addEventListener('click', (e)=>{
   const key = chip.dataset.outfit;
   if(outfitEls[key]) outfitEls[key].classList.add('show');
   saveCharacter(document.querySelector('#hatRow .chip.active').dataset.hat, key);
+  syncCharImg();
 });
 
 const charNameInput = document.getElementById('charNameInput');
@@ -553,6 +571,7 @@ document.getElementById('quickstartBtn').addEventListener('click', ()=>{
   Object.values(outfitEls).forEach(el=>el.classList.remove('show'));
   outfitEls.gym.classList.add('show');
   saveCharacter('none', 'gym');
+  syncCharImg();
 
   const toast = document.getElementById('toast');
   toast.classList.add('show');
@@ -599,6 +618,7 @@ document.getElementById('startBtn').addEventListener('click', ()=>{
     Object.values(outfitEls).forEach(el=>el.classList.remove('show'));
     outfitEls[outfitKey].classList.add('show');
   }
+  syncCharImg();
 })();
 
 if (location.hash === '#select') {

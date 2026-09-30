@@ -163,7 +163,8 @@ button,
   animation:charBob 3s ease-in-out infinite;
 }
 @keyframes charBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
-#charSvg{width:58%;height:auto;overflow:visible;}
+#charSvg{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none;}
+#charImg{width:58%;height:auto;}
 .outfit-group{display:none;}
 .outfit-group.show{display:block;}
 .hat-group{opacity:0;transition:opacity .25s ease;}
@@ -318,7 +319,8 @@ button,
   animation:charMiniBob 2.8s ease-in-out infinite;
 }
 @keyframes charMiniBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-3px);}}
-.char-mini svg{width:100%;height:auto;overflow:visible;}
+.char-mini svg{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none;}
+.char-mini img{width:100%;height:auto;display:block;}
 .char-mini .outfit-group{display:none;}
 .char-mini .outfit-group.show{display:block;}
 .char-mini .hat-group{opacity:0;transition:opacity .2s ease;}
@@ -1100,6 +1102,7 @@ button,
                 <rect x="115" y="161" width="10" height="13" rx="3" fill="#7C2E22"/>
               </g>
             </svg>
+            <img id="charImg" alt="">
           </div>
           <div class="toast" id="toast">운동복 차림으로 시작할게요!</div>
         </div>
@@ -1295,6 +1298,7 @@ button,
               <rect x="115" y="161" width="10" height="13" rx="3" fill="#7C2E22"/>
             </g>
           </svg>
+          <img id="charImgMini" alt="">
         </div>
       </div>
 
@@ -1944,6 +1948,7 @@ function renderCelebrationCharacter(){
   html = html.replace('id="charMini"', 'id="charMiniCelebrate"').replace('id="charSvgMini"', 'id="charSvgCelebrate"');
   html = html.replace('id="outfitGymMini"', 'id="outfitGymCelebrate"').replace('id="outfitChimaMini"', 'id="outfitChimaCelebrate"').replace('id="outfitBajiMini"', 'id="outfitBajiCelebrate"');
   html = html.replace('id="hatGatMini"', 'id="hatGatCelebrate"').replace('id="hatBinyeoMini"', 'id="hatBinyeoCelebrate"');
+  html = html.replace('id="charImgMini"', 'id="charImgCelebrate"');
   container.innerHTML = html;
   let hatKey, outfitKey;
   try{
@@ -1956,6 +1961,7 @@ function renderCelebrationCharacter(){
   const outfitMap = { gym: container.querySelector('#outfitGymCelebrate'), chima: container.querySelector('#outfitChimaCelebrate'), baji: container.querySelector('#outfitBajiCelebrate') };
   Object.values(outfitMap).forEach(el=>el && el.classList.remove('show'));
   (outfitMap[outfitKey] || outfitMap.gym).classList.add('show');
+  syncCharImgFor('charSvgCelebrate', 'charImgCelebrate');
 }
 function spawnCelebrationParticles(){
   const container = document.getElementById('celebrateParticles');
@@ -2022,6 +2028,20 @@ function updateProgressUI(){
 const hatElsMini = { gat: document.getElementById('hatGatMini'), binyeo: document.getElementById('hatBinyeoMini') };
 const outfitElsMini = { gym: document.getElementById('outfitGymMini'), chima: document.getElementById('outfitChimaMini'), baji: document.getElementById('outfitBajiMini') };
 
+function syncCharImgFor(svgId, imgId){
+  try{
+    const svg = document.getElementById(svgId);
+    const img = document.getElementById(imgId);
+    if(!svg || !img) return;
+    const clone = svg.cloneNode(true);
+    const style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+    style.textContent = '.outfit-group{display:none;}.outfit-group.show{display:block;}.hat-group{opacity:0;}.hat-group.show{opacity:1;}';
+    clone.insertBefore(style, clone.firstChild);
+    const svgString = new XMLSerializer().serializeToString(clone);
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgString);
+  }catch(e){}
+}
+
 function restoreCharacterMini(){
   let hatKey, outfitKey;
   try{
@@ -2032,6 +2052,7 @@ function restoreCharacterMini(){
   if(hatKey && hatElsMini[hatKey]) hatElsMini[hatKey].classList.add('show');
   Object.values(outfitElsMini).forEach(el=>el.classList.remove('show'));
   outfitElsMini[(outfitKey && outfitElsMini[outfitKey]) ? outfitKey : 'gym'].classList.add('show');
+  syncCharImgFor('charSvgMini', 'charImgMini');
 }
 
 /* ---------- Speech bubble (tap to cycle) ---------- */
@@ -2077,6 +2098,20 @@ restoreCharacterMini();
 const hatEls = { gat: document.getElementById('hatGat'), binyeo: document.getElementById('hatBinyeo') };
 const outfitEls = { gym: document.getElementById('outfitGym'), chima: document.getElementById('outfitChima'), baji: document.getElementById('outfitBaji') };
 
+function syncCharImg(){
+  try{
+    const svg = document.getElementById('charSvg');
+    const img = document.getElementById('charImg');
+    if(!svg || !img) return;
+    const clone = svg.cloneNode(true);
+    const style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+    style.textContent = '.outfit-group{display:none;}.outfit-group.show{display:block;}.hat-group{opacity:0;}.hat-group.show{opacity:1;}';
+    clone.insertBefore(style, clone.firstChild);
+    const svgString = new XMLSerializer().serializeToString(clone);
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgString);
+  }catch(e){}
+}
+
 function saveCharacter(hatKey, outfitKey){
   try{
     localStorage.setItem('gsf_hat', hatKey);
@@ -2093,6 +2128,7 @@ document.getElementById('hatRow').addEventListener('click', (e)=>{
   const key = chip.dataset.hat;
   if(hatEls[key]) hatEls[key].classList.add('show');
   saveCharacter(key, document.querySelector('#outfitRow .chip.active').dataset.outfit);
+  syncCharImg();
 });
 
 document.getElementById('outfitRow').addEventListener('click', (e)=>{
@@ -2104,6 +2140,7 @@ document.getElementById('outfitRow').addEventListener('click', (e)=>{
   const key = chip.dataset.outfit;
   if(outfitEls[key]) outfitEls[key].classList.add('show');
   saveCharacter(document.querySelector('#hatRow .chip.active').dataset.hat, key);
+  syncCharImg();
 });
 
 const charNameInput = document.getElementById('charNameInput');
@@ -2155,6 +2192,7 @@ document.getElementById('quickstartBtn').addEventListener('click', ()=>{
   Object.values(outfitEls).forEach(el=>el.classList.remove('show'));
   outfitEls.gym.classList.add('show');
   saveCharacter('none', 'gym');
+  syncCharImg();
 
   const toast = document.getElementById('toast');
   toast.classList.add('show');
@@ -2201,6 +2239,7 @@ document.getElementById('startBtn').addEventListener('click', ()=>{
     Object.values(outfitEls).forEach(el=>el.classList.remove('show'));
     outfitEls[outfitKey].classList.add('show');
   }
+  syncCharImg();
 })();
 
 if (location.hash === '#select') {
