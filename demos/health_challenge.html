@@ -430,11 +430,19 @@ button, .btn-mini, .btn-quickstart, .btn-start{
 </div>
 
 <script>
-function goTo(id){
+function applyScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
 }
+function goTo(id){
+  applyScreen(id);
+  try{ history.pushState({screen:id}, ''); }catch(e){}
+}
+window.addEventListener('popstate', (e)=>{
+  applyScreen((e.state && e.state.screen) || 'landing');
+});
+try{ history.replaceState({screen:'landing'}, ''); }catch(e){}
 
 const hatEls = { gat: document.getElementById('hatGat'), binyeo: document.getElementById('hatBinyeo') };
 const outfitEls = { gym: document.getElementById('outfitGym'), chima: document.getElementById('outfitChima'), baji: document.getElementById('outfitBaji') };

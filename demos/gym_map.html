@@ -1202,7 +1202,13 @@ function markStampToday(){
   try{ localStorage.setItem('gsf_last_certify_date', todayStr()); }catch(e){}
 }
 
-function goTo(id){
+function closeAllOverlays(){
+  ['sejongHubOverlay','missionPopup','celebrateOverlay','puzzleCompleteOverlay'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.classList.remove('show');
+  });
+}
+function applyScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
@@ -1210,6 +1216,18 @@ function goTo(id){
   if(id === 'puzzle') renderPuzzleGrid();
   if(id === 'puzzlePlay') shuffleJigsaw();
 }
+function goTo(id){
+  applyScreen(id);
+  // 안드로이드/갤럭시 뒤로가기가 이 앱 안의 화면 이동으로 인식되도록, 화면을
+  // 바꿀 때마다 히스토리 항목을 하나씩 쌓아요. 그래야 뒤로가기를 눌렀을 때
+  // 바로 이전 화면(예: 미션 목록)으로 돌아가지, 앱을 나가거나 맨 처음 화면으로
+  // 튕기지 않아요.
+  try{ history.pushState({screen:id}, ''); }catch(e){}
+}
+window.addEventListener('popstate', (e)=>{
+  closeAllOverlays();
+  applyScreen((e.state && e.state.screen) || 'map');
+});
 
 function openSejongHub(){
   document.getElementById('sejongHubOverlay').classList.add('show');
@@ -1690,6 +1708,8 @@ function updateDday(){
 updateDday();
 updateProgressUI();
 restoreCharacterMini();
+
+try{ history.replaceState({screen:'map'}, ''); }catch(e){}
 
 /* ---------- Tap the character: butterflies & flowers pop out ---------- */
 let tapBurstIdCounter = 0;
