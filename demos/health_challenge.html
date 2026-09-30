@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<meta name="supported-color-schemes" content="light">
 <title>그랑서울 피트니스 · 4주 건강 챌린지</title>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-EFGZQXF27S"></script>
@@ -32,7 +34,7 @@
   --hanok-red:#7C2E22;
 }
 *{box-sizing:border-box;}
-html{overflow-x:hidden;width:100%;}
+html{overflow-x:hidden;width:100%;color-scheme:light;}
 body{
   margin:0;
   overflow-x:hidden;
@@ -167,15 +169,16 @@ button, .btn-mini, .btn-quickstart, .btn-start{
 }
 .toast.show{opacity:1;transform:translate(-50%,0);}
 
-.name-row{display:flex;align-items:center;gap:7px;margin-bottom:5px;}
+.name-row{display:flex;align-items:center;gap:5px;margin-bottom:5px;}
 .name-row-label{font-size:8.5px;letter-spacing:1px;color:var(--ink-soft);flex:0 0 auto;}
 .name-row-input{
-  flex:1;min-width:0;box-sizing:border-box;
+  flex:1.6;min-width:0;box-sizing:border-box;
   font-family:'HoonminjeongeumH','Gowun Batang',serif;font-size:11px;
   padding:5px 8px;border:1px solid var(--ink);border-radius:6px;
   background:rgba(255,255,255,0.55);color:var(--ink);
   outline:none;transition:border-color .15s ease;
 }
+.name-row-input.name-row-phone{flex:0.95;text-align:center;padding:5px 4px;}
 .name-row-input:focus{border-color:var(--orange);}
 .name-row-input::placeholder{color:var(--ink-soft);opacity:0.7;}
 .name-row-input.invalid{border-color:var(--orange);animation:nameShake .3s ease;}
@@ -398,7 +401,8 @@ button, .btn-mini, .btn-quickstart, .btn-start{
 
         <div class="name-row">
           <span class="name-row-label">성함</span>
-          <input type="text" id="charNameInput" class="name-row-input" placeholder="이름을 입력해주세요" maxlength="20" autocomplete="name">
+          <input type="text" id="charNameInput" class="name-row-input" placeholder="이름" maxlength="20" autocomplete="name">
+          <input type="tel" inputmode="numeric" id="charPhoneInput" class="name-row-input name-row-phone" placeholder="뒷 4자리" maxlength="4" autocomplete="off">
         </div>
 
         <button class="btn-quickstart" id="quickstartBtn">바로 시작하기 <span>(기본 운동복)</span></button>
@@ -465,23 +469,42 @@ document.getElementById('outfitRow').addEventListener('click', (e)=>{
 });
 
 const charNameInput = document.getElementById('charNameInput');
+const charPhoneInput = document.getElementById('charPhoneInput');
 function saveCharacterName(){
-  try{ localStorage.setItem('gsf_name', charNameInput.value.trim()); }catch(e){}
+  try{
+    localStorage.setItem('gsf_name', charNameInput.value.trim());
+    localStorage.setItem('gsf_phone4', charPhoneInput.value.trim());
+  }catch(e){}
+}
+function flashInvalid(el, placeholder){
+  el.classList.remove('invalid');
+  void el.offsetWidth;
+  el.classList.add('invalid');
+  if(placeholder) el.placeholder = placeholder;
 }
 function checkCharacterName(){
-  if(!charNameInput.value.trim()){
-    charNameInput.classList.remove('invalid');
-    void charNameInput.offsetWidth;
-    charNameInput.classList.add('invalid');
-    charNameInput.placeholder = '성함을 입력해주세요!';
+  const nameOk = !!charNameInput.value.trim();
+  const phoneOk = /^\d{4}$/.test(charPhoneInput.value.trim());
+  if(!nameOk){
+    flashInvalid(charNameInput, '성함을 입력해주세요!');
     charNameInput.focus();
     return false;
   }
+  if(!phoneOk){
+    flashInvalid(charPhoneInput, '4자리 숫자');
+    charPhoneInput.focus();
+    return false;
+  }
   charNameInput.classList.remove('invalid');
+  charPhoneInput.classList.remove('invalid');
   saveCharacterName();
   return true;
 }
 charNameInput.addEventListener('input', ()=>{ charNameInput.classList.remove('invalid'); });
+charPhoneInput.addEventListener('input', ()=>{
+  charPhoneInput.classList.remove('invalid');
+  charPhoneInput.value = charPhoneInput.value.replace(/\D/g,'').slice(0,4);
+});
 
 document.getElementById('quickstartBtn').addEventListener('click', ()=>{
   if(!checkCharacterName()) return;
@@ -508,11 +531,17 @@ document.getElementById('startBtn').addEventListener('click', ()=>{
 
 (function restoreCharacterName(){
   try{
-    const saved = localStorage.getItem('gsf_name');
-    if(saved){
-      charNameInput.value = saved;
+    const savedName = localStorage.getItem('gsf_name');
+    const savedPhone = localStorage.getItem('gsf_phone4');
+    if(savedName){
+      charNameInput.value = savedName;
       charNameInput.readOnly = true;
       charNameInput.classList.add('locked');
+    }
+    if(savedPhone){
+      charPhoneInput.value = savedPhone;
+      charPhoneInput.readOnly = true;
+      charPhoneInput.classList.add('locked');
     }
   }catch(e){}
 })();

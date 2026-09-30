@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<meta name="supported-color-schemes" content="light">
 <title>그랑서울 피트니스 · 고을 지도</title>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-EFGZQXF27S"></script>
@@ -32,7 +34,7 @@
   --hanok-red:#7C2E22;
 }
 *{box-sizing:border-box;}
-html{overflow-x:hidden;width:100%;}
+html{overflow-x:hidden;width:100%;color-scheme:light;}
 body{
   margin:0;
   overflow-x:hidden;
@@ -1082,13 +1084,21 @@ const SHEET_LOG_URL = 'https://script.google.com/macros/s/AKfycbyp3GsKcm_TdD1qsF
 function logMissionToSheet(missionKey, photoDataUrl){
   if(!SHEET_LOG_URL) return;
   let name = '';
-  try{ name = (localStorage.getItem('gsf_name') || '').trim(); }catch(e){}
+  let phone4 = '';
+  try{
+    name = (localStorage.getItem('gsf_name') || '').trim();
+    phone4 = (localStorage.getItem('gsf_phone4') || '').trim();
+  }catch(e){}
   if(!name) return;
+  // 동명이인이어도 시트에서 서로 다른 사람으로 구분되도록, 전화번호 뒷 4자리를
+  // 이름에 붙여서 보내요. (백엔드는 이름 문자열만으로 사람을 구분하기 때문에
+  // 백엔드 코드를 안 건드리고 이 방법으로 해결해요.)
+  const displayName = phone4 ? `${name}(${phone4})` : name;
   const zoneKey = missionKey.split('-')[0];
   const equipOptions = EQUIP_OPTIONS[missionKey] || [];
   const payload = {
     month: '10월',
-    name,
+    name: displayName,
     zoneKey,
     missionId: missionKey,
     title: missionNameFromKey(missionKey),
