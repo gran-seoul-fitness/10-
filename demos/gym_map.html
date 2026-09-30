@@ -1084,16 +1084,16 @@ const SHEET_LOG_URL = 'https://script.google.com/macros/s/AKfycbyp3GsKcm_TdD1qsF
 function logMissionToSheet(missionKey, photoDataUrl){
   if(!SHEET_LOG_URL) return;
   let name = '';
-  let phone4 = '';
+  let company = '';
   try{
     name = (localStorage.getItem('gsf_name') || '').trim();
-    phone4 = (localStorage.getItem('gsf_phone4') || '').trim();
+    company = (localStorage.getItem('gsf_company') || '').trim();
   }catch(e){}
   if(!name) return;
-  // 동명이인이어도 시트에서 서로 다른 사람으로 구분되도록, 전화번호 뒷 4자리를
-  // 이름에 붙여서 보내요. (백엔드는 이름 문자열만으로 사람을 구분하기 때문에
-  // 백엔드 코드를 안 건드리고 이 방법으로 해결해요.)
-  const displayName = phone4 ? `${name}(${phone4})` : name;
+  // 동명이인이어도 시트에서 서로 다른 사람으로 구분되도록, 입주사명을 이름에
+  // 붙여서 보내요. (백엔드는 이름 문자열만으로 사람을 구분하기 때문에 백엔드
+  // 코드를 안 건드리고 이 방법으로 해결해요.)
+  const displayName = company ? `${name}(${company})` : name;
   const zoneKey = missionKey.split('-')[0];
   const equipOptions = EQUIP_OPTIONS[missionKey] || [];
   const payload = {
