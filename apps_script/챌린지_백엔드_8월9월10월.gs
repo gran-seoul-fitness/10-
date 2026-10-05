@@ -610,9 +610,35 @@ const OCTOBER_QUEST_DETAILS = {
   "cardio-2": { zoneKey: "cardio", title: "무동력·싱크로", equipment: "무동력머신 · 싱크로" },
 };
 
+// "하루에 미션 1개만" 규칙은 원래 웹페이지(브라우저 localStorage)에서만 막고 있었는데,
+// 그건 그 사람이 탭을 두 개 열거나(예: 카톡 링크를 두 번 누름), 다른 기기로 또
+// 열거나, 시크릿 모드로 들어오면 쉽게 뚫려요. 그래서 같은 날 이미 다른 미션을
+// 인증한 사람이면 여기 서버 쪽에서 한 번 더 막습니다. (같은 미션을 사진만 다시
+// 찍어 재제출하는 건 그대로 허용 - 위의 upsert가 그 경우를 덮어쓰기로 처리해요.)
+function hasOtherMissionTodayOctober(sheet, name, missionId) {
+  const values = sheet.getDataRange().getValues();
+  const targetName = normalizeName(name);
+  const tz = Session.getScriptTimeZone();
+  const todayStr = Utilities.formatDate(new Date(), tz, "yyyy-MM-dd");
+  for (let i = 1; i < values.length; i++) {
+    if (normalizeName(values[i][1]) !== targetName) continue;
+    if (values[i][3] === missionId) continue;
+    const rowTime = values[i][0];
+    if (!rowTime) continue;
+    const rowDate = rowTime instanceof Date ? rowTime : new Date(rowTime);
+    if (Utilities.formatDate(rowDate, tz, "yyyy-MM-dd") === todayStr) return true;
+  }
+  return false;
+}
+
 function handleOctoberPost(data, lockMs) {
   const perf = { t0: Date.now() };
   const sheet = getOrCreateSheetOctober();
+
+  if (hasOtherMissionTodayOctober(sheet, data.name, data.missionId)) {
+    return { success: false, reason: "already_certified_today" };
+  }
+
   const folder = getOrCreateFolder(PHOTO_FOLDER_NAME);
   perf.tFolder = Date.now();
 
@@ -842,6 +868,54 @@ function getOrCreateSheetOctober() {
   return sheet;
 }
 
+// 위의 hasOtherMissionTodayOctober() 막음 규칙을 넣기 "전"에 이미 하루에 미션을
+// 2개 이상 인증한 사람이 있었는지 읽기 전용으로 확인만 합니다. 아무것도 지우거나
+// 고치지 않고, "10월 중복점검" 탭에 해당하는 사람/날짜/미션 목록만 나열해요.
+// 실제로 봐주고 빼줄지는 사장님이 직접 판단해서 처리해주세요.
+function reportDuplicateDaysOctober() {
+  const sheet = getOrCreateSheetOctober();
+  const values = sheet.getDataRange().getValues();
+  const tz = Session.getScriptTimeZone();
+  const byNameDay = {};
+  for (let i = 1; i < values.length; i++) {
+    const row = values[i];
+    const time = row[0];
+    const name = row[1];
+    const missionId = row[3];
+    const title = row[4];
+    if (!time || !name) continue;
+    const rowDate = time instanceof Date ? time : new Date(time);
+    const dayStr = Utilities.formatDate(rowDate, tz, "yyyy-MM-dd");
+    const key = normalizeName(name) + "|" + dayStr;
+    if (!byNameDay[key]) byNameDay[key] = { name: name, day: dayStr, missions: [] };
+    byNameDay[key].missions.push(`${missionId}(${title}) ${Utilities.formatDate(rowDate, tz, "HH:mm:ss")}`);
+  }
+
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let report = ss.getSheetByName("10월 중복점검");
+  if (!report) {
+    report = ss.insertSheet("10월 중복점검");
+  } else {
+    report.clear();
+  }
+  report.appendRow(["이름", "날짜", "그날 인증한 미션들"]);
+  report.getRange(1, 1, 1, 3).setFontWeight("bold").setBackground("#20392C").setFontColor("#FFFFFF");
+
+  let count = 0;
+  Object.values(byNameDay).forEach((entry) => {
+    if (entry.missions.length > 1) {
+      report.appendRow([entry.name, entry.day, entry.missions.join(" / ")]);
+      count++;
+    }
+  });
+
+  SpreadsheetApp.getUi().alert(
+    count > 0
+      ? `하루에 미션을 2개 이상 인증한 사례가 ${count}건 있어요. "10월 중복점검" 탭에서 확인해주세요.\n(여기서는 아무것도 지우거나 수정하지 않았습니다 - 직접 보시고 처리해주세요.)`
+      : "하루에 미션을 2개 이상 인증한 사람이 없어요."
+  );
+}
+
 // ══════════════════════════════════════════════════════════════════
 // 공통: 요청 분기, 이름 정규화, 에러로그, 드라이브 폴더, 메뉴
 // ══════════════════════════════════════════════════════════════════
@@ -944,6 +1018,7 @@ function onOpen() {
     .addItem("10월 요약 다시 채우기(수동 표시는 안 건드림)", "resyncSummaryOctober")
     .addItem("10월 중복 기록 정리 (한 번만 실행)", "dedupeStampsOctober")
     .addItem("10월 드라이브에서 누락된 기록 복구", "recoverMissingFromDriveOctober")
+    .addItem("10월 하루 중복 인증 점검 (읽기 전용)", "reportDuplicateDaysOctober")
     .addToUi();
 }
 
