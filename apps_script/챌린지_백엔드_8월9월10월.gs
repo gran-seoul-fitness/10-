@@ -37,8 +37,13 @@ const PHOTO_FOLDER_NAME = "자강피트니스_인증사진";
 // 8월 (challenge/index.html, 14개 미션 · 주차별) — 기존 로직 그대로, 손대지 않음
 // ══════════════════════════════════════════════════════════════════
 
-const LEGACY_SHEET_NAME = "stamps";
-const LEGACY_SUMMARY_SHEET_NAME = "요약";
+// 탭 이름이 코드에 "stamps"/"요약"로 박혀 있었는데, 실제 시트에서는 9월/10월을
+// 구분하려고 8월 탭을 "8월 stamps"/"8월 요약"으로 이름을 바꿔두셨어요. 그래서
+// 코드가 "stamps"라는 이름을 못 찾고 매번 새 빈 탭을 만들어내고 있었습니다
+// (실제로 빈 "stamps" 탭이 하나 생겼던 걸 발견해서 고침). 이제 실제 탭 이름과
+// 맞춥니다.
+const LEGACY_SHEET_NAME = "8월 stamps";
+const LEGACY_SUMMARY_SHEET_NAME = "8월 요약";
 
 const LEGACY_QUEST_COLUMNS = [
   { key: "cardio-w0", label: "1주·유산소" },
