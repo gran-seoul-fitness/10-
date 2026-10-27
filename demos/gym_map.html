@@ -296,6 +296,20 @@ button,
   pointer-events:none;
 }
 
+/* GX 예약을 못해 '대신 스트레칭으로 쿨다운하기'로 들어온 사람에게만, 스트레칭
+   미션 목록 맨 아래 하나 더 보이는 보너스 카드 - 은은하게 빛나서 눈에 띄게 */
+@keyframes secretGlow{
+  0%,100%{ box-shadow:0 0 0 rgba(232,184,75,0); }
+  50%{ box-shadow:0 0 18px 4px rgba(232,184,75,0.55); }
+}
+.mission-item.secret{
+  border-radius:14px;
+  animation:secretGlow 2.2s ease-in-out infinite;
+}
+.mission-item.secret .mission-badge{
+  color:#E8B84B;
+}
+
 /* ---------- Mission popup ---------- */
 .popup-overlay{
   display:none;
@@ -1143,14 +1157,15 @@ function logMissionToSheet(missionKey, photoDataUrl){
   // 붙여서 보내요. (백엔드는 이름 문자열만으로 사람을 구분하기 때문에 백엔드
   // 코드를 안 건드리고 이 방법으로 해결해요.)
   const displayName = company ? `${name}(${company})` : name;
+  const isGxSecret = (missionKey === 'gx-0' && gxSubstituteActive);
   const zoneKey = missionKey.split('-')[0];
-  const equipOptions = EQUIP_OPTIONS[missionKey] || [];
+  const equipOptions = EQUIP_OPTIONS[isGxSecret ? 'stretch-secret' : missionKey] || [];
   const payload = {
     month: '10월',
     name: displayName,
     zoneKey,
     missionId: missionKey,
-    title: missionNameFromKey(missionKey),
+    title: isGxSecret ? '그룹운동 프로그램 (스트레칭 대체)' : missionNameFromKey(missionKey),
     equipment: equipOptions.map(o => o.name).join(' · '),
     photo: photoDataUrl || ''
   };
@@ -1226,6 +1241,11 @@ const EQUIP_OPTIONS = {
     {name:'엘라스코', img:'stretch-elasko.jpg'},
   ],
 };
+// 그룹운동 대신 쓰는 시크릿 미션용 갤러리 - 실제로 찍는 건 스트레칭 기구라서,
+// 그룹운동(gx-0) 기구 목록이 아니라 스트레칭 존 기구 3종을 그대로 합쳐서 보여줘요.
+EQUIP_OPTIONS['stretch-secret'] = [].concat(
+  EQUIP_OPTIONS['stretch-0'], EQUIP_OPTIONS['stretch-1'], EQUIP_OPTIONS['stretch-2']
+);
 
 function renderGallery(containerEl, missionKey){
   const options = EQUIP_OPTIONS[missionKey] || [];
@@ -1286,11 +1306,16 @@ function closeSejongHub(){
 }
 
 let currentZoneKey = null;
+// true 동안에만, 스트레칭 미션 목록 맨 아래에 '그룹운동 대신' 시크릿 미션이
+// 보여요 - goToStretchInstead()로 들어왔을 때만 켜지고, 아무 존이나 직접
+// 눌러서 들어오면(스트레칭 포함) 다시 꺼져요.
+let gxSubstituteActive = false;
 
 document.querySelectorAll('.zone-hit[data-zone]').forEach(zoneEl=>{
   zoneEl.addEventListener('click', ()=>{
     const key = zoneEl.dataset.zone;
     currentZoneKey = key;
+    gxSubstituteActive = false;
     const z = zones[key];
     document.getElementById('missionHero').src = z.bg;
     renderMissionList(key);
@@ -1316,6 +1341,16 @@ function renderMissionList(key){
       <div class="mission-name-bar">${m}</div>`;
     list.appendChild(item);
   });
+  if(key === 'stretch' && gxSubstituteActive && !done['gx-0']){
+    const secretItem = document.createElement('div');
+    secretItem.className = 'mission-item secret';
+    secretItem.dataset.key = 'gx-0';
+    secretItem.innerHTML = `
+      <div class="mission-icon">${missionIcons.gx}</div>
+      <div class="mission-badge">시크릿 미션</div>
+      <div class="mission-name-bar">그룹운동 대신 스트레칭 인증</div>`;
+    list.appendChild(secretItem);
+  }
 }
 
 document.getElementById('missionList').addEventListener('click', (e)=>{
@@ -1352,22 +1387,25 @@ function missionNameFromKey(key){
 
 function openMissionPopup(key){
   currentMissionKey = key;
-  const zoneKey = key.split('-')[0];
+  const isGxSecret = (key === 'gx-0' && gxSubstituteActive);
+  const zoneKey = isGxSecret ? 'stretch' : key.split('-')[0];
   const z = zones[zoneKey];
-  document.getElementById('popupBadge').textContent = missionNameFromKey(key);
+  document.getElementById('popupBadge').textContent = isGxSecret ? '그룹운동 대신 스트레칭 인증' : missionNameFromKey(key);
   document.getElementById('popupSets').textContent = `${z.sets} X ${z.reps}씩`;
-  renderGallery(document.getElementById('popupGallery'), key);
+  renderGallery(document.getElementById('popupGallery'), isGxSecret ? 'stretch-secret' : key);
   document.getElementById('popupVerifyBtn').classList.toggle('disabled', usedStampToday());
-  document.getElementById('popupGxAlt').classList.toggle('show', zoneKey === 'gx');
+  document.getElementById('popupGxAlt').classList.toggle('show', !isGxSecret && zoneKey === 'gx');
   document.getElementById('missionPopup').classList.add('show');
 }
 
-// 그룹운동 수업 예약을 못 했을 때 쓰라고 넣은 대체 동선이에요. gx-0를 완료 처리하지
-// 않고, 그냥 스트레칭 존의 미션 목록으로 자연스럽게 넘어가게만 해줍니다 - 그 사람이
-// 이미 완료한 스트레칭 미션이 있으면 평소처럼 알아서 "완료" 표시로 보여요.
+// 그룹운동 수업 예약을 못 했을 때 쓰라고 넣은 대체 동선이에요. 스트레칭 존의
+// 미션 목록으로 넘어가는데, gxSubstituteActive를 켜서 거기에 '그룹운동 대신'
+// 시크릿 미션 카드가 하나 더 보이게 해요 - 그걸 완료해야 gx-0가 채워져서
+// 12/12를 다 채울 수 있어요. (이미 그룹운동을 완료한 사람은 카드 자체가 안 보여요.)
 function goToStretchInstead(){
   closeMissionPopup();
   currentZoneKey = 'stretch';
+  gxSubstituteActive = true;
   document.getElementById('missionHero').src = zones.stretch.bg;
   renderMissionList('stretch');
   goTo('missions');
@@ -1396,11 +1434,12 @@ function resetVerifyScreen(){
 function goToVerify(){
   if(!currentMissionKey) return;
   if(usedStampToday()) return;
-  const zoneKey = currentMissionKey.split('-')[0];
+  const isGxSecret = (currentMissionKey === 'gx-0' && gxSubstituteActive);
+  const zoneKey = isGxSecret ? 'stretch' : currentMissionKey.split('-')[0];
   const z = zones[zoneKey];
-  document.getElementById('verifyBadge').textContent = missionNameFromKey(currentMissionKey);
+  document.getElementById('verifyBadge').textContent = isGxSecret ? '그룹운동 대신 스트레칭 인증' : missionNameFromKey(currentMissionKey);
   document.getElementById('verifySets').textContent = `${z.sets} X ${z.reps}씩`;
-  renderGallery(document.getElementById('verifyGallery'), currentMissionKey);
+  renderGallery(document.getElementById('verifyGallery'), isGxSecret ? 'stretch-secret' : currentMissionKey);
   resetVerifyScreen();
   closeMissionPopup();
   goTo('verify');
@@ -1481,12 +1520,14 @@ function completeVerify(){
     setTimeout(()=>{ box.style.transform = ''; }, 160);
     return;
   }
+  const isGxSecret = (currentMissionKey === 'gx-0' && gxSubstituteActive);
   setDone(currentMissionKey, true);
   markStampToday();
   if(pendingVerifyPhoto){ saveMissionPhoto(currentMissionKey, pendingVerifyPhoto); }
   logMissionToSheet(currentMissionKey, pendingVerifyPhoto);
+  if(isGxSecret) gxSubstituteActive = false;
   updateProgressUI();
-  const zoneKey = currentMissionKey.split('-')[0];
+  const zoneKey = isGxSecret ? 'stretch' : currentMissionKey.split('-')[0];
   renderMissionList(zoneKey);
   showCelebration();
 }
