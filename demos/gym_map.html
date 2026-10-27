@@ -1241,11 +1241,13 @@ const EQUIP_OPTIONS = {
     {name:'엘라스코', img:'stretch-elasko.jpg'},
   ],
 };
-// 그룹운동 대신 쓰는 시크릿 미션용 갤러리 - 실제로 찍는 건 스트레칭 기구라서,
-// 그룹운동(gx-0) 기구 목록이 아니라 스트레칭 존 기구 3종을 그대로 합쳐서 보여줘요.
-EQUIP_OPTIONS['stretch-secret'] = [].concat(
-  EQUIP_OPTIONS['stretch-0'], EQUIP_OPTIONS['stretch-1'], EQUIP_OPTIONS['stretch-2']
-);
+// 그룹운동 대신 쓰는 시크릿 미션용 갤러리 - GX 팝업 배너에 쓰는 것과 같은
+// 쿨다운 스트레칭 사진 2장을 그대로 보여줘서, 안내 배너와 인증 화면이 같은
+// 사진으로 이어지게 해요.
+EQUIP_OPTIONS['stretch-secret'] = [
+  {name:'스트레칭 쿨다운 1', img:'gx-cooldown-1.jpg'},
+  {name:'스트레칭 쿨다운 2', img:'gx-cooldown-2.jpg'},
+];
 
 function renderGallery(containerEl, missionKey){
   const options = EQUIP_OPTIONS[missionKey] || [];
